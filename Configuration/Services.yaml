@@ -6,3 +6,11 @@ services:
 
     Slub\SlubEvents\:
         resource: '../Classes/*'
+
+    Slub\SlubEvents\Domain\Validator\EventSubscriptionAllowedValidator:
+        public: true
+        shared: false
+
+    Slub\SlubEvents\Domain\Validator\SubscriberValidator:
+        public: true
+        shared: false

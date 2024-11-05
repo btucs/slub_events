@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\Domain\Validator;
 
 use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package slub_events
@@ -43,9 +42,9 @@ class EventSubscriptionAllowedValidator extends AbstractValidator
      */
     protected $subscriberRepository;
 
-    public function __construct()
+    public function __construct(SubscriberRepository $subscriberRepository)
     {
-        $this->subscriberRepository = GeneralUtility::makeInstance(subscriberRepository::class);
+        $this->subscriberRepository = $subscriberRepository;
     }
 
     /**
@@ -86,5 +85,13 @@ class EventSubscriptionAllowedValidator extends AbstractValidator
         }
 
         return $this->isValid;
+    }
+
+    public function setOptions(array $options): void
+    {
+        // This method is upwards compatible with TYPO3 v12, it will be implemented
+        // by AbstractValidator in v12 directly and is part of v12 ValidatorInterface.
+        // @todo: Remove this method when v11 compatibility is dropped.
+        $this->initializeDefaultOptions($options);
     }
 }

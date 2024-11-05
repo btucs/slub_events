@@ -33,10 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package slub_events
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-
 class SubscriberValidator extends AbstractValidator
 {
-
     /**
      * subscriberRepository
      *
@@ -44,9 +42,12 @@ class SubscriberValidator extends AbstractValidator
      */
     protected $subscriberRepository;
 
-    public function __construct()
+    /**
+     * @param Slub\SlubEvents\Domain\Repository\SubscriberRepository $subscriberRepository
+     */
+    public function __construct(SubscriberRepository $subscriberRepository)
     {
-        $this->subscriberRepository = GeneralUtility::makeInstance(subscriberRepository::class);
+        $this->subscriberRepository = $subscriberRepository;
     }
 
     /**
@@ -102,5 +103,13 @@ class SubscriberValidator extends AbstractValidator
         }
 
         return $this->isValid;
+    }
+
+    public function setOptions(array $options): void
+    {
+        // This method is upwards compatible with TYPO3 v12, it will be implemented
+        // by AbstractValidator in v12 directly and is part of v12 ValidatorInterface.
+        // @todo: Remove this method when v11 compatibility is dropped.
+        $this->initializeDefaultOptions($options);
     }
 }
