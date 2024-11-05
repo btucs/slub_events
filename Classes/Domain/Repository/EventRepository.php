@@ -76,7 +76,7 @@ class EventRepository extends Repository
      *
      * @return array The found Event Objects
      */
-    public function findWibaByContact($contact, $category = 0, $bExcludeCategory)
+    public function findWibaByContact($contact, $category = 0, $bExcludeCategory = false)
     {
         $query = $this->createQuery();
 
