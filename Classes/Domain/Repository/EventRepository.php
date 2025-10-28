@@ -56,7 +56,7 @@ class EventRepository extends Repository
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -76,7 +76,7 @@ class EventRepository extends Repository
      *
      * @return array The found Event Objects
      */
-    public function findWibaByContact($contact, $category = 0, $bExcludeCategory)
+    public function findWibaByContact($contact, $category, $bExcludeCategory)
     {
         $query = $this->createQuery();
 
@@ -95,7 +95,7 @@ class EventRepository extends Repository
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -128,7 +128,7 @@ class EventRepository extends Repository
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -162,7 +162,7 @@ class EventRepository extends Repository
             $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
         }
 
-        $query->matching($query->logicalAnd($constraints));
+        $query->matching($query->logicalAnd(...$constraints));
 
         return $query->execute();
     }
@@ -186,12 +186,10 @@ class EventRepository extends Repository
         // is user / subscriber given
         if ((int)$settings['user'] > 0) {
             $constraints[] = $query->logicalAnd(
-                [
-                    $query->equals('subscribers.customerid', $settings['user']),
-                    $query->logicalNot(
-                        $query->equals('subscribers.editcode', '')
-                    )
-                ]
+                $query->equals('subscribers.customerid', $settings['user']),
+                $query->logicalNot(
+                    $query->equals('subscribers.editcode', '')
+                )
             );
         }
 
@@ -247,7 +245,7 @@ class EventRepository extends Repository
 
         // AND all constraints together
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date ascending or descending
@@ -302,7 +300,7 @@ class EventRepository extends Repository
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -353,7 +351,7 @@ class EventRepository extends Repository
         }
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -382,7 +380,7 @@ class EventRepository extends Repository
         $constraints[] = $query->lessThanOrEqual('start_date_time', $stopDateStamp);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -416,7 +414,7 @@ class EventRepository extends Repository
             $query->matching(
                 $query->logicalAND(
                     $query->greaterThan('start_date_time', strtotime('today')),
-                    $query->logicalOr($constraints)
+                    $query->logicalOr(...$constraints)
                 )
             );
         } else {
@@ -451,7 +449,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('external_registration', '');
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -483,7 +481,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('parent', $parent);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -524,7 +522,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('uid', $uid);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         return $query->execute()->getFirst();
@@ -560,7 +558,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('parent', $parent);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         $eventsToBeRemoved = $query->execute();
@@ -588,7 +586,7 @@ class EventRepository extends Repository
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
@@ -617,7 +615,7 @@ class EventRepository extends Repository
         $constraints[] = $query->lessThanOrEqual('end_date_time', strtotime(' - ' . $days . ' days'));
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         return $query->execute();
