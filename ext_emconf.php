@@ -15,8 +15,6 @@ This extension is developped and used in production at the Saxony State and Univ
     'author_email'     => 'typo3@slub-dresden.de',
     'author_company'   => 'SLUB Dresden',
     'state'            => 'stable',
-    'uploadfolder'     => true,
-    'createDirs'       => 'typo3temp/tx_slubevents/',
     'version'          => '6.3.0',
     'constraints'      => [
         'depends'   => [

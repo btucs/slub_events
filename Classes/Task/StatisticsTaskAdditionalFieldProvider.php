@@ -90,7 +90,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
         }
 
         $fieldId = 'task_storagePid';
-        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][storagePid]" id="' . $fieldId . '" value="' . htmlspecialchars($taskInfo['storagePid']) . '"/>';
+        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][storagePid]" id="' . $fieldId . '" value="' . htmlspecialchars((string) $taskInfo['storagePid']) . '"/>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.storagePid');
         $label = BackendUtility::wrapInHelp('slub_events', $fieldId, $label);
         $additionalFields[$fieldId] = [
@@ -99,7 +99,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
         ];
 
         $fieldId = 'task_senderEmailAddress';
-        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][senderEmailAddress]" id="' . $fieldId . '" value="' . htmlspecialchars($taskInfo['senderEmailAddress']) . '"/>';
+        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][senderEmailAddress]" id="' . $fieldId . '" value="' . htmlspecialchars((string) $taskInfo['senderEmailAddress']) . '"/>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.senderEmailAddress');
         $label = BackendUtility::wrapInHelp('slub_events', $fieldId, $label);
         $additionalFields[$fieldId] = [
@@ -112,7 +112,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
         if (is_array($taskInfo['receiverEmailAddress'])) {
             foreach ($taskInfo['receiverEmailAddress'] as $id => $emailAdd) {
                 if (GeneralUtility::validEmail($emailAdd)) {
-                    $fieldCode .= htmlspecialchars($emailAdd) . "\n";
+                    $fieldCode .= htmlspecialchars((string) $emailAdd) . "\n";
                 }
             }
             // remove last newline:
@@ -149,24 +149,24 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
             $isValid = false;
             $this->addMessage(
                 $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.invalidStoragePid') . ': ' . $submittedData['slub_events']['storagePid'],
-                FlashMessage::ERROR
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
             );
         }
 
         if (!GeneralUtility::validEmail($submittedData['slub_events']['senderEmailAddress'])) {
             $isValid = false;
             $this->addMessage($GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.invalidEmail'),
-                FlashMessage::ERROR);
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
         }
 
         if (!empty($submittedData['slub_events']['receiverEmailAddress'])) {
             $emailList = GeneralUtility::trimExplode('|',
-                preg_replace('/[\n,\s]+/', '|', $submittedData['slub_events']['receiverEmailAddress']));
+                preg_replace('/[\n,\s]+/', '|', (string) $submittedData['slub_events']['receiverEmailAddress']));
             foreach ($emailList as $emailAdd) {
                 if (!GeneralUtility::validEmail($emailAdd)) {
                     $isValid = false;
                     $this->addMessage($GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.invalidEmail') . ': ' . $emailAdd,
-                        FlashMessage::ERROR);
+                        \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
                 }
             }
         }
@@ -188,7 +188,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
         /** @var $task StatisticsTask */
         $task->setStoragePid($submittedData['slub_events']['storagePid']);
         $task->setReceiverEmailAddress(GeneralUtility::trimExplode(',',
-            preg_replace('/[\n\s]+/', ',', $submittedData['slub_events']['receiverEmailAddress'])));
+            preg_replace('/[\n\s]+/', ',', (string) $submittedData['slub_events']['receiverEmailAddress'])));
         $task->setSenderEmailAddress($submittedData['slub_events']['senderEmailAddress']);
     }
 }

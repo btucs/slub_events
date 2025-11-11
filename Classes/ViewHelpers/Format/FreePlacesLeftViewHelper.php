@@ -72,11 +72,7 @@ class FreePlacesLeftViewHelper extends AbstractViewHelper
         RenderingContextInterface $renderingContext
     ) {
         $event = $arguments['event'];
-        if ($event != null) {
-            $free = $event->getMaxSubscriber() - self::getSubscriberRepository()->countAllByEvent($event);
-        } else {
-            $free = 0;
-        }
+        $free = $event != null ? $event->getMaxSubscriber() - self::getSubscriberRepository()->countAllByEvent($event) : 0;
 
         return ($free > 0) ? $free : 0;
     }

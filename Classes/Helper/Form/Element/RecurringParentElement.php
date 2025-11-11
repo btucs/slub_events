@@ -57,11 +57,9 @@ class RecurringParentElement extends AbstractFormElement
                     'uid',
                     $queryBuilder->createNamedParameter((int) $this->data['databaseRow']['parent'], Connection::PARAM_INT)
                 )
-            )
-            ->setMaxResults(1)
-            ->execute();
+            )->setMaxResults(1)->executeQuery();
 
-        if ($resArray = $resultQuery->fetch()) {
+        if ($resArray = $resultQuery->fetchAssociative()) {
             $parentEventRow = $resArray;
         }
 

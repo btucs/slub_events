@@ -39,9 +39,9 @@ class Discipline extends AbstractEntity
     /**
      * Name of the specialists discipline
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $name;
 
     /**

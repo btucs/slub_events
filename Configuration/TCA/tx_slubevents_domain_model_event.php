@@ -8,7 +8,6 @@ return [
         'label'                    => 'title',
         'tstamp'                   => 'tstamp',
         'crdate'                   => 'crdate',
-        'cruser_id'                => 'cruser_id',
         'sortby'                   => 'sorting',
         'versioningWS'             => true,
         'origUid'                  => 't3_origuid',
@@ -23,9 +22,6 @@ return [
         ],
         'searchFields'             => 'title,start_date_time,all_day,end_date_time,sub_end_date_time,teaser,description,min_subscriber,max_subscriber,audience,categories,subscribers,location,discipline,topic,',
         'iconfile'                 => 'EXT:slub_events/Resources/Public/Icons/tx_slubevents_domain_model_event.gif',
-    ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, start_date_time, all_day, end_date_time, sub_end_date_time, teaser, description, content_elements, image, min_subscriber, max_subscriber, audience, sub_end_date_info_sent, no_search, genius_bar, parent, recurring, recurring_options, recurring_end_date_time, cancelled, categories, subscribers, location, discipline, topic, contact',
     ],
     'types'     => [
         // Single event
@@ -82,30 +78,17 @@ return [
         'sys_language_uid'         => [
             'exclude'  => 1,
             'label'    => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'config'   => [
-                'type'       => 'select',
-                'renderType' => 'selectSingle',
-                'special'    => 'languages',
-                'items'      => [
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
-                        -1,
-                        'flags-multiple'
-                    ],
-                ],
-                'default'    => 0,
-            ],
+            'config'   => ['type' => 'language'],
             'onChange' => 'reload',
         ],
         'l10n_parent'              => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude'     => 1,
             'label'       => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config'      => [
                 'type'                => 'select',
                 'renderType'          => 'selectSingle',
                 'items'               => [
-                    ['', 0],
+                    ['label' => '', 'value' => 0],
                 ],
                 'foreign_table'       => 'tx_slubevents_domain_model_event',
                 'foreign_table_where' => 'AND tx_slubevents_domain_model_event.pid=###CURRENT_PID### AND tx_slubevents_domain_model_event.sys_language_uid IN (-1,0)',
@@ -141,10 +124,8 @@ return [
                 'behaviour'  => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'       => 'input',
-                'renderType' => 'inputDateTime',
+                'type'       => 'datetime',
                 'size'       => 13,
-                'eval'       => 'datetime',
                 'default'    => 0,
             ],
         ],
@@ -156,10 +137,8 @@ return [
                 'behaviour'  => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'       => 'input',
-                'renderType' => 'inputDateTime',
+                'type'       => 'datetime',
                 'size'       => 13,
-                'eval'       => 'datetime',
                 'default'    => 0,
             ],
         ],
@@ -171,7 +150,8 @@ return [
             'config'      => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required',
+                'eval' => 'trim',
+                'required' => true,
             ],
         ],
         'start_date_time'          => [
@@ -179,11 +159,10 @@ return [
             'l10n_mode' => 'exclude',
             'label'     => $LL . 'tx_slubevents_domain_model_event.start_date_time',
             'config'    => [
-                'type'       => 'input',
-                'renderType' => 'inputDateTime',
+                'type'       => 'datetime',
                 'size'       => 13,
-                'eval'       => 'datetime,required',
                 'default'    => 0,
+                'required' => true,
             ],
         ],
         'all_day'                  => [
@@ -200,10 +179,8 @@ return [
             'l10n_mode' => 'exclude',
             'label'     => $LL . 'tx_slubevents_domain_model_event.end_date_time',
             'config'    => [
-                'type'       => 'input',
-                'renderType' => 'inputDateTime',
+                'type'       => 'datetime',
                 'size'       => 13,
-                'eval'       => 'datetime',
                 'default'    => 0,
             ],
         ],
@@ -217,19 +194,19 @@ return [
                 'renderType' => 'selectSingle',
                 'items'      => [
                     [
-                        $LL . 'tx_slubevents_domain_model_event.end_date_time_select_value',
-                        0,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.end_date_time_select_value',
+                        'value' => 0,
                     ],
-                    ['00:15', 15],
-                    ['00:30', 30],
-                    ['00:45', 45],
-                    ['01:00', 60],
-                    ['01:30', 90],
-                    ['02:00', 120],
-                    ['03:00', 180],
-                    ['04:00', 240],
-                    ['05:00', 300],
-                    ['06:00', 360],
+                    ['label' => '00:15', 'value' => 15],
+                    ['label' => '00:30', 'value' => 30],
+                    ['label' => '00:45', 'value' => 45],
+                    ['label' => '01:00', 'value' => 60],
+                    ['label' => '01:30', 'value' => 90],
+                    ['label' => '02:00', 'value' => 120],
+                    ['label' => '03:00', 'value' => 180],
+                    ['label' => '04:00', 'value' => 240],
+                    ['label' => '05:00', 'value' => 300],
+                    ['label' => '06:00', 'value' => 360],
                 ],
                 'size'       => 1,
                 'maxitems'   => 1,
@@ -243,10 +220,8 @@ return [
             'exclude'     => 0,
             'label'       => $LL . 'tx_slubevents_domain_model_event.sub_end_date_time',
             'config'      => [
-                'type'       => 'input',
-                'renderType' => 'inputDateTime',
+                'type'       => 'datetime',
                 'size'       => 13,
-                'eval'       => 'datetime',
                 'default'    => 0,
             ],
         ],
@@ -265,18 +240,18 @@ return [
                 'renderType' => 'selectSingle',
                 'items'      => [
                     [
-                        $LL . 'tx_slubevents_domain_model_event.sub_end_date_time_select_value',
-                        -1,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.sub_end_date_time_select_value',
+                        'value' => -1,
                     ],
-                    ['00:00', 0],
-                    ['00:30', 30],
-                    ['01:00', 60],
-                    ['02:00', 120],
-                    ['04:00', 240],
-                    ['12:00', 720],
-                    ['24:00', 1440],
-                    ['48:00', 2880],
-                    ['72:00', 4320],
+                    ['label' => '00:00', 'value' => 0],
+                    ['label' => '00:30', 'value' => 30],
+                    ['label' => '01:00', 'value' => 60],
+                    ['label' => '02:00', 'value' => 120],
+                    ['label' => '04:00', 'value' => 240],
+                    ['label' => '12:00', 'value' => 720],
+                    ['label' => '24:00', 'value' => 1440],
+                    ['label' => '48:00', 'value' => 2880],
+                    ['label' => '72:00', 'value' => 4320],
                 ],
                 'size'       => 1,
                 'maxitems'   => 1,
@@ -338,7 +313,6 @@ return [
                     'levelLinksPosition'              => 'bottom',
                     'useSortable'                     => true,
                     'showPossibleLocalizationRecords' => true,
-                    'showRemovedLocalizationRecords'  => true,
                     'showAllLocalizationLink'         => true,
                     'showSynchronizationLink'         => true,
                     'enabledControls'                 => [
@@ -353,23 +327,21 @@ return [
         'image'                    => [
             'exclude' => true,
             'label'   => $LL . 'tx_slubevents_domain_model_event.image',
-            'config'  => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'image',
-                [
-                    'maxitems'             => 1,
-                    'appearance'           => [
-                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference',
-                        'fileUploadAllowed'          => false
-                    ],
-                    'foreign_match_fields' => [
-                        'fieldname'   => 'image',
-                        'tablenames'  => 'tx_slubevents_domain_model_event',
-                        'table_local' => 'sys_file',
-                    ],
-                    'default'              => 0,
+            'config'  => [
+                ### !!! Watch out for fieldName different from columnName
+                'type' => 'file',
+                'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
+                'maxitems'             => 1,
+                'appearance'           => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference',
+                    'fileUploadAllowed'          => false
                 ],
-                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            )
+                'foreign_match_fields' => [
+                    'fieldname'   => 'image',
+                    'tablenames'  => 'tx_slubevents_domain_model_event',
+                ],
+                'default'              => 0,
+            ]
         ],
         'min_subscriber'           => [
             'displayCond' => 'FIELD:external_registration:REQ:false',
@@ -377,9 +349,8 @@ return [
             'l10n_mode'   => 'exclude',
             'label'       => $LL . 'tx_slubevents_domain_model_event.min_subscriber',
             'config'      => [
-                'type' => 'input',
+                'type' => 'number',
                 'size' => 4,
-                'eval' => 'int',
             ],
         ],
         'max_subscriber'           => [
@@ -388,9 +359,8 @@ return [
             'l10n_mode'   => 'exclude',
             'label'       => $LL . 'tx_slubevents_domain_model_event.max_subscriber',
             'config'      => [
-                'type' => 'input',
+                'type' => 'number',
                 'size' => 4,
-                'eval' => 'int',
             ],
         ],
         'max_number'               => [
@@ -399,9 +369,8 @@ return [
             'l10n_mode'   => 'exclude',
             'label'       => $LL . 'tx_slubevents_domain_model_event.max_number',
             'config'      => [
-                'type' => 'input',
-                'size' => 4,
-                'eval' => 'int'
+                'type' => 'number',
+                'size' => 4
             ],
         ],
         'audience'                 => [
@@ -413,33 +382,33 @@ return [
                 'renderType' => 'selectSingle',
                 'items'      => [
                     [
-                        $LL . 'tx_slubevents_domain_model_event.audience.I.0',
-                        0,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.audience.I.0',
+                        'value' => 0,
                     ],
                     [
-                        $LL . 'tx_slubevents_domain_model_event.audience.I.1',
-                        1,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.audience.I.1',
+                        'value' => 1,
                     ],
                     [
-                        $LL . 'tx_slubevents_domain_model_event.audience.I.4',
-                        4,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.audience.I.4',
+                        'value' => 4,
                     ],
                     [
-                        $LL . 'tx_slubevents_domain_model_event.audience.I.2',
-                        2,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.audience.I.2',
+                        'value' => 2,
                     ],
                     [
-                        $LL . 'tx_slubevents_domain_model_event.audience.I.3',
-                        3,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.audience.I.3',
+                        'value' => 3,
                     ],
                     [
-                        $LL . 'tx_slubevents_domain_model_event.audience.I.5',
-                        5,
+                        'label' => $LL . 'tx_slubevents_domain_model_event.audience.I.5',
+                        'value' => 5,
                     ],
                 ],
                 'size'       => 1,
                 'maxitems'   => 1,
-                'eval'       => 'required',
+                'required' => true,
             ],
         ],
         'sub_end_date_info_sent'   => [
@@ -503,9 +472,7 @@ return [
                 'type'       => 'user',
                 'renderType' => 'recurringOptions',
                 'size'       => 60,
-                'parameters' => array(
-                    'color' => 'green'
-                )
+                'parameters' => ['color' => 'green']
             ],
         ],
         'recurring_events'        => [
@@ -517,9 +484,7 @@ return [
                 'type'       => 'user',
                 'renderType' => 'recurringEvents',
                 'size'       => 60,
-                'parameters' => array(
-                    'color' => 'green'
-                )
+                'parameters' => ['color' => 'green']
             ],
         ],
         'recurring_end_date_time' => [
@@ -528,10 +493,8 @@ return [
             'exclude'     => 1,
             'label'       => $LL . 'tx_slubevents_domain_model_event.recurring_end_date_time',
             'config'      => [
-                'type'       => 'input',
-                'renderType' => 'inputDateTime',
+                'type'       => 'datetime',
                 'size'       => 13,
-                'eval'       => 'datetime',
                 'default'    => 0,
             ],
         ],
@@ -676,7 +639,7 @@ return [
                 'size'                => 1,
                 'minitems'            => 1,
                 'maxitems'            => 1,
-                'eval'                => 'required'
+                'required' => true
             ],
         ],
         'contact'                 => [
@@ -687,7 +650,6 @@ return [
                 'allowed'                          => 'pages',
                 'type'                             => 'select',
                 'renderType'                       => 'selectMultipleSideBySide',
-                'enableMultiSelectFilterTextfield' => true,
                 'foreign_table'                    => 'tx_slubevents_domain_model_contact',
                 'foreign_table_where'              => 'AND tx_slubevents_domain_model_contact.pid = ###CURRENT_PID### AND tx_slubevents_domain_model_contact.deleted = 0 AND tx_slubevents_domain_model_contact.hidden = 0 ORDER BY tx_slubevents_domain_model_contact.sorting',
                 'minitems'                         => 1,

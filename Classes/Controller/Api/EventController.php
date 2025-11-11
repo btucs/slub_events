@@ -77,11 +77,10 @@ class EventController extends AbstractController
 
     /**
      * @param ViewInterface $view
+     * @param \TYPO3Fluid\Fluid\View\ViewInterface $view
      */
-    public function initializeView(ViewInterface $view): void
+    public function initializeView($view): void
     {
-        parent::initializeView($view);
-
         if (!$this->allowApiAccess) {
             $this->view = $this->apiAuthentication->getError($this->view, 401);
         }
@@ -90,7 +89,7 @@ class EventController extends AbstractController
     /**
      * @return void
      */
-    public function listAction(): void
+    public function listAction(): \Psr\Http\Message\ResponseInterface
     {
         if ($this->allowApiAccess) {
             $arguments = $this->apiService->prepareArgumentsDefault($this->request->getArguments());
@@ -99,12 +98,13 @@ class EventController extends AbstractController
             $this->view->setVariablesToRender(['events']);
             $this->view->assign('events', $events);
         }
+        return $this->htmlResponse();
     }
 
     /**
      * @return void
      */
-    public function listUserAction(): void
+    public function listUserAction(): \Psr\Http\Message\ResponseInterface
     {
         if ($this->allowApiAccess) {
             $arguments = $this->apiService->prepareArgumentsUser($this->request->getArguments());
@@ -114,5 +114,6 @@ class EventController extends AbstractController
             $this->view->setVariablesToRender(['eventsUser']);
             $this->view->assign('eventsUser', $eventsUser);
         }
+        return $this->htmlResponse();
     }
 }

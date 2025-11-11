@@ -43,6 +43,13 @@ class CleanUpTask extends AbstractTask
 {
 
     /**
+     * @var mixed[]
+     */
+    public $settings;
+    public $cleanupDaysEvents;
+    public $subscriberRepository;
+    public $eventRepository;
+    /**
      * PID of storage folder to work with
      *
      * @var integer
@@ -208,9 +215,8 @@ class CleanUpTask extends AbstractTask
                 if ($event->getRecurring() === FALSE) {
                     // it's a normal event or a child event of a recurring event
                     $this->eventRepository->remove($event);
-                } else if ($event->getParent() == 0
-                    && $this->eventRepository->findByParent($event->getUid())->count() == 0
-                ) {
+                } elseif ($event->getParent() == 0
+                    && $this->eventRepository->findByParent($event->getUid())->count() == 0) {
                     // it's a recurring parent event without children
                     $this->eventRepository->remove($event);
                 }

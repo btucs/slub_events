@@ -85,7 +85,7 @@ class ApiAuthentication
      */
     protected function isValidUser(array $users, array $apiUser): bool
     {
-        if (count($users) === 0 || count($apiUser) === 0) {
+        if ($users === [] || $apiUser === []) {
             return false;
         }
 
@@ -114,8 +114,8 @@ class ApiAuthentication
         $user = [];
         $authorization = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-        if (stripos($authorization, 'Basic ') === 0) {
-            $user = GeneralUtility::trimExplode(':', base64_decode(substr($authorization, 6)), 2);
+        if (stripos((string) $authorization, 'Basic ') === 0) {
+            $user = GeneralUtility::trimExplode(':', base64_decode(substr((string) $authorization, 6)), 2);
         }
 
         if (count($user) === 2) {

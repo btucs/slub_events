@@ -91,7 +91,7 @@ class EditCodeViewHelper extends AbstractViewHelper
 
         // create new editcode-dummy code
         if (empty($editCodeDummy)) {
-            $editCodeDummy = hash('sha256', rand() . $event->getTitle() . time() . 'dummy');
+            $editCodeDummy = hash('sha256', random_int(0, mt_getrandmax()) . $event->getTitle() . time() . 'dummy');
         }
 
         // set editcode-dummy for Spam/Form-double-sent protection

@@ -57,7 +57,7 @@ class IconsHelper
     public function __construct(ObjectManagerInterface $objectManager)
     {
         $this->objectManager = $objectManager;
-        $this->iconFactory = $this->objectManager->get('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+        $this->iconFactory = $this->objectManager->get(\TYPO3\CMS\Core\Imaging\IconFactory::class);
     }
 
     /**

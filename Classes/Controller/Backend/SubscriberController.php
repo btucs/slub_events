@@ -33,7 +33,7 @@ class SubscriberController extends BaseController
      *
      * @return void
      */
-    public function beListAction(): void
+    public function beListAction(): \Psr\Http\Message\ResponseInterface
     {
         // get data from BE session
         $searchParameter = $this->getSessionData('tx_slubevents');
@@ -73,22 +73,23 @@ class SubscriberController extends BaseController
         // get the events to show
         $events = $this->eventRepository->findAllByCategoriesAndDate(
             $searchParameter['category'],
-            strtotime($searchParameter['selectedStartDateStamp'])
+            strtotime((string) $searchParameter['selectedStartDateStamp'])
         );
 
 
         // Subscribers
         // ------------------------------------------------------------------------------------
-        if (sizeof($events->toArray()) > 0) {
+        if (count($events->toArray()) > 0) {
             $subscribers = $this->subscriberRepository->findAllByEvents($events);
             $this->view->assign('subscribers', $subscribers);
         } else {
-            $this->addFlashMessage('No events found.', 'Error', FlashMessage::ERROR);
+            $this->addFlashMessage('No events found.', 'Error', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
         }
 
         $this->view->assign('categories', $categories);
         $this->view->assign('events', $events);
         $this->view->assign('selectedStartDateStamp', $searchParameter['selectedStartDateStamp']);
+        return $this->htmlResponse();
     }
 
     /**
@@ -98,11 +99,11 @@ class SubscriberController extends BaseController
      *
      * @param Event   $event
      * @param integer $step
-     * @Extbase\IgnoreValidation("event")
      *
      * @return void
      */
-    public function beOnlineSurveyAction(Event $event, $step = 0): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
+    public function beOnlineSurveyAction(Event $event, $step = 0): \Psr\Http\Message\ResponseInterface
     {
         // get the onlineSurveyLink and potential timestamp of last sent
         $onlineSurveyLink = GeneralUtility::trimExplode('|', $event->getOnlinesurvey(), true);
@@ -161,10 +162,11 @@ class SubscriberController extends BaseController
         $this->view->assign('subscribers', $event->getSubscribers());
         $this->view->assign('step', $step);
         $this->view->assign('emailText', $emailTextHTML);
+        return $this->htmlResponse();
     }
 
     /** Shows the form to send an email notification to all subscribers of the given event. */
-    public function beWriteNotificationAction(Event $event): void
+    public function beWriteNotificationAction(Event $event): \Psr\Http\Message\ResponseInterface
     {
         $templateVariables = [
             'event' => $event,
@@ -175,22 +177,23 @@ class SubscriberController extends BaseController
 
         $this->view->assign('event', $event);
         $this->view->assign('emailTextPreview', $emailTextHTML);
+        return $this->htmlResponse();
     }
 
     /** Actually sends the notification email to all subscribers of the given event. */
-    public function beSendNotificationAction(Event $event, string $emailSubject, string $emailBody): void
+    public function beSendNotificationAction(Event $event, string $emailSubject, string $emailBody)
     {
         $hasErrors = false;
-        if (empty($emailSubject)) {
-            $this->addFlashMessage('Bitte einen Betreff eingeben.', 'Fehler', FlashMessage::ERROR);
+        if ($emailSubject === '' || $emailSubject === '0') {
+            $this->addFlashMessage('Bitte einen Betreff eingeben.', 'Fehler', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
             $hasErrors = true;
         }
-        if (empty($emailBody)) {
-            $this->addFlashMessage('Bitte einen Text eingeben.', 'Fehler', FlashMessage::ERROR);
+        if ($emailBody === '' || $emailBody === '0') {
+            $this->addFlashMessage('Bitte einen Text eingeben.', 'Fehler', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
             $hasErrors = true;
         }
         if ($hasErrors) {
-            $this->redirect('beWriteNotification', null, null, [
+            return $this->redirect('beWriteNotification', null, null, [
                 'event' => $event,
                 'emailSubject' => $emailSubject,
                 'emailBody' => $emailBody
@@ -215,7 +218,7 @@ class SubscriberController extends BaseController
             );
         }
 
-        $this->addFlashMessage("{$successCount} Rundmails wurde gesendet.", 'Mails gesendet.', FlashMessage::OK);
-        $this->redirect('beList');
+        $this->addFlashMessage("{$successCount} Rundmails wurde gesendet.", 'Mails gesendet.', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK);
+        return $this->redirect('beList');
     }
 }

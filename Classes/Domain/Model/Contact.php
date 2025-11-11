@@ -39,17 +39,17 @@ class Contact extends AbstractEntity
     /**
      * Name of Contact
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $name;
 
     /**
      * Email
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $email;
 
     /**

@@ -36,6 +36,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class Event extends AbstractEntity {
 
+    public $event;
     /**
      * title
      *
@@ -65,9 +66,9 @@ class Event extends AbstractEntity {
     /**
      * startDateTime
      *
-     * @Extbase\Validate("NotEmpty")
      * @var \DateTime
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $startDateTime;
 
     /**
@@ -107,8 +108,8 @@ class Event extends AbstractEntity {
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\TtContent>
-     * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
      */
+    #[\TYPO3\CMS\Extbase\Annotation\ORM\Lazy]
     protected $contentElements;
 
     /**
@@ -143,9 +144,9 @@ class Event extends AbstractEntity {
     /**
      * Target Audience
      *
-     * @Extbase\Validate("NotEmpty")
      * @var int
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $audience = 0;
 
     /**
@@ -187,9 +188,9 @@ class Event extends AbstractEntity {
      * Subscriber Ids
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Subscriber>
-     * @Extbase\ORM\Lazy
-     * @Extbase\ORM\Cascade("remove")
      */
+    #[Extbase\ORM\Lazy]
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected $subscribers;
 
     /**

@@ -30,7 +30,7 @@ class TextUtility
     {
         $text = trim(strip_tags(html_entity_decode($content), '<br>,<p>,<li>'));
         $text = preg_replace('/<p[\ \w\=\"]{0,}>/', '', $text);
-        $text = preg_replace('/<li[\ \w\=\"]{0,}>/', '- ', $text);
+        $text = preg_replace('/<li[\ \w\=\"]{0,}>/', '- ', (string) $text);
         // make newline formated (yes, really write \n into the text!
         $text = str_replace('</p>', '\n', $text);
         $text = str_replace('</li>', '\n', $text);
@@ -42,7 +42,7 @@ class TextUtility
         // remove more than one empty line
         $text = preg_replace('/[\n]{3,}/', '\n\n', $text);
         // remove windows linkebreak
-        $text = preg_replace('/[\r]/', '', $text);
+        $text = preg_replace('/[\r]/', '', (string) $text);
         // newlines are not allowed
         $text = str_replace("\n", '\n', $text);
         // semicolumns are not allowed
@@ -51,11 +51,7 @@ class TextUtility
         $firstline = substr($text, 0, (75 - 12));
         $restofline = implode("\n ", str_split(trim(substr($text, (75 - 12), strlen($text))), 73));
 
-        if (strlen($restofline) > 0) {
-            $foldedline = $firstline . "\n " . $restofline;
-        } else {
-            $foldedline = $firstline;
-        }
+        $foldedline = strlen($restofline) > 0 ? $firstline . "\n " . $restofline : $firstline;
 
         return $foldedline;
     }

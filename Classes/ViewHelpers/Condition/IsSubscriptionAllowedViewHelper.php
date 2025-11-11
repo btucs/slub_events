@@ -89,18 +89,11 @@ class IsSubscriptionAllowedViewHelper extends AbstractViewHelper
         }
 
         // deadline reached....
-        if (is_object($event->getSubEndDateTime())) {
-            if ($event->getSubEndDateTime()->getTimestamp() < time()) {
-                return false;
-            }
-        }
-
-        // limit reached already --> overbooked
-        if (self::getSubscriberRepository()->countAllByEvent($event) >= $event->getMaxSubscriber()) {
+        if (is_object($event->getSubEndDateTime()) && $event->getSubEndDateTime()->getTimestamp() < time()) {
             return false;
         }
-
-        return true;
+        // limit reached already --> overbooked
+        return self::getSubscriberRepository()->countAllByEvent($event) < $event->getMaxSubscriber();
     }
 
     /**

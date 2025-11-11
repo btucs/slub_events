@@ -62,7 +62,7 @@ class EventSubscriptionAllowedValidator extends AbstractValidator
      *
      * @return bool
      */
-    public function isValid($event)
+    public function isValid(mixed $event): void
     {
 
         // limit reached already --> overbooked
@@ -78,13 +78,9 @@ class EventSubscriptionAllowedValidator extends AbstractValidator
         }
 
         // deadline reached....
-        if (is_object($event->getSubEndDateTime())) {
-            if ($event->getSubEndDateTime()->getTimestamp() < time()) {
-                $this->isValid = false;
-                $this->addError('val_event_reacheddeadline', 1400);
-            }
+        if (is_object($event->getSubEndDateTime()) && $event->getSubEndDateTime()->getTimestamp() < time()) {
+            $this->isValid = false;
+            $this->addError('val_event_reacheddeadline', 1400);
         }
-
-        return $this->isValid;
     }
 }

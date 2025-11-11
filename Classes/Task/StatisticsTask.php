@@ -41,6 +41,10 @@ class StatisticsTask extends AbstractTask
 {
 
     /**
+     * @var mixed[]
+     */
+    public $settings;
+    /**
      * PID of storage folder to work with
      *
      * @var integer

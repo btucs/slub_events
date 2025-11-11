@@ -53,11 +53,7 @@ class HookPostProcessing
      */
     public function clearAllEventListCache($pid = 0, $isGeniusBar = false)
     {
-        if ($isGeniusBar) {
-            $cacheTag = 'tx_slubevents_cat_' . $pid;
-        } else {
-            $cacheTag = 'tx_slubevents_' . $pid;
-        }
+        $cacheTag = $isGeniusBar ? 'tx_slubevents_cat_' . $pid : 'tx_slubevents_' . $pid;
         $this->getCacheManager()->flushCachesInGroupByTags('pages', [$cacheTag]);
     }
 
@@ -81,10 +77,8 @@ class HookPostProcessing
             foreach ($files as $file) {
                 // example filename: calfile_571ea50f5d4f02ca0151c8bd2b1e23a5_1536098400_1536184800
                 $fileDetails = preg_split('/_/', $file);
-                if ($fileDetails[0] == 'calfile') {
-                    if ($startDate > $fileDetails[2] && $startDate < $fileDetails[3]) {
-                        system('rm ' . $dir . $file);
-                    }
+                if ($fileDetails[0] == 'calfile' && ($startDate > $fileDetails[2] && $startDate < $fileDetails[3])) {
+                    system('rm ' . $dir . $file);
                 }
             }
         }
@@ -145,7 +139,7 @@ class HookPostProcessing
 
                 if ($pObj->checkValue_currentRecord['recurring'] == 1) {
                     $eventController->createChildsAction($idElement);
-                } else if ($pObj->checkValue_currentRecord['recurring'] == 0) {
+                } elseif ($pObj->checkValue_currentRecord['recurring'] == 0) {
                     $eventController->deleteChildsAction($idElement);
                 }
 
@@ -186,28 +180,20 @@ class HookPostProcessing
      */
     public function processCmdmap_deleteAction($table, $id, $recordToDelete, &$recordWasDeleted, $fieldArray)
     {
-      if ($table == 'tx_slubevents_domain_model_event') {
-
-          if ($recordToDelete['parent'] == 0) {
-              //in case of a parent (recurring) event, delete all children, too
-              $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-              $configurationManager = $objectManager->get(ConfigurationManager::class);
-
-              $configurationArray = [
-                  'persistence' => [
-                      'storagePid' => $recordToDelete['pid'],
-                  ],
-              ];
-              $configurationManager->setConfiguration($configurationArray);
-
-              $eventRepository = $objectManager->get(EventRepository::class);
-
-              $eventRepository->deleteAllNotAllowedChildren(array(), $id);
-
-              $persistenceManager = $objectManager->get(PersistenceManager::class);
-              $persistenceManager->persistAll();
-
-          }
+      if ($table == 'tx_slubevents_domain_model_event' && $recordToDelete['parent'] == 0) {
+          //in case of a parent (recurring) event, delete all children, too
+          $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+          $configurationManager = $objectManager->get(ConfigurationManager::class);
+          $configurationArray = [
+              'persistence' => [
+                  'storagePid' => $recordToDelete['pid'],
+              ],
+          ];
+          $configurationManager->setConfiguration($configurationArray);
+          $eventRepository = $objectManager->get(EventRepository::class);
+          $eventRepository->deleteAllNotAllowedChildren([], $id);
+          $persistenceManager = $objectManager->get(PersistenceManager::class);
+          $persistenceManager->persistAll();
       }
     }
 

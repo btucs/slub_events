@@ -149,14 +149,10 @@ class AbstractController extends ExtbaseActionController
      */
     protected function getUserGlobals()
     {
-        if (TYPO3_MODE === 'BE') {
-
+        if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $userGlobals = $GLOBALS['BE_USER'];
-
-        } else if (TYPO3_MODE === 'FE') {
-
+        } elseif (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             $userGlobals = $GLOBALS['TSFE']->fe_user;
-
         }
 
         return $userGlobals;
@@ -173,7 +169,7 @@ class AbstractController extends ExtbaseActionController
         $userGlobals = $this->getUserGlobals();
 
         // write data to user configuration to persist over sessions
-        if ($persist === true && TYPO3_MODE === 'BE') {
+        if ($persist === true && \TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
 
             $ucData = $userGlobals->uc['moduleData']['slubevents'];
 
@@ -200,9 +196,9 @@ class AbstractController extends ExtbaseActionController
 
         $sessionData = $userGlobals->getSessionData($key);
 
-        $configurationData = array();
+        $configurationData = [];
 
-        if (TYPO3_MODE === 'BE') {
+        if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
 
             $ucData = $userGlobals->uc['moduleData']['slubevents'];
 
@@ -212,11 +208,9 @@ class AbstractController extends ExtbaseActionController
             if (!empty($configurationData) && !(empty($sessionData))) {
                 // merge session and configuration data
                 ArrayUtility::mergeRecursiveWithOverrule($sessionData, $configurationData);
-
-            } else if (!empty($configurationData)) {
+            } elseif (!empty($configurationData)) {
                 // there seems to be only configuration data (after fresh login)
                 $sessionData = $configurationData;
-
             }
 
         }
@@ -231,7 +225,7 @@ class AbstractController extends ExtbaseActionController
      */
     protected function initializeAction(): void
     {
-        if (TYPO3_MODE === 'BE') {
+        if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             global $BE_USER;
             // TYPO3 doesn't set locales for backend-users --> so do it manually like this...
             // is needed especially with strftime
@@ -265,11 +259,10 @@ class AbstractController extends ExtbaseActionController
     /**
      * remove XSS stuff recursively
      *
-     * @param mixed $param
      *
      * @return string|array
      */
-    protected function filterSafelyParameters($param)
+    protected function filterSafelyParameters(mixed $param)
     {
         if (is_array($param)) {
             foreach ($param as $key => $item) {
@@ -278,6 +271,6 @@ class AbstractController extends ExtbaseActionController
             return $param;
         }
 
-        return htmlspecialchars($param);
+        return htmlspecialchars((string) $param);
     }
 }

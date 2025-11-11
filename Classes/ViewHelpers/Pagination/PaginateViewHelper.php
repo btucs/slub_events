@@ -109,11 +109,9 @@ class PaginateViewHelper extends AbstractViewHelper
         $pluginName = $renderingContext->getControllerContext()->getRequest()->getPluginName();
         $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
         $pluginNamespace = $extensionService->getPluginNamespace($extensionName, $pluginName);
-        $variables = GeneralUtility::_GP($pluginNamespace);
-        if ($variables !== null) {
-            if (!empty($variables[self::getName($arguments)]['currentPage'])) {
-                return (int)$variables[self::getName($arguments)]['currentPage'];
-            }
+        $variables = $GLOBALS['TYPO3_REQUEST']->getParsedBody()[$pluginNamespace] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[$pluginNamespace] ?? null;
+        if ($variables !== null && !empty($variables[self::getName($arguments)]['currentPage'])) {
+            return (int)$variables[self::getName($arguments)]['currentPage'];
         }
         return 1;
     }

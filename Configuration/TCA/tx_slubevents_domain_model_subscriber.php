@@ -8,7 +8,6 @@ return [
         'label'                    => 'name',
         'tstamp'                   => 'tstamp',
         'crdate'                   => 'crdate',
-        'cruser_id'                => 'cruser_id',
         'sortby'                   => 'tstamp',
         'origUid'                  => 't3_origuid',
         'languageField'            => 'sys_language_uid',
@@ -22,9 +21,6 @@ return [
         ],
         'searchFields'             => 'name,email,telephone,customerid,number,editcode,',
         'iconfile'                 => 'EXT:slub_events/Resources/Public/Icons/tx_slubevents_domain_model_subscriber.gif',
-    ],
-    'interface' => [
-        'showRecordFieldList' => 'hidden, name, email, telephone, institution, customerid, number, message, editcode, crdate',
     ],
     'types'     => [
         '1' => ['showitem' => 'hidden, --palette--;;1, name, email, telephone, institution, customerid, number, message, editcode, acceptpp, crdate,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,starttime, endtime'],
@@ -49,10 +45,8 @@ return [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'     => 'input',
-                'renderType' => 'inputDateTime',
+                'type'     => 'datetime',
                 'size'     => 13,
-                'eval'     => 'datetime',
                 'default'  => 0,
             ],
         ],
@@ -64,10 +58,8 @@ return [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'     => 'input',
-                'renderType' => 'inputDateTime',
+                'type'     => 'datetime',
                 'size'     => 13,
-                'eval'     => 'datetime',
                 'default'  => 0,
             ],
         ],
@@ -77,7 +69,8 @@ return [
             'config'  => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required',
+                'eval' => 'trim',
+                'required' => true,
             ],
         ],
         'email'            => [
@@ -86,7 +79,8 @@ return [
             'config'  => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required',
+                'eval' => 'trim',
+                'required' => true,
             ],
         ],
         'telephone'        => [
@@ -120,10 +114,9 @@ return [
             'exclude' => 0,
             'label'   => $LL . 'tx_slubevents_domain_model_subscriber.number',
             'config'  => [
-                'type'    => 'input',
+                'type'    => 'number',
                 'size'    => 4,
                 'default' => 1,
-                'eval'    => 'int',
             ],
         ],
         'message'          => [
@@ -152,7 +145,7 @@ return [
                 'type' => 'check',
                 'readOnly' => true,
                 'items' => [
-                    [$LL . 'tx_slubevents_domain_model_subscriber.acceptpp.accepted', ''],
+                    ['label' => $LL . 'tx_slubevents_domain_model_subscriber.acceptpp.accepted', ''],
                 ],
             ]
         ],
@@ -160,10 +153,8 @@ return [
             'exclude' => 1,
             'label'   => $LL . 'tx_slubevents_domain_model_subscriber.crdate',
             'config'  => [
-                'type'     => 'input',
-                'renderType' => 'inputDateTime',
+                'type'     => 'datetime',
                 'size'     => 10,
-                'eval'     => 'datetime',
                 'checkbox' => 1,
                 'default'  => time(),
             ],

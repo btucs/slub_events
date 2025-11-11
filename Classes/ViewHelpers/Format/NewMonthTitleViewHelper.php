@@ -82,11 +82,11 @@ class NewMonthTitleViewHelper extends AbstractViewHelper
             $preevent = $events[$index - 1];
             $predate = $preevent->getStartDateTime();
 
-            if ($date->format('m') != $predate->format('m')) {
+            if ($date->format('m') !== $predate->format('m')) {
                 return $date;
             }
         }
 
-        return;
+        return null;
     }
 }

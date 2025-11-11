@@ -38,10 +38,11 @@ class ContactController extends AbstractController
      *
      * @return void
      */
-    public function listAction(): void
+    public function listAction(): \Psr\Http\Message\ResponseInterface
     {
         $contacts = $this->contactRepository->findAll();
         $this->view->assign('contacts', $contacts);
+        return $this->htmlResponse();
     }
 
     /**
@@ -51,8 +52,9 @@ class ContactController extends AbstractController
      *
      * @return void
      */
-    public function showAction(Contact $contact): void
+    public function showAction(Contact $contact): \Psr\Http\Message\ResponseInterface
     {
         $this->view->assign('contact', $contact);
+        return $this->htmlResponse();
     }
 }

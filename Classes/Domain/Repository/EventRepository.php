@@ -55,13 +55,13 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('genius_bar', 1);
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
         $query->setOrderings(
-            array('start_date_time' => QueryInterface::ORDER_ASCENDING)
+            ['start_date_time' => QueryInterface::ORDER_ASCENDING]
         );
 
         return $query->execute();
@@ -94,7 +94,7 @@ class EventRepository extends Repository
         $constraints[] = $query->lessThan('subscribers', '1');
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -127,13 +127,13 @@ class EventRepository extends Repository
         }
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
         // order by start_date -> start_time...
         $query->setOrderings(
-            array('start_date_time' => QueryInterface::ORDER_ASCENDING)
+            ['start_date_time' => QueryInterface::ORDER_ASCENDING]
         );
 
         return $query->execute();
@@ -194,12 +194,12 @@ class EventRepository extends Repository
         }
 
         // are categories selected?
-        if (is_array($settings['categoryList']) && count($settings['categoryList']) > 0) {
+        if (is_array($settings['categoryList']) && $settings['categoryList'] !== []) {
             $constraints[] = $query->in('categories.uid', $settings['categoryList']);
         }
 
         // are disciplines selected?
-        if (is_array($settings['disciplineList']) && count($settings['disciplineList']) > 0) {
+        if (is_array($settings['disciplineList']) && $settings['disciplineList'] !== []) {
             $constraints[] = $query->in('discipline.uid', $settings['disciplineList']);
         }
 
@@ -244,7 +244,7 @@ class EventRepository extends Repository
         }
 
         // AND all constraints together
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -299,7 +299,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('categories.uid', $category);
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -350,7 +350,7 @@ class EventRepository extends Repository
             $constraints[] = $query->equals('recurring', $recurring);
         }
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -379,7 +379,7 @@ class EventRepository extends Repository
         $constraints[] = $query->greaterThanOrEqual('start_date_time', $startDateStamp);
         $constraints[] = $query->lessThanOrEqual('start_date_time', $stopDateStamp);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -410,7 +410,7 @@ class EventRepository extends Repository
             }
         }
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching(
                 $query->logicalAND(
                     $query->greaterThan('start_date_time', strtotime('today')),
@@ -418,7 +418,7 @@ class EventRepository extends Repository
                 )
             );
         } else {
-            return;
+            return null;
         }
 
         // order by start_date -> start_time...
@@ -448,7 +448,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('sub_end_date_info_sent', '0');
         $constraints[] = $query->equals('external_registration', '');
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -480,7 +480,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('start_date_time', $startDateStamp);
         $constraints[] = $query->equals('parent', $parent);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -521,7 +521,7 @@ class EventRepository extends Repository
         $constraints = [];
         $constraints[] = $query->equals('uid', $uid);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -552,12 +552,12 @@ class EventRepository extends Repository
             };
         }
 
-        if (!empty($uidsAllowed)) {
+        if ($uidsAllowed !== []) {
             $constraints[] = $query->logicalNot($query->in('uid', $uidsAllowed));
         }
         $constraints[] = $query->equals('parent', $parent);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -585,7 +585,7 @@ class EventRepository extends Repository
         $constraints[] = $query->equals('parent', $parent);
         $constraints[] = $query->greaterThan('start_date_time', strtotime('today'));
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -614,7 +614,7 @@ class EventRepository extends Repository
 
         $constraints[] = $query->lessThanOrEqual('end_date_time', strtotime(' - ' . $days . ' days'));
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -632,10 +632,10 @@ class EventRepository extends Repository
          * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
          */
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $dataMapper = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Mapper\\DataMapper');
+        $dataMapper = $objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
 
         return $dataMapper
-            ->getDataMap('Slub\\SlubEvents\\Domain\\Model\\Event')
+            ->getDataMap(\Slub\SlubEvents\Domain\Model\Event::class)
             ->getTableName();
     }
 }

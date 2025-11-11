@@ -62,9 +62,9 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     public function setUp()
     {
-        $this->subject = $this->getMock('Slub\\SlubEvents\\Controller\\CategoryController', array('redirect', 'forward', 'addFlashMessage'), array(), '', FALSE);
+        $this->subject = $this->getMock(\Slub\SlubEvents\Controller\CategoryController::class, ['redirect', 'forward', 'addFlashMessage'], [], '', FALSE);
 
-        $this->categoryRepository = $this->getMock('Slub\\SlubEvents\\Domain\\Repository\\CategoryRepository', array(), array(), '', FALSE);
+        $this->categoryRepository = $this->getMock(\Slub\SlubEvents\Domain\Repository\CategoryRepository::class, [], [], '', FALSE);
         $this->inject($this->subject, 'categoryRepository', $this->categoryRepository);
 
         $this->view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
@@ -95,15 +95,15 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
      */
     public function listActionPassOneCategoryAsCategorytreeToView()
     {
-        $mockedQueryResult = $this->getMock('TYPO3\\CMS\\Extbase\\Persistence\\QueryResultInterface');
+        $mockedQueryResult = $this->getMock(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface::class);
 
-        $allCategories = array();
+        $allCategories = [];
 
-        $settings = array('categorySelection' => '1');
+        $settings = ['categorySelection' => '1'];
 
         $this->inject($this->subject, 'settings', $settings);
 
-        $categoryRepository = $this->getMock('Slub\\SlubEvents\\Domain\\Repository\\CategoryRepository', array('findCurrentBranch', 'findAllByUids'), array(), '', FALSE);
+        $categoryRepository = $this->getMock(\Slub\SlubEvents\Domain\Repository\CategoryRepository::class, ['findCurrentBranch', 'findAllByUids'], [], '', FALSE);
         $categoryRepository->expects($this->once())->method('findAllByUids')
             ->will($this->returnValue($mockedQueryResult));
         $categoryRepository->expects($this->once())->method('findCurrentBranch')

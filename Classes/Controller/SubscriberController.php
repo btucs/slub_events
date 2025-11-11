@@ -48,10 +48,11 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    public function listAction(): void
+    public function listAction(): \Psr\Http\Message\ResponseInterface
     {
         $subscribers = $this->subscriberRepository->findAll();
         $this->view->assign('subscribers', $subscribers);
+        return $this->htmlResponse();
     }
 
     /**
@@ -61,9 +62,10 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    public function showAction(Subscriber $subscriber): void
+    public function showAction(Subscriber $subscriber): \Psr\Http\Message\ResponseInterface
     {
         $this->view->assign('subscriber', $subscriber);
+        return $this->htmlResponse();
     }
 
     /**
@@ -71,8 +73,9 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    public function eventNotFoundAction(): void
+    public function eventNotFoundAction(): \Psr\Http\Message\ResponseInterface
     {
+        return $this->htmlResponse();
     }
 
     /**
@@ -80,8 +83,9 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    public function subscriberNotFoundAction(): void
+    public function subscriberNotFoundAction(): \Psr\Http\Message\ResponseInterface
     {
+        return $this->htmlResponse();
     }
 
     /**
@@ -90,29 +94,29 @@ class SubscriberController extends AbstractController
      * @param Subscriber $newSubscriber
      * @param Event      $event
      * @param Category   $category
-     * @Extbase\IgnoreValidation("newSubscriber")
-     * @Extbase\IgnoreValidation("event")
-     * @Extbase\IgnoreValidation("category")
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
+    #[Extbase\IgnoreValidation(['argumentName' => 'newSubscriber'])]
+    #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
+    #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
     public function newAction(
         Subscriber $newSubscriber = null,
         Event $event = null,
         Category $category = null
-    ): void
+    )
     {
 
         // somebody is calling the action without giving an event --> useless
-        if ($event === null) {
-            $this->redirect('eventNotFound');
+        if (!$event instanceof \Slub\SlubEvents\Domain\Model\Event) {
+            return $this->redirect('eventNotFound');
         }
 
         // this is a little stupid with the rewritten property mapper from
         // extbase 1.4, because the object is never NULL!
         // anyway we can set default values here which are overwritten if
         // already POST values exists. extbase voodoo ;-)
-        if ($newSubscriber === null) {
+        if (!$newSubscriber instanceof \Slub\SlubEvents\Domain\Model\Subscriber) {
 
             /** @var \Slub\SlubEvents\Domain\Model\Subscriber $newSubscriber */
             $newSubscriber = GeneralUtility::makeInstance(Subscriber::class);
@@ -138,6 +142,7 @@ class SubscriberController extends AbstractController
         $this->view->assign('category', $category);
         $this->view->assign('newSubscriber', $newSubscriber);
         $this->view->assign('loggedIn', $loggedIn);
+        return null;
     }
 
     /**
@@ -149,17 +154,17 @@ class SubscriberController extends AbstractController
      * @param Subscriber $newSubscriber
      * @param Event      $event
      * @param Category   $category
-     * @Extbase\Validate("Slub\SlubEvents\Domain\Validator\SubscriberValidator", param="newSubscriber")
-     * @Extbase\Validate("Slub\SlubEvents\Domain\Validator\EventSubscriptionAllowedValidator", param="event")
-     * @Extbase\IgnoreValidation("category")
      *
      * @return void
      */
+    #[Extbase\Validate(['validator' => \Slub\SlubEvents\Domain\Validator\SubscriberValidator::class, 'param' => 'newSubscriber'])]
+    #[Extbase\Validate(['validator' => \Slub\SlubEvents\Domain\Validator\EventSubscriptionAllowedValidator::class, 'param' => 'event'])]
+    #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
     public function createAction(
         Subscriber $newSubscriber,
         Event $event,
         Category $category = null
-    ): void
+    ): \Psr\Http\Message\ResponseInterface
     {
 
         // add subscriber to event
@@ -216,10 +221,8 @@ class SubscriberController extends AbstractController
 
         // send to contact, if maximum is reached and TS setting is present:
         if ($this->settings['emailToContact']['sendEmailOnMaximumReached'] &&
-            ($this->subscriberRepository->countAllByEvent($event) + $newSubscriber->getNumber()) == $event->getMaxSubscriber()
-        ) {
+            ($this->subscriberRepository->countAllByEvent($event) + $newSubscriber->getNumber()) == $event->getMaxSubscriber()) {
             $nameTo = EmailHelper::prepareNameTo($event->getContact()->getName());
-
             // email to event owner
             EmailHelper::sendTemplateEmail(
                 [$event->getContact()->getEmail() => $event->getContact()->getName()],
@@ -244,37 +247,33 @@ class SubscriberController extends AbstractController
                 ],
                 $this->configurationManager
             );
-        } // send to contact, on every booking if TS setting is present:
-        else {
-            if ($this->settings['emailToContact']['sendEmailOnEveryBooking']) {
-                $nameTo = EmailHelper::prepareNameTo($event->getContact()->getName());
-
-                // email to event owner
-                EmailHelper::sendTemplateEmail(
-                    [$event->getContact()->getEmail() => $event->getContact()->getName()],
-                    [
-                        $this->settings['senderEmailAddress'] =>
-                            LocalizationUtility::translate(
-                                'tx_slubevents.be.eventmanagement',
-                                'slub_events'
-                            )
-                            . ' - noreply',
-                    ],
-                    'Veranstaltung gebucht: ' . $event->getTitle(),
-                    'Newsubscriber',
-                    [
-                        'event'         => $event,
-                        'newsubscriber' => $newSubscriber,
-                        'subscribers'   => $event->getSubscribers(),
-                        'nameTo'        => $nameTo,
-                        'helper'        => $helper,
-                        'settings'      => $this->settings,
-                        'attachCsv'     => false,
-                        'attachIcs'     => false,
-                    ],
-                    $this->configurationManager
-                );
-            }
+        } elseif ($this->settings['emailToContact']['sendEmailOnEveryBooking']) {
+            $nameTo = EmailHelper::prepareNameTo($event->getContact()->getName());
+            // email to event owner
+            EmailHelper::sendTemplateEmail(
+                [$event->getContact()->getEmail() => $event->getContact()->getName()],
+                [
+                    $this->settings['senderEmailAddress'] =>
+                        LocalizationUtility::translate(
+                            'tx_slubevents.be.eventmanagement',
+                            'slub_events'
+                        )
+                        . ' - noreply',
+                ],
+                'Veranstaltung gebucht: ' . $event->getTitle(),
+                'Newsubscriber',
+                [
+                    'event'         => $event,
+                    'newsubscriber' => $newSubscriber,
+                    'subscribers'   => $event->getSubscribers(),
+                    'nameTo'        => $nameTo,
+                    'helper'        => $helper,
+                    'settings'      => $this->settings,
+                    'attachCsv'     => false,
+                    'attachIcs'     => false,
+                ],
+                $this->configurationManager
+            );
         }
 
         // reset session data
@@ -291,6 +290,7 @@ class SubscriberController extends AbstractController
         $this->view->assign('event', $event);
         $this->view->assign('category', $category);
         $this->view->assign('newSubscriber', $newSubscriber);
+        return $this->htmlResponse();
     }
 
     /**
@@ -315,22 +315,22 @@ class SubscriberController extends AbstractController
      *
      * @param Event  $event
      * @param string $editcode
-     * @Extbase\IgnoreValidation("event")
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function deleteAction(Event $event = null, $editcode = null): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
+    public function deleteAction(Event $event = null, $editcode = null)
     {
         // somebody is calling the action without giving an event --> useless
-        if ($event === null || $editcode === null) {
-            $this->redirect('eventNotFound');
+        if (!$event instanceof \Slub\SlubEvents\Domain\Model\Event || $editcode === null) {
+            return $this->redirect('eventNotFound');
         }
 
         // delete for which subscriber?
         $subscriber = $this->subscriberRepository->findAllByEditcode($editcode)->getFirst();
 
         if (!is_object($subscriber)) {
-            $this->redirect('subscriberNotFound');
+            return $this->redirect('subscriberNotFound');
         }
         // get all subscribers of event
         $allsubscribers = $event->getSubscribers();
@@ -339,8 +339,7 @@ class SubscriberController extends AbstractController
         if ($allsubscribers->offsetExists($subscriber)) {
             $event->removeSubscriber($subscriber);
         } else {
-            // ohh, someone tries to unsubscribe but has not subscribed or is already unsubscribed.
-            $this->redirect('subscriberNotFound');
+            return $this->redirect('subscriberNotFound');
         }
 
         // some helper timestamps for ics-file
@@ -427,6 +426,7 @@ class SubscriberController extends AbstractController
         }
         $this->view->assign('event', $event);
         $this->view->assign('subscriber', $subscriber);
+        return null;
     }
 
     /**

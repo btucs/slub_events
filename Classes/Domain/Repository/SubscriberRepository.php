@@ -53,7 +53,7 @@ class SubscriberRepository extends Repository
             $constraints[] = $query->equals('pid', $pid);
         }
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -79,7 +79,7 @@ class SubscriberRepository extends Repository
             $constraints[] = $query->equals('pid', $pid);
         }
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -100,7 +100,7 @@ class SubscriberRepository extends Repository
         $constraints = [];
         $constraints[] = $query->equals('event', $event->getUid());
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -129,7 +129,7 @@ class SubscriberRepository extends Repository
         $constraints = [];
         $constraints[] = $query->in('event', $events);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -157,7 +157,7 @@ class SubscriberRepository extends Repository
 
         $constraints[] = $query->lessThanOrEqual('crdate', strtotime(' - ' . $days . ' days'));
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 

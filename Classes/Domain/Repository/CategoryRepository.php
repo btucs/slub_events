@@ -36,11 +36,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class CategoryRepository extends Repository
 {
     // Order by BE sorting
-    protected $defaultOrderings = array(
-
-        'sorting' => QueryInterface::ORDER_ASCENDING
-
-    );
+    protected $defaultOrderings = ['sorting' => QueryInterface::ORDER_ASCENDING];
 
     /**
      * Finds all datasets by MM relation categories
@@ -59,7 +55,7 @@ class CategoryRepository extends Repository
         $constraints = [];
         $constraints[] = $query->in('uid', $categories);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -109,7 +105,7 @@ class CategoryRepository extends Repository
         $constraints = [];
         $constraints[] = $query->in('uid', $categories);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -142,10 +138,10 @@ class CategoryRepository extends Repository
      * Finds all datasets of current branch and return in tree order
      *
      * @param \Slub\SlubEvents\Domain\Model\Category $startCategory
-     * @Extbase\IgnoreValidation("startCategory")
      *
      * @return array The found Category Objects as Tree
      */
+    #[Extbase\IgnoreValidation(['argumentName' => 'startCategory'])]
     public function findCurrentBranch($startCategory = null)
     {
         $childCategorieIds = $this->findAllChildCategories($startCategory->getUid());
@@ -173,7 +169,7 @@ class CategoryRepository extends Repository
             } else {
                 $flatCategories[$node['parent']]['children'][$id] = &$node;
                 // if tree is empty, we have to add this node here too
-                if (empty($tree)) {
+                if ($tree === []) {
                     $tree[$node['parent']]['children'][$id] = &$node;
                 }
             }
@@ -215,7 +211,7 @@ class CategoryRepository extends Repository
             ['sorting' => QueryInterface::ORDER_DESCENDING]
         );
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
         $categories = $query->execute();
@@ -238,10 +234,10 @@ class CategoryRepository extends Repository
      * Finds all datasets of current branch and return in tree order
      *
      * @param \Slub\SlubEvents\Domain\Model\Category $startCategory
-     * @Extbase\IgnoreValidation("startCategory")
      *
      * @return array The found Category Objects
      */
+    #[Extbase\IgnoreValidation(['argumentName' => 'startCategory'])]
     public function findCategoryRootline($startCategory = null)
     {
         $query = $this->createQuery();
@@ -254,7 +250,7 @@ class CategoryRepository extends Repository
             $constraints[] = $query->equals('parent', 0);
         }
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
         $categories = $query->execute();
@@ -294,7 +290,7 @@ class CategoryRepository extends Repository
     public function findDefaultGeniusbarCategory()
     {
         $query = $this->createQuery();
-        $constraints = array();
+        $constraints = [];
 
         $constraints[] = $query->equals('parent', 0);
         $constraints[] = $query->equals('genius_bar', 1);

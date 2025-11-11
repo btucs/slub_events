@@ -105,10 +105,8 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
                     $showLink = false;
                 }
                 // deadline reached....
-                if (is_object($event->getSubEndDateTime())) {
-                    if ($event->getSubEndDateTime()->getTimestamp() < time()) {
-                        $showLink = false;
-                    }
+                if (is_object($event->getSubEndDateTime()) && $event->getSubEndDateTime()->getTimestamp() < time()) {
+                    $showLink = false;
                 }
                 // if any event exists and is valid, break here and return TRUE
                 if ($showLink) {

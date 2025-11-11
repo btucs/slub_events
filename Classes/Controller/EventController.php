@@ -77,7 +77,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listAction(): void
+    public function listAction(): \Psr\Http\Message\ResponseInterface
     {
         if (!empty($this->settings['categorySelection'])) {
             $this->settings['categoryList'] = $this->getCategoryIdsFromSettings();
@@ -90,6 +90,7 @@ class EventController extends AbstractController
         $events = $this->eventRepository->findAllBySettings($this->settings);
 
         $this->view->assign('events', $events);
+        return $this->htmlResponse();
     }
 
     /**
@@ -97,7 +98,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listUpcomingAction(): void
+    public function listUpcomingAction(): \Psr\Http\Message\ResponseInterface
     {
         if (!empty($this->settings['categorySelection'])) {
             $this->settings['categoryList'] = $this->getCategoryIdsFromSettings();
@@ -110,19 +111,20 @@ class EventController extends AbstractController
         $events = $this->eventRepository->findAllBySettings($this->settings);
 
         $this->view->assign('events', $events);
+        return $this->htmlResponse();
     }
 
     /**
      * action show
      *
      * @param Event $event
-     * @Extbase\IgnoreValidation("event")
      *
      * @return void
      */
-    public function showAction(Event $event = null): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
+    public function showAction(?Event $event = null): \Psr\Http\Message\ResponseInterface
     {
-        if ($event !== null) {
+        if ($event instanceof \Slub\SlubEvents\Domain\Model\Event) {
             $shortDescription = $event->getTeaser() ?: $event->getDescription();
             // get description and cut to 200 chars, strip tags its an rte field
             $shortDescription = substr( strip_tags( $shortDescription ) , 0, 200);
@@ -148,6 +150,7 @@ class EventController extends AbstractController
         }
 
         $this->view->assign('event', $event);
+        return $this->htmlResponse();
     }
 
     /**
@@ -155,21 +158,23 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function showNotFoundAction(): void
+    public function showNotFoundAction(): \Psr\Http\Message\ResponseInterface
     {
+        return $this->htmlResponse();
     }
 
     /**
      * action new
      *
      * @param Event $newEvent
-     * @Extbase\IgnoreValidation("newEvent")
      *
      * @return void
      */
-    public function newAction(Event $newEvent = null): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'newEvent'])]
+    public function newAction(?Event $newEvent = null): \Psr\Http\Message\ResponseInterface
     {
         $this->view->assign('newEvent', $newEvent);
+        return $this->htmlResponse();
     }
 
     /**
@@ -177,26 +182,27 @@ class EventController extends AbstractController
      *
      * @param Event $newEvent
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function createAction(Event $newEvent): void
+    public function createAction(Event $newEvent)
     {
         $this->eventRepository->add($newEvent);
         $this->addFlashMessage('Your new Event was created.');
-        $this->redirect('list');
+        return $this->redirect('list');
     }
 
     /**
      * action edit
      *
      * @param Event $event
-     * @Extbase\IgnoreValidation("event")
      *
      * @return void
      */
-    public function editAction(Event $event): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
+    public function editAction(Event $event): \Psr\Http\Message\ResponseInterface
     {
         $this->view->assign('event', $event);
+        return $this->htmlResponse();
     }
 
     /**
@@ -204,13 +210,13 @@ class EventController extends AbstractController
      *
      * @param Event $event
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function updateAction(Event $event): void
+    public function updateAction(Event $event)
     {
         $this->eventRepository->update($event);
         $this->addFlashMessage('Your Event was updated.');
-        $this->redirect('list');
+        return $this->redirect('list');
     }
 
     /**
@@ -218,13 +224,13 @@ class EventController extends AbstractController
      *
      * @param Event $event
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function deleteAction(Event $event): void
+    public function deleteAction(Event $event)
     {
         $this->eventRepository->remove($event);
         $this->addFlashMessage('Your Event was removed.');
-        $this->redirect('list');
+        return $this->redirect('list');
     }
 
     /**
@@ -232,7 +238,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listOwnAction(): void
+    public function listOwnAction(): \Psr\Http\Message\ResponseInterface
     {
 
         // + the user is logged in
@@ -243,6 +249,7 @@ class EventController extends AbstractController
 
         $this->view->assign('subscribers', $subscribers);
         $this->view->assign('events', $events);
+        return $this->htmlResponse();
     }
 
     /**
@@ -250,7 +257,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listMonthAction(): void
+    public function listMonthAction(): \Psr\Http\Message\ResponseInterface
     {
         if (!empty($this->settings['categorySelection'])) {
             $categoriesIds = $this->getCategoryIdsFromSettings();
@@ -266,8 +273,9 @@ class EventController extends AbstractController
 
         $this->view->assign('categories', $categories);
         $this->view->assign('disciplines', $disciplines);
-        $this->view->assign('categoriesIds', explode(',', $this->settings['categorySelection']));
-        $this->view->assign('disciplinesIds', explode(',', $this->settings['disciplineSelection']));
+        $this->view->assign('categoriesIds', explode(',', (string) $this->settings['categorySelection']));
+        $this->view->assign('disciplinesIds', explode(',', (string) $this->settings['disciplineSelection']));
+        return $this->htmlResponse();
     }
 
     /**
@@ -294,9 +302,9 @@ class EventController extends AbstractController
                 )
             )
             ->setMaxResults(1)
-            ->execute();
+            ->executeQuery();
 
-        if ($resArray = $result->fetch()) {
+        if ($resArray = $result->fetchAssociative()) {
           $parentEventRow = $resArray;
         }
 
@@ -317,7 +325,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function createChildsAction($id): void
+    public function createChildsAction($id): \Psr\Http\Message\ResponseInterface
     {
         $this->initializeCreateChildsAction($id);
 
@@ -344,7 +352,7 @@ class EventController extends AbstractController
                 } else {
                     // no child event found - create a new one
                     /** @var Event $childEvent */
-                    $childEvent = $this->objectManager->get(Event::class);
+                    $childEvent = GeneralUtility::makeInstance(Event::class);
                 }
 
                 foreach ($availableProperties as $propertyName) {
@@ -369,8 +377,8 @@ class EventController extends AbstractController
                     ) {
                         $propertyValue = ObjectAccess::getProperty($parentEvent, $propertyName);
                         // special handling for onlinesurvey field to remove trailing timestamp with sent date
-                        if ($propertyName == 'onlinesurvey' && (strpos($propertyValue, '|') > 0)) {
-                            $propertyValue = substr($propertyValue, 0, strpos($propertyValue, '|'));
+                        if ($propertyName == 'onlinesurvey' && (strpos((string) $propertyValue, '|') > 0)) {
+                            $propertyValue = substr((string) $propertyValue, 0, strpos((string) $propertyValue, '|'));
                         }
                         ObjectAccess::setProperty($childEvent, $propertyName, $propertyValue);
                     }
@@ -400,7 +408,7 @@ class EventController extends AbstractController
                     $childEvent->setTitle($childEvent->getTitle());
                 }
 
-                if ($isUpdate === TRUE) {
+                if ($isUpdate) {
                     $this->eventRepository->update($childEvent);
                 } else {
                     $this->eventRepository->add($childEvent);
@@ -408,9 +416,10 @@ class EventController extends AbstractController
 
             }
 
-            $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
             $persistenceManager->persistAll();
         }
+        return $this->htmlResponse();
 
     }
 
@@ -421,21 +430,22 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function deleteChildsAction($id): void
+    public function deleteChildsAction($id): \Psr\Http\Message\ResponseInterface
     {
         $this->initializeCreateChildsAction($id);
 
-        $parentEvent = $this->eventRepository->findOneByUid($id);
+        $parentEvent = $this->eventRepository->findOneBy(['uid' => $id]);
 
         if ($parentEvent) {
 
             // delete all present child events
-            $this->eventRepository->deleteAllNotAllowedChildren(array(), $parentEvent);
+            $this->eventRepository->deleteAllNotAllowedChildren([], $parentEvent);
 
-            $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
             $persistenceManager->persistAll();
 
         }
+        return $this->htmlResponse();
 
     }
 
@@ -444,8 +454,9 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function errorAction(): void
+    public function errorAction(): \Psr\Http\Message\ResponseInterface
     {
+        return $this->htmlResponse();
     }
 
 
@@ -456,33 +467,31 @@ class EventController extends AbstractController
      *
      * @return string
      */
-    public function ajaxAction(): string
+    public function ajaxAction(): \Psr\Http\Message\ResponseInterface
     {
         $jsonevent = [];
 
         // we do a simple file caching for performance reasons
         // compose the filename
-        $calfile = Environment::getPublicPath() . '/typo3temp/tx_slubevents/calfile_' . md5(GeneralUtility::_GET('disciplines') . GeneralUtility::_GET('categories')) . '_' . strtotime(GeneralUtility::_GET('start')) . '_' . strtotime(GeneralUtility::_GET('end')) . '.json';
+        $calfile = Environment::getPublicPath() . '/typo3temp/tx_slubevents/calfile_' . md5($this->request->getQueryParams()['disciplines'] ?? null . $this->request->getQueryParams()['categories'] ?? null) . '_' . strtotime((string) ($this->request->getQueryParams()['start'] ?? null)) . '_' . strtotime((string) ($this->request->getQueryParams()['end'] ?? null)) . '.json';
         // if file exists and is not too old - take it
-        if (file_exists($calfile)) {
-            // if not older than one day:
-            if ((time() - filemtime($calfile) < 86400)) {
-                $fp = fopen($calfile, 'r');
-                fpassthru($fp);
-                exit;
-            }
+        // if not older than one day:
+        if (file_exists($calfile) && time() - filemtime($calfile) < 86400) {
+            $fp = fopen($calfile, 'r');
+            fpassthru($fp);
+            exit;
         }
 
         // no valid caching file --> we do a new query and save the result
         $events = $this->eventRepository->findAllBySettings([
-            'categoryList'   => GeneralUtility::intExplode(',', GeneralUtility::_GET('categories'), true),
-            'disciplineList' => GeneralUtility::intExplode(',', GeneralUtility::_GET('disciplines'), true),
-            'startTimestamp' => strtotime(GeneralUtility::_GET('start')),
-            'stopTimestamp'  => strtotime(GeneralUtility::_GET('end')),
+            'categoryList'   => GeneralUtility::intExplode(',', $this->request->getQueryParams()['categories'] ?? null, true),
+            'disciplineList' => GeneralUtility::intExplode(',', $this->request->getQueryParams()['disciplines'] ?? null, true),
+            'startTimestamp' => strtotime((string) ($this->request->getQueryParams()['start'] ?? null)),
+            'stopTimestamp'  => strtotime((string) ($this->request->getQueryParams()['end'] ?? null)),
             'showPastEvents' => true,
         ]);
 
-        $cObj = $this->configurationManager->getContentObject();
+        $cObj = $this->request->getAttribute('currentContentObject');
         /** @var Event $event */
         foreach ($events as $event) {
             $foundevent = [];
@@ -501,7 +510,7 @@ class EventController extends AbstractController
 
             $conf = [
                 // Link to current page
-                'parameter'        => GeneralUtility::_GET('detailPid'),
+                'parameter'        => $this->request->getQueryParams()['detailPid'] ?? null,
                 // Set additional parameters
                 'additionalParams' => '&type=0&tx_slubevents_eventlist%5Bevent%5D=' . $event->getUid() . '&tx_slubevents_eventlist%5Baction%5D=show',
                 // We must add cHash because we use parameters
@@ -512,32 +521,26 @@ class EventController extends AbstractController
             $url = $cObj->typoLink('', $conf);
             $foundevent['url'] = $url;
 
-            if ($event->getAllDay()) {
-                $foundevent['allDay'] = true;
-            } else {
-                $foundevent['allDay'] = false;
-            }
+            $foundevent['allDay'] = $event->getAllDay();
 
             // how many free places are available?
             $freePlaces = ($event->getMaxSubscriber() - $this->subscriberRepository->countAllByEvent($event));
             if ($freePlaces <= 0) {
                 $foundevent['freePlaces'] = 0;
+            } elseif ($freePlaces == 1) {
+                $foundevent['freePlaces'] = LocalizationUtility::translate(
+                    'tx_slubevents_domain_model_event.oneFreePlace',
+                    'slub_events'
+                );
             } else {
-                if ($freePlaces == 1) {
-                    $foundevent['freePlaces'] = LocalizationUtility::translate(
-                        'tx_slubevents_domain_model_event.oneFreePlace',
+                $foundevent['freePlaces'] =
+                    ($event->getMaxSubscriber() - $this->subscriberRepository->countAllByEvent($event));
+
+                $foundevent['freePlaces'] .= ' ' .
+                    LocalizationUtility::translate(
+                        'tx_slubevents_domain_model_event.freeplaces',
                         'slub_events'
                     );
-                } else {
-                    $foundevent['freePlaces'] =
-                        ($event->getMaxSubscriber() - $this->subscriberRepository->countAllByEvent($event));
-
-                    $foundevent['freePlaces'] .= ' ' .
-                        LocalizationUtility::translate(
-                            'tx_slubevents_domain_model_event.freeplaces',
-                            'slub_events'
-                        );
-                }
             }
 
             // set special css class if subscription is NOT possible
@@ -551,10 +554,8 @@ class EventController extends AbstractController
                 $noSubscription = true;
             }
             // deadline reached....
-            if (is_object($event->getSubEndDateTime())) {
-                if ($event->getSubEndDateTime()->getTimestamp() < time()) {
-                    $noSubscription = true;
-                }
+            if (is_object($event->getSubEndDateTime()) && $event->getSubEndDateTime()->getTimestamp() < time()) {
+                $noSubscription = true;
             }
             if ($noSubscription) {
                 $foundevent['className'] .= ' no_subscription';
@@ -571,37 +572,37 @@ class EventController extends AbstractController
             fclose($fp);
         }
 
-        return $outputJson;
+        return $this->htmlResponse($outputJson);
     }
 
     /**
      * action printCal
      *
      * @param Event $event
-     * @Extbase\IgnoreValidation("event")
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function printCalAction(Event $event = null): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
+    public function printCalAction(?Event $event = null): \Psr\Http\Message\ResponseInterface
     {
-		if ($event === null) {
-            $this->redirect('showNotFound');
-        } else {
-            $helper['now'] = time();
-            $helper['start'] = $event->getStartDateTime()->getTimestamp();
-            // endDate may be empty
-            if ($event->getEndDateTime() instanceof \DateTime && $event->getStartDateTime() != $event->getEndDateTime()) {
-                $helper['end'] = $event->getEndDateTime()->getTimestamp();
-            } else {
-                $helper['allDay'] = 1;
-                $helper['end'] = $helper['start'];
-            }
-            $helper['description'] = TextUtility::foldline(EmailHelper::html2rest($event->getDescription()));
-            $helper['location'] = EventHelper::getLocationNameWithParent($event);
-            $helper['locationics'] = TextUtility::foldline($helper['location']);
-            $this->view->assign('helper', $helper);
-            $this->view->assign('event', $event);
-        }
+		if (!$event instanceof \Slub\SlubEvents\Domain\Model\Event) {
+      return $this->redirect('showNotFound');
+  } else {
+      $helper['now'] = time();
+      $helper['start'] = $event->getStartDateTime()->getTimestamp();
+      // endDate may be empty
+      if ($event->getEndDateTime() instanceof \DateTime && $event->getStartDateTime() != $event->getEndDateTime()) {
+          $helper['end'] = $event->getEndDateTime()->getTimestamp();
+      } else {
+          $helper['allDay'] = 1;
+          $helper['end'] = $helper['start'];
+      }
+      $helper['description'] = TextUtility::foldline(EmailHelper::html2rest($event->getDescription()));
+      $helper['location'] = EventHelper::getLocationNameWithParent($event);
+      $helper['locationics'] = TextUtility::foldline($helper['location']);
+      $this->view->assign('helper', $helper);
+      $this->view->assign('event', $event);
+  }
     }
 
     /**
@@ -635,7 +636,7 @@ class EventController extends AbstractController
         foreach($recurring_options['weekday'] as $id => $weekday) {
             if ($weekday < $parentStartDateTime->format('N')) {
                 $weekdaysAfterParent[] = $weekday + 7;
-            } else if ($weekday > $parentStartDateTime->format('N')){
+            } elseif ($weekday > $parentStartDateTime->format('N')) {
                 $weekdaysAfterParent[] = $weekday;
             }
         }
@@ -680,7 +681,7 @@ class EventController extends AbstractController
 
         // first make events within the first week
         // create the child days within a week
-        if (!empty($diffDays)) {
+        if ($diffDays !== []) {
             $diffDayEventStartDateTime = clone $eventStartDateTime;
             $diffDayEventEndDateTime = clone $eventEndDateTime;
             if ($eventSubEndDateTime) {
@@ -756,7 +757,7 @@ class EventController extends AbstractController
             }
 
             // create the child days within a week
-            if (!empty($diffDays)) {
+            if ($diffDays !== []) {
                 $diffDayEventStartDateTime = clone $eventStartDateTime;
                 $diffDayEventEndDateTime = clone $eventEndDateTime;
                 if ($eventSubEndDateTime) {
@@ -815,7 +816,7 @@ class EventController extends AbstractController
     {
       if ($offset > 0) {
           $dateTimeValue->add(new \DateInterval('PT'.$offset.'S'));
-      } else if ($offset < 0) {
+      } elseif ($offset < 0) {
           $dateTimeValue->sub(new \DateInterval('PT'.(-1) * $offset.'S'));
       }
     }

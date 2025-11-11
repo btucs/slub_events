@@ -91,7 +91,7 @@ class CategoryService
      */
     public function getRoots(array $categories): ?array
     {
-        if (count($categories) === 0) {
+        if ($categories === []) {
             return null;
         }
 

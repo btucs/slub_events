@@ -79,7 +79,7 @@ class EmailHelper
             // the total basename length must not be more than 60 characters --> see writeFileToTypo3tempDir()
             $eventIcsFile = Environment::getPublicPath() . '/typo3temp/tx_slubevents/' .
                 substr(
-                    preg_replace('/[^\w]/', '', strtolower($variables['nameTo'])),
+                    (string) preg_replace('/[^\w]/', '', strtolower((string) $variables['nameTo'])),
                     0,
                     20
                 )
@@ -98,7 +98,7 @@ class EmailHelper
             if ($variables['settings']['email']['keepLocalFilesForDebugging']) {
                 $debugFile = Environment::getPublicPath() . 'typo3temp/tx_slubevents/' .
                     substr(
-                        preg_replace('/[^\w]/', '', strtolower($variables['nameTo'])),
+                        (string) preg_replace('/[^\w]/', '', strtolower((string) $variables['nameTo'])),
                         0,
                         20
                     )
@@ -113,7 +113,7 @@ class EmailHelper
 
             $eventCsvFile = Environment::getPublicPath() . '/typo3temp/tx_slubevents/' .
                 substr(
-                    preg_replace('/[^\w]/', '', strtolower($variables['nameTo'])),
+                    (string) preg_replace('/[^\w]/', '', strtolower((string) $variables['nameTo'])),
                     0,
                     20
                 )
@@ -129,7 +129,7 @@ class EmailHelper
         if ($variables['settings']['email']['keepLocalFilesForDebugging']) {
             $debugFile = Environment::getPublicPath() . '/typo3temp/tx_slubevents/' .
                 substr(
-                    preg_replace('/[^\w]/', '', strtolower($variables['nameTo'])),
+                    (string) preg_replace('/[^\w]/', '', strtolower((string) $variables['nameTo'])),
                     0,
                     20
                 )
@@ -161,21 +161,21 @@ class EmailHelper
     public static function html2rest($text): string
     {
         $text = strip_tags(
-            html_entity_decode($text, ENT_COMPAT, 'UTF-8'),
+            html_entity_decode((string) $text, ENT_COMPAT, 'UTF-8'),
             '<br>,<p>,<b>,<h1>,<h2>,<h3>,<h4>,<h5>,<a>,<li>'
         );
         // header is getting **
         $text = preg_replace('/<h[1-5]>|<\/h[1-5]>/', '**', $text);
         // bold is getting * ([[\w\ \d:\/~\.\?\=&%\"]+])
-        $text = preg_replace('/<b>|<\/b>/', '*', $text);
+        $text = preg_replace('/<b>|<\/b>/', '*', (string) $text);
         // get away links but preserve href with class slub-event-link
         $text = preg_replace(
             '/(<a[\ \w\=\"]{0,})(class=\"slub-event-link\" href\=\")([\w\d:\-\/~\.\?\=&%]+)([\"])([\"]{0,1}>)([\ \w\d\p{P}]+)(<\/a>)/',
             "$6\n$3",
-            $text
+            (string) $text
         );
         // Remove separator characters (like non-breaking spaces...)
-        $text = preg_replace('/\p{Z}/u', ' ', $text);
+        $text = preg_replace('/\p{Z}/u', ' ', (string) $text);
         $text = str_replace('<br />', "\n", $text);
         // get away paragraphs including class, title etc.
         $text = preg_replace('/<p[\s\w\=\"]*>(?s)(.*?)<\/p>/u', "$1\n", $text);
@@ -184,13 +184,13 @@ class EmailHelper
         // remove multiple spaces
         $text = preg_replace('/[\ ]{2,}/', '', $text);
         // remove multiple tabs
-        $text = preg_replace('/[\t]{1,}/', '', $text);
+        $text = preg_replace('/[\t]{1,}/', '', (string) $text);
         // remove more than one empty line
-        $text = preg_replace('/[\n]{3,}/', "\n\n", $text);
+        $text = preg_replace('/[\n]{3,}/', "\n\n", (string) $text);
         // yes, really do CRLF to let quoted printable work as expected!
-        $text = preg_replace('/[\n]/', "\r\n", $text);
+        $text = preg_replace('/[\n]/', "\r\n", (string) $text);
         // remove all remaining html tags
-        $text = strip_tags($text);
+        $text = strip_tags((string) $text);
 
         return $text;
     }
@@ -202,7 +202,7 @@ class EmailHelper
      */
     public static function resolveTemplateRootPaths(ConfigurationManagerInterface $configurationManager = null): array
     {
-        if ($configurationManager) {
+        if ($configurationManager instanceof \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
             );
@@ -221,7 +221,7 @@ class EmailHelper
      */
     public static function resolvePartialRootPaths(ConfigurationManagerInterface $configurationManager = null): array
     {
-        if ($configurationManager) {
+        if ($configurationManager instanceof \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
             );

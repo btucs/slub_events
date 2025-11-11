@@ -45,7 +45,7 @@ class ContactRepository extends Repository
 
         $constraints = [];
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -64,7 +64,7 @@ class ContactRepository extends Repository
      */
     public function findById($uid) {
         $query = $this->createQuery();
-        $constraints = array();
+        $constraints = [];
         $query->matching($query->equals('uid', $uid));
         $contact = $query->execute();
         return $contact;

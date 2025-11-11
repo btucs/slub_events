@@ -92,7 +92,7 @@ class EventService
     {
         $withRootCategory = [];
 
-        if (count($events) > 0) {
+        if ($events !== []) {
             /** @var Event $event */
             foreach ($events as $event) {
                 $withRootCategory[] = $this->addRootCategoriesToEvent($event);

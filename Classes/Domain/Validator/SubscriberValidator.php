@@ -74,7 +74,7 @@ class SubscriberValidator extends AbstractValidator
      *
      * @return bool
      */
-    public function isValid($newSubscriber)
+    public function isValid(mixed $newSubscriber): void
     {
         if (strlen($newSubscriber->getName()) < 3) {
 			//$this->addError('val_name', 1000);
@@ -96,8 +96,8 @@ class SubscriberValidator extends AbstractValidator
             $this->addErrorForProperty("number", "val_number", 1120);
             $this->isValid = false;
         }
-        $currentSessionData = $this->getSessionData('editcode');
-        if ($newSubscriber->getEditcode() != $this->getSessionData('editcode')) {
+        $currentSessionData = static::getSessionData('editcode');
+        if ($newSubscriber->getEditcode() != static::getSessionData('editcode')) {
 			$this->addError('val_editcode', 1140);
             $this->isValid = false;
         }
@@ -105,7 +105,5 @@ class SubscriberValidator extends AbstractValidator
             $this->addError('val_acceptpp', 1140);
             $this->isValid = false;
         }
-
-        return $this->isValid;
     }
 }

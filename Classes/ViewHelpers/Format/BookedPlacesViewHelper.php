@@ -74,11 +74,7 @@ class BookedPlacesViewHelper extends AbstractViewHelper
         RenderingContextInterface $renderingContext
     ) {
         $event = $arguments['event'];
-        if ($event != null) {
-            $booked = self::getSubscriberRepository()->countAllByEvent($event);
-        } else {
-            $booked = 0;
-        }
+        $booked = $event != null ? self::getSubscriberRepository()->countAllByEvent($event) : 0;
 
         return $booked;
     }

@@ -38,17 +38,17 @@ class Subscriber extends AbstractEntity
     /**
      * name
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $name;
 
     /**
      * email
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $email;
 
     /**
@@ -89,9 +89,9 @@ class Subscriber extends AbstractEntity
     /**
      * Edit Code
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $editcode;
 
     /**

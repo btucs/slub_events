@@ -79,12 +79,11 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
      */
     protected static function getGeniusBarIcon(Event $event)
     {
-        if ($event !== null) {
-            if ($event->getGeniusBar()) {
-                $title = LocalizationUtility::translate('tx_slubevents_domain_model_event.genius_bar', 'slub_events', $arguments = null);
-                return '<span title="' . $title . '" class="geniusbar">[W]&nbsp;</span>';
-            }
+        if ($event !== null && $event->getGeniusBar()) {
+            $title = LocalizationUtility::translate('tx_slubevents_domain_model_event.genius_bar', 'slub_events', $arguments = null);
+            return '<span title="' . $title . '" class="geniusbar">[W]&nbsp;</span>';
         }
+        return null;
     }
 
     /**
@@ -115,23 +114,14 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $iconHelper = $objectManager->get(IconsHelper::class);
 
-        switch ($icon) {
-            case 'new':
-                $content = $iconHelper->getNewIcon('tx_slubevents_domain_model_event', $storagePid);
-                break;
-            case 'edit':
-                $content = $iconHelper->getEditIcon('tx_slubevents_domain_model_event', $row);
-                break;
-            case 'hide':
-                $content = $iconHelper->getHideIcon('tx_slubevents_domain_model_event', $row['uid'], $row['hidden']);
-                break;
-            case 'geniusbar':
-                $content = self::getGeniusBarIcon($event);
-                break;
-            case 'datepicker':
-                $content = $iconHelper->getDatePickerIcon();
-                break;
-        }
+        $content = match ($icon) {
+            'new' => $iconHelper->getNewIcon('tx_slubevents_domain_model_event', $storagePid),
+            'edit' => $iconHelper->getEditIcon('tx_slubevents_domain_model_event', $row),
+            'hide' => $iconHelper->getHideIcon('tx_slubevents_domain_model_event', $row['uid'], $row['hidden']),
+            'geniusbar' => self::getGeniusBarIcon($event),
+            'datepicker' => $iconHelper->getDatePickerIcon(),
+            default => $content,
+        };
 
         return $content;
 

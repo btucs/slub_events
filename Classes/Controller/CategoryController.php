@@ -69,9 +69,9 @@ class CategoryController extends AbstractController
     /**
      * action list
      *
-     * @return void
+     *
      */
-    public function listAction(): void
+    public function listAction(): \Psr\Http\Message\ResponseInterface
     {
         // take the root category of the flexform
         $category = $this->categoryRepository->findAllByUids(
@@ -79,13 +79,12 @@ class CategoryController extends AbstractController
         )->getFirst();
 
         $categories = $this->categoryRepository->findCurrentBranch($category);
-
         if (count($categories) == 0) {
-            // there are no further child categories --> show events
-            $this->forward('gbList', null, null, ['category' => $category]);
+            return (new \TYPO3\CMS\Extbase\Http\ForwardResponse('gbList'))->withArguments(['category' => $category]);
         } else {
             $this->view->assign('categories', $categories);
         }
+        return $this->htmlResponse();
     }
 
     /**
@@ -95,12 +94,12 @@ class CategoryController extends AbstractController
      *
      * @param \Slub\SlubEvents\Domain\Model\Category $category
      *
-     * @Extbase\IgnoreValidation("category")
      * @return void
      */
-    public function contactListAction(\Slub\SlubEvents\Domain\Model\Category $category = null): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
+    public function contactListAction(?\Slub\SlubEvents\Domain\Model\Category $category = null): \Psr\Http\Message\ResponseInterface
     {
-        if (!($this->settings['contactSelection'] > 0)) {
+        if ($this->settings['contactSelection'] <= 0) {
             $this->view->assign('contactSelectionWarning', 1);
         } else {
             $this->view->assign('contacts', $this->contactRepository->findById($this->settings['contactSelection']));
@@ -128,6 +127,7 @@ class CategoryController extends AbstractController
         $this->view->assign('showWiba', $this->settings['showWiba']);
         $this->view->assign('showEvent', $this->settings['showEvent']);
         $this->view->assign('showConsultation', $this->settings['showConsultation']);
+        return $this->htmlResponse();
     }
 
     /**
@@ -137,10 +137,10 @@ class CategoryController extends AbstractController
      *
      * @param Category $category
      *
-     * @Extbase\IgnoreValidation("category")
      * @return void
      */
-    public function gbListAction(Category $category = null): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
+    public function gbListAction(?Category $category = null): \Psr\Http\Message\ResponseInterface
     {
         $events = [];
         $parentcategory = null;
@@ -153,6 +153,7 @@ class CategoryController extends AbstractController
         $this->view->assign('events', $events);
         $this->view->assign('category', $category);
         $this->view->assign('parentcategory', $parentcategory);
+        return $this->htmlResponse();
     }
 
     /**
@@ -162,8 +163,9 @@ class CategoryController extends AbstractController
      *
      * @return void
      */
-    public function showAction(Category $category): void
+    public function showAction(Category $category): \Psr\Http\Message\ResponseInterface
     {
         $this->view->assign('category', $category);
+        return $this->htmlResponse();
     }
 }

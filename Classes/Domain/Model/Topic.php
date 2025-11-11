@@ -39,9 +39,9 @@ class Topic extends AbstractEntity
     /**
      * Name of the specialists Topic
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $name;
 
     /**

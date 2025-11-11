@@ -34,16 +34,17 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class BaseController extends AbstractController
 {
     /**
-     * Backend Template Container
-     *
-     * @var BackendTemplateView
+     * @var int
      */
-    protected $defaultViewObjectName = BackendTemplateView::class;
-
+    public $pageUid;
+    public $objectManager;
     /**
      * @var array
      */
     protected $pageInformation;
+    public function __construct(private readonly \TYPO3\CMS\Backend\Template\ModuleTemplateFactory $moduleTemplateFactory)
+    {
+    }
 
     /**
      * Function will be called before every other action
@@ -51,7 +52,7 @@ class BaseController extends AbstractController
      */
     public function initializeAction(): void
     {
-        $this->pageUid = (int)GeneralUtility::_GET('id');
+        $this->pageUid = (int)($this->request->getQueryParams()['id'] ?? null);
         $this->pageInformation = BackendUtility::readPageAccess($this->pageUid, '');
         parent::initializeAction();
     }
@@ -60,15 +61,15 @@ class BaseController extends AbstractController
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
+     * @param \TYPO3Fluid\Fluid\View\ViewInterface $view
      */
-    protected function initializeView(ViewInterface $view): void
+    protected function initializeView($view): void
     {
-        /** @var BackendTemplateView $view */
-        parent::initializeView($view);
-        if ($view->getModuleTemplate()) {
-            $view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation([]);
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        if ($moduleTemplate) {
+            $moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
 
-            $view->getModuleTemplate()->addJavaScriptCode('jumpUrl', '
+            $moduleTemplate->addJavaScriptCode('jumpUrl', '
                 function jumpToUrl(URL) {
                     window.location.href = URL;
                     return false;
@@ -85,10 +86,11 @@ class BaseController extends AbstractController
      */
     protected function createMenu(): void
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $uriBuilder = $this->objectManager->get(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
-        $menu = $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
+        $menu = $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
         $menu->setIdentifier('slub_events');
 
         $actions = [
@@ -110,10 +112,10 @@ class BaseController extends AbstractController
             $menu->addMenuItem($item);
         }
 
-        $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
+        $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
 
         if (is_array($this->pageInformation)) {
-            $this->view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation($this->pageInformation);
+            $moduleTemplate->getDocHeaderComponent()->setMetaInformation($this->pageInformation);
         }
     }
 
@@ -122,7 +124,8 @@ class BaseController extends AbstractController
      */
     protected function createButtons(): void
     {
-        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
         // Shortcut
         if ($this->getBackendUser()->mayMakeShortcut()) {

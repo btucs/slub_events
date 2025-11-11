@@ -49,7 +49,7 @@ class DisciplineRepository extends Repository
         $constraints = [];
         $constraints[] = $query->in('uid', $disciplines);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
 
@@ -112,7 +112,7 @@ class DisciplineRepository extends Repository
 
         $constraints[] = $query->equals('parent', $startCategory);
 
-        if (count($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd($constraints));
         }
         $categories = $query->execute();

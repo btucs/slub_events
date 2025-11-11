@@ -213,7 +213,7 @@ class CheckeventsTask extends AbstractTask
                             'attachIcs' => true,
                         ]
                     );
-                    if ($out === true) {
+                    if ($out) {
                         $event->setSubEndDateInfoSent(true);
                         $event->setCancelled(true);
                         $this->eventRepository->update($event);
@@ -235,7 +235,7 @@ class CheckeventsTask extends AbstractTask
                             'attachIcs' => true,
                         ]
                     );
-                    if ($out === true) {
+                    if ($out) {
                         $event->setSubEndDateInfoSent(true);
                         $this->eventRepository->update($event);
                     }

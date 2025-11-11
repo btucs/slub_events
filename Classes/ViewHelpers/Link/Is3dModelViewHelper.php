@@ -75,6 +75,6 @@ class Is3dModelViewHelper extends AbstractViewHelper
             return false;
         }
 
-        return strpos($link, '3d.slub-dresden.de') ? true : false;
+        return (bool) strpos((string) $link, '3d.slub-dresden.de');
     }
 }

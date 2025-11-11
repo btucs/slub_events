@@ -30,10 +30,11 @@ use Slub\SlubEvents\Utility\TextUtility;
  */
 class EventController extends BaseController
 {
+    public $objectManager;
     /**
      * action beList
      */
-    public function beListAction(): void
+    public function beListAction(): \Psr\Http\Message\ResponseInterface
     {
         // get current event of last beIcsInvitationAction
         $currentActiveEvent = $this->getParametersSafely('currentActiveEvent');
@@ -93,7 +94,7 @@ class EventController extends BaseController
         // get the events to show
         $events = $this->eventRepository->findAllByCategoriesAndDate(
             $searchParameter['category'],
-            strtotime($searchParameter['selectedStartDateStamp']),
+            strtotime((string) $searchParameter['selectedStartDateStamp']),
             $searchParameter['searchString'],
             $searchParameter['contacts'],
             $searchParameter['recurring']
@@ -106,6 +107,7 @@ class EventController extends BaseController
         $this->view->assign('contacts', $contacts);
         $this->view->assign('currentActiveEvent', $currentActiveEvent);
         $this->view->assign('recurring', $searchParameter['recurring']);
+        return $this->htmlResponse();
     }
 
     /**
@@ -113,9 +115,9 @@ class EventController extends BaseController
      *
      * @param Event $event
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function beCopyAction(Event $event): void
+    public function beCopyAction(Event $event)
     {
         $availableProperties = ObjectAccess::getGettablePropertyNames($event);
         /** @var Event $newEvent */
@@ -137,8 +139,8 @@ class EventController extends BaseController
             ) {
                 $propertyValue = ObjectAccess::getProperty($event, $propertyName);
                 // special handling for onlinesurvey field to remove trailing timestamp with sent date
-                if ($propertyName == 'onlinesurvey' && (strpos($propertyValue, '|') > 0)) {
-                    $propertyValue = substr($propertyValue, 0, strpos($propertyValue, '|'));
+                if ($propertyName == 'onlinesurvey' && (strpos((string) $propertyValue, '|') > 0)) {
+                    $propertyValue = substr((string) $propertyValue, 0, strpos((string) $propertyValue, '|'));
                 }
                 ObjectAccess::setProperty($newEvent, $propertyName, $propertyValue);
             }
@@ -167,7 +169,7 @@ class EventController extends BaseController
         if (!$currentWidgetPage) {
           $currentWidgetPage = [ 'currentPage' => 0 ];
         }
-        $this->redirect('beList', NULL, NULL, [
+        return $this->redirect('beList', NULL, NULL, [
           'currentActiveEvent' => $event->getUid(),
           '@widget_0' => $currentWidgetPage
         ]);
@@ -179,17 +181,17 @@ class EventController extends BaseController
      * --> see ics template in Resources/Private/Templates/Email/
      *
      * @param Event $event
-     * @Extbase\IgnoreValidation("event")
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function beIcsInvitationAction(Event $event): void
+    #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
+    public function beIcsInvitationAction(Event $event)
     {
         $allEvents = [];
 
         // add all child events if this is a parent recurring event
         if ($event->isRecurring()) {
-            $allEvents = $this->eventRepository->findByParent($event)->toArray();
+            $allEvents = $this->eventRepository->findBy(['parent' => $event])->toArray();
         }
         // put (parent) event to top of array
         array_unshift($allEvents, $event);
@@ -259,7 +261,7 @@ class EventController extends BaseController
           $currentWidgetPage = [ 'currentPage' => 0 ];
         }
 
-        $this->redirect('beList', NULL, NULL, [
+        return $this->redirect('beList', NULL, NULL, [
           'currentActiveEvent' => $event->getUid(),
           '@widget_0' => $currentWidgetPage
         ]);

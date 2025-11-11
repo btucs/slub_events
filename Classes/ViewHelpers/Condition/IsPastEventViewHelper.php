@@ -75,10 +75,8 @@ class IsPastEventViewHelper extends AbstractViewHelper
         $isPast = false;
 
         // deadline reached...
-        if (is_object($event->getSubEndDateTime())) {
-            if ($event->getEndDateTime()->getTimestamp() < time()) {
-                $isPast = true;
-            }
+        if (is_object($event->getSubEndDateTime()) && $event->getEndDateTime()->getTimestamp() < time()) {
+            $isPast = true;
         }
 
         return $isPast;

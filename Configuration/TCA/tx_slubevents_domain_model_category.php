@@ -8,7 +8,6 @@ return [
         'label'                    => 'title',
         'tstamp'                   => 'tstamp',
         'crdate'                   => 'crdate',
-        'cruser_id'                => 'cruser_id',
         'sortby'                   => 'sorting',
         'versioningWS'             => true,
         'origUid'                  => 't3_origuid',
@@ -24,9 +23,6 @@ return [
         'searchFields'             => 'title,parent,',
         'iconfile'                 => 'EXT:slub_events/Resources/Public/Icons/tx_slubevents_domain_model_category.gif',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, description, genius_bar, parent',
-    ],
     'types'     => [
         '1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, --palette--;;1, genius_bar, title, description, parent,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,starttime, endtime'],
     ],
@@ -37,30 +33,17 @@ return [
         'sys_language_uid' => [
             'exclude' => 1,
             'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'config'  => [
-                'type'                => 'select',
-                'renderType'          => 'selectSingle',
-                'special' => 'languages',
-                'items' => [
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
-                        -1,
-                        'flags-multiple'
-                    ],
-                ],
-                'default' => 0,
-            ],
+            'config'  => ['type' => 'language'],
             'onChange'  => 'reload',
         ],
         'l10n_parent'      => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude'     => 1,
             'label'       => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config'      => [
                 'type'                => 'select',
                 'renderType'          => 'selectSingle',
                 'items'               => [
-                    ['', 0],
+                    ['label' => '', 'value' => 0],
                 ],
                 'foreign_table'       => 'tx_slubevents_domain_model_category',
                 'foreign_table_where' => 'AND tx_slubevents_domain_model_category.pid=###CURRENT_PID### AND tx_slubevents_domain_model_category.hidden = 0 AND tx_slubevents_domain_model_category.sys_language_uid IN (-1,0) ORDER BY tx_slubevents_domain_model_category.title',
@@ -96,10 +79,8 @@ return [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'     => 'input',
-                'renderType' => 'inputDateTime',
+                'type'     => 'datetime',
                 'size'     => 13,
-                'eval'     => 'datetime',
                 'default'  => 0,
             ],
         ],
@@ -111,10 +92,8 @@ return [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'     => 'input',
-                'renderType' => 'inputDateTime',
+                'type'     => 'datetime',
                 'size'     => 13,
-                'eval'     => 'datetime',
                 'default'  => 0,
             ],
         ],
@@ -124,7 +103,8 @@ return [
             'config'  => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required',
+                'eval' => 'trim',
+                'required' => true,
             ],
         ],
         'genius_bar'       => [

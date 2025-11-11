@@ -65,9 +65,9 @@ class RecurringOptionsElement extends AbstractFormElement
               $active = 'active';
               $checked = 'checked="checked"';
               $disabled = TRUE;
-          } else if (in_array($i, $recurring_options['weekday'])) {
-            $active = 'active';
-            $checked = 'checked="checked"';
+          } elseif (in_array($i, $recurring_options['weekday'])) {
+              $active = 'active';
+              $checked = 'checked="checked"';
           } else {
             $active = '';
             $checked = '';

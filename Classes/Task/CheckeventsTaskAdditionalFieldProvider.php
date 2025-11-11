@@ -89,7 +89,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
         }
 
         $fieldId = 'task_storagePid';
-        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][storagePid]" id="' . $fieldId . '" value="' . htmlspecialchars($taskInfo['storagePid']) . '"/>';
+        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][storagePid]" id="' . $fieldId . '" value="' . htmlspecialchars((string) $taskInfo['storagePid']) . '"/>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.cleanup.storagePid');
         $additionalFields[$fieldId] = [
             'code'  => $fieldCode,
@@ -97,7 +97,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
         ];
 
         $fieldId = 'task_senderEmailAddress';
-        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][senderEmailAddress]" id="' . $fieldId . '" value="' . htmlspecialchars($taskInfo['senderEmailAddress']) . '"/>';
+        $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][senderEmailAddress]" id="' . $fieldId . '" value="' . htmlspecialchars((string) $taskInfo['senderEmailAddress']) . '"/>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.senderEmailAddress');
         $label = BackendUtility::wrapInHelp('slub_events', $fieldId, $label);
         $additionalFields[$fieldId] = [
@@ -139,7 +139,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
             $isValid = false;
             $this->addMessage(
                 $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.cleanup.invalidStoragePid') . ': ' . $submittedData['slub_events']['cleanupDays'],
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
             );
         }
 

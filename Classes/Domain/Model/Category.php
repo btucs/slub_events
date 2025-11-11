@@ -39,9 +39,9 @@ class Category extends AbstractEntity
     /**
      * Name of the Category
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $title;
 
     /**

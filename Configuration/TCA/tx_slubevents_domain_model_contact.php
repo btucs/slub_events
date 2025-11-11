@@ -8,7 +8,6 @@ return [
         'label'                    => 'name',
         'tstamp'                   => 'tstamp',
         'crdate'                   => 'crdate',
-        'cruser_id'                => 'cruser_id',
         'sortby'                   => 'sorting',
         'versioningWS'             => true,
         'origUid'                  => 't3_origuid',
@@ -24,9 +23,6 @@ return [
         'searchFields'             => 'name,',
         'iconfile'                 => 'EXT:slub_events/Resources/Public/Icons/tx_slubevents_domain_model_contact.gif',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, email, telephone, description, photo',
-    ],
     'types'     => [
         '1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, --palette--;;1, name, email, telephone, description, photo,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,starttime, endtime'],
     ],
@@ -37,30 +33,17 @@ return [
         'sys_language_uid' => [
             'exclude' => 1,
             'label'   => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'config'  => [
-                'type'                => 'select',
-                'renderType'          => 'selectSingle',
-                'special' => 'languages',
-                'items' => [
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
-                        -1,
-                        'flags-multiple'
-                    ],
-                ],
-                'default' => 0,
-            ],
+            'config'  => ['type' => 'language'],
             'onChange'  => 'reload',
         ],
         'l10n_parent'      => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude'     => 1,
             'label'       => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config'      => [
                 'type'                => 'select',
                 'renderType'          => 'selectSingle',
                 'items'               => [
-                    ['', 0],
+                    ['label' => '', 'value' => 0],
                 ],
                 'foreign_table'       => 'tx_slubevents_domain_model_contact',
                 'foreign_table_where' => 'AND tx_slubevents_domain_model_contact.pid=###CURRENT_PID### AND tx_slubevents_domain_model_contact.sys_language_uid IN (-1,0)',
@@ -96,10 +79,8 @@ return [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'     => 'input',
-                'renderType' => 'inputDateTime',
+                'type'     => 'datetime',
                 'size'     => 13,
-                'eval'     => 'datetime',
                 'default'  => 0,
             ],
         ],
@@ -111,10 +92,8 @@ return [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true
                 ],
-                'type'     => 'input',
-                'renderType' => 'inputDateTime',
+                'type'     => 'datetime',
                 'size'     => 13,
-                'eval'     => 'datetime',
                 'default'  => 0,
             ],
         ],
@@ -124,7 +103,8 @@ return [
             'config'  => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required',
+                'eval' => 'trim',
+                'required' => true,
             ],
         ],
         'email'            => [
@@ -133,7 +113,8 @@ return [
             'config'  => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required',
+                'eval' => 'trim',
+                'required' => true,
             ],
         ],
         'telephone'        => [
@@ -165,22 +146,20 @@ return [
             'exclude' => 0,
             'label'   => $LL . 'tx_slubevents_domain_model_contact.photo',
             // https://review.typo3.org/c/Packages/TYPO3.CMS/+/54830
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'photo',
-                [
-                    'maxitems' => 1,
-                    'appearance' => [
-                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
-                    ],
-                    'foreign_match_fields' => [
-                        'fieldname' => 'photo',
-                        'tablenames' => 'tx_slubevents_domain_model_contact',
-                        'table_local' => 'sys_file',
-                    ],
-                    'default' => 0,
+            'config' => [
+                ### !!! Watch out for fieldName different from columnName
+                'type' => 'file',
+                'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
+                'maxitems' => 1,
+                'appearance' => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
                 ],
-                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            )
+                'foreign_match_fields' => [
+                    'fieldname' => 'photo',
+                    'tablenames' => 'tx_slubevents_domain_model_contact',
+                ],
+                'default' => 0,
+            ]
         ],
     ],
 ];

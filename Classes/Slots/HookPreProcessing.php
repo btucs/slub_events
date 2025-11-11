@@ -91,7 +91,7 @@ class HookPreProcessing
 
             if (empty($fieldArray['genius_bar'])) {
                 $this->messages[] = [
-                    FlashMessage::OK,
+                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK,
                     'OK',
                     'Veranstaltung gespeichert: "' . $fieldArray['title'] . '" am ' . $this->gmstrftime(
                         $fieldArray['start_date_time']) . '.'
@@ -102,20 +102,20 @@ class HookPreProcessing
                 // 5|Literatur%20finden%3A%20Recherchestr...,11|Spezielle%20Datenbanken%3A%20Normen,12|Thematische%20Recherche
                 // but in some cases it's:
                 // 5,11,12
-                foreach (explode(',', $fieldArray['categories']) as $category) {
+                foreach (explode(',', (string) $fieldArray['categories']) as $category) {
                     $catarray = explode('|', $category);
                     if ($catarray && count($catarray) > 1) {
                         $category_text .= urldecode($catarray[1]) . ', ';
                     }
                 }
-                if (!empty($category_text)) {
+                if ($category_text !== '' && $category_text !== '0') {
                     // get away last ', ' and add formating:
                     $category_text = '"' . substr($category_text, 0, strlen($category_text) - 2) . '"';
                 }
                 $message_text .= $category_text . ' am ' . $this->gmstrftime(
                         $fieldArray['start_date_time']) . '.';
                 $this->messages[] = [
-                    FlashMessage::OK,
+                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK,
                     'OK',
                     $message_text
                 ];
@@ -123,7 +123,7 @@ class HookPreProcessing
 
             if ($fieldArray['start_date_time'] > $fieldArray['end_date_time'] && $fieldArray['end_date_time'] > 0) {
                 $this->messages[] = [
-                    FlashMessage::ERROR,
+                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR,
                     'Fehler: Ende der Veranstaltung',
                     'Ende (' . $this->gmstrftime(
                         $fieldArray['end_date_time']) . ') liegt vor dem Start (' . $this->gmstrftime(
@@ -136,7 +136,7 @@ class HookPreProcessing
                 $fieldArray['end_date_time'] = $this->calculateEndDateTime($fieldArray['start_date_time'], $fieldArray['end_date_time_select']);
                 unset($fieldArray['end_date_time_select']);
                 $this->messages[] = [
-                    FlashMessage::INFO,
+                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
                     'Bitte prüfen:',
                     'Ende der Veranstaltung gesetzt auf ' . $this->gmstrftime($fieldArray['end_date_time'])
                 ];
@@ -146,25 +146,21 @@ class HookPreProcessing
 
             // touch the subscribtion end only if minimum subscribers are set
             if ($fieldArray['min_subscriber'] > 0 || $fieldArray['max_subscriber'] > 0) {
-                if ($fieldArray['start_date_time'] < $fieldArray['sub_end_date_time'] ||
-                    ($fieldArray['min_subscriber'] > 0 && empty($fieldArray['sub_end_date_time']))
-                ) {
-                    if (!empty($fieldArray['sub_end_date_time_select'])) {
-                        $fieldArray['sub_end_date_time'] = $this->calculateEndDateTime($fieldArray['start_date_time'], $fieldArray['sub_end_date_time_select'], FALSE);
-                        $this->messages[] = [
-                            FlashMessage::INFO,
-                            'Bitte prüfen:',
-                            'Ende der Anmeldungsfrist wurde gesetzt auf ' . $this->gmstrftime(
-                                $fieldArray['sub_end_date_time'])
-                        ];
-                    }
+                if (($fieldArray['start_date_time'] < $fieldArray['sub_end_date_time'] || $fieldArray['min_subscriber'] > 0 && empty($fieldArray['sub_end_date_time'])) && !empty($fieldArray['sub_end_date_time_select'])) {
+                    $fieldArray['sub_end_date_time'] = $this->calculateEndDateTime($fieldArray['start_date_time'], $fieldArray['sub_end_date_time_select'], FALSE);
+                    $this->messages[] = [
+                        \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
+                        'Bitte prüfen:',
+                        'Ende der Anmeldungsfrist wurde gesetzt auf ' . $this->gmstrftime(
+                            $fieldArray['sub_end_date_time'])
+                    ];
                 }
                 unset($fieldArray['sub_end_date_time_select']);
 
                 // warn if subscription deadline is more than 3 days before the event.
                 if ($fieldArray['sub_end_date_time'] > 0 && ($fieldArray['start_date_time'] > $fieldArray['sub_end_date_time'] + (3 * 86400))) {
                     $this->messages[] = [
-                        FlashMessage::WARNING,
+                        \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::WARNING,
                         'Bitte prüfen:',
                         'Ende der Anmeldungsfrist ist aktuell gesetzt auf ' . $this->gmstrftime(
                             $fieldArray['sub_end_date_time']) . ' ==> ' . (int)(($fieldArray['start_date_time'] - $fieldArray['sub_end_date_time']) / 86400) . ' Tage vorher!'
@@ -180,11 +176,11 @@ class HookPreProcessing
                 $fieldArray['sub_end_date_time'] = 0;
             }
 
-            if ($fieldArray['genius_bar'] == false && count(explode(',', $fieldArray['categories'])) > 1) {
+            if ($fieldArray['genius_bar'] == false && count(explode(',', (string) $fieldArray['categories'])) > 1) {
                 $this->messages[] = [
-                    FlashMessage::INFO,
+                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
                     'Bitte prüfen:',
-                    'Sie haben ' . count(explode(',', $fieldArray['categories'])) . ' Kategorien ausgewählt. '
+                    'Sie haben ' . count(explode(',', (string) $fieldArray['categories'])) . ' Kategorien ausgewählt. '
                 ];
             }
 
@@ -193,7 +189,7 @@ class HookPreProcessing
                 $fieldArray['min_subscriber'] = 1;
                 $fieldArray['max_subscriber'] = 1;
                 $this->messages[] = [
-                    FlashMessage::INFO,
+                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
                     'Bitte prüfen:',
                     'Die Mindest- und Maximalteilnehmerzahl beträgt in der Wissensbar immer 1. Dies wurde automatisch korrigiert. '
                 ];
@@ -215,21 +211,19 @@ class HookPreProcessing
     /**
      * calculate end_date_time from selected time interval
      *
-     * @param mixed $startDateTime
-     * @param mixed $selectedInterval
      * @param boolean $add
      *
      * @return end_date_time
      */
-    protected function calculateEndDateTime($startDateTime, $selectedInterval, $add = TRUE)
+    protected function calculateEndDateTime(mixed $startDateTime, mixed $selectedInterval, $add = TRUE)
     {
         // TYPO3 is working with dateTime values instead of unix timestamps in fieldArray
         $sdt = new \DateTime($startDateTime);
         $edt = new \DateTime();
         if ($add === TRUE) {
-            $edt = $sdt->add(new \DateInterval("PT" . trim($selectedInterval) . "M"));
+            $edt = $sdt->add(new \DateInterval("PT" . trim((string) $selectedInterval) . "M"));
         } else {
-            $edt = $sdt->sub(new \DateInterval("PT" . trim($selectedInterval) . "M"));
+            $edt = $sdt->sub(new \DateInterval("PT" . trim((string) $selectedInterval) . "M"));
         }
         $endDateTime = $edt->format(\DateTime::ATOM);
 
@@ -239,11 +233,10 @@ class HookPreProcessing
     /**
      * return formated timestring
      *
-     * @param mixed $time
      *
      * @return string $formatedTimeString
      */
-    protected function gmstrftime($time)
+    protected function gmstrftime(mixed $time)
     {
         // TYPO3 is working with dateTime values instead of unix timestamps in fieldArray
         // But on importing data, $time is a Unix timestamp

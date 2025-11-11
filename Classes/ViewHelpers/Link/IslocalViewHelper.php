@@ -74,6 +74,6 @@ class IslocalViewHelper extends AbstractViewHelper
             return false;
         }
 
-        return MathUtility::canBeInterpretedAsInteger($link) ? true : false;
+        return MathUtility::canBeInterpretedAsInteger($link);
     }
 }

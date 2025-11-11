@@ -95,7 +95,7 @@ class JsFooterViewHelper extends AbstractViewHelper
                         return {
                             categories: eventurl,
                             disciplines: disurl,
-                            link: '" . urlencode($link) . "',
+                            link: '" . urlencode((string) $link) . "',
                             detailPid: '" . $settings['pidDetails'] . "'
                         };
                     }

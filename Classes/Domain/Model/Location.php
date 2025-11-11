@@ -39,9 +39,9 @@ class Location extends AbstractEntity
     /**
      * Name of the Location
      *
-     * @Extbase\Validate("NotEmpty")
      * @var string
      */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected $name;
 
     /**
