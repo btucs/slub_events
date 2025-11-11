@@ -32,7 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Counts future events of given discipline
@@ -42,11 +41,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class EventsOfDisciplineViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -67,13 +65,10 @@ class EventsOfDisciplineViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $discipline = $arguments['discipline'];
-        $events = self::getEventRepository()->findAllBySettings(['disciplineList' => [0 => $discipline]]);
+    public function render()
+    {
+        $discipline = $this->arguments['discipline'];
+        $events = $this->getEventRepository()->findAllBySettings(['disciplineList' => [0 => $discipline]]);
         if ($events) {
             return TRUE;
         } else {
@@ -86,7 +81,7 @@ class EventsOfDisciplineViewHelper extends AbstractViewHelper
      *
      * return eventRepository
      */
-    private static function getEventRepository()
+    private function getEventRepository()
     {
         if (null === static::$eventRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

@@ -50,6 +50,7 @@ class BaseController extends AbstractController
      * Function will be called before every other action
      *
      */
+    #[\Override]
     public function initializeAction(): void
     {
         $this->pageUid = (int)($this->request->getQueryParams()['id'] ?? null);

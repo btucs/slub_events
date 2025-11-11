@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\ViewHelpers\Link;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Check if given link is from 3d model
@@ -47,11 +46,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class Is3dModelViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -65,16 +63,12 @@ class Is3dModelViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $link = $arguments['link'];
+    public function render()
+    {
+        $link = $this->arguments['link'];
         if ($link === null) {
             return false;
         }
-
         return (bool) strpos((string) $link, '3d.slub-dresden.de');
     }
 }

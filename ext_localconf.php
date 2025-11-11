@@ -1,8 +1,8 @@
 <?php
-defined('TYPO3_MODE') || die();
+defined('TYPO3') || die();
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Slub.SlubEvents',
+    'SlubEvents',
     'Eventlist',
     [
         \Slub\SlubEvents\Controller\EventController::class => 'list, show, showNotFound, listUpcoming, new, update, create, delete, printCal',
@@ -10,11 +10,12 @@ defined('TYPO3_MODE') || die();
     // non-cacheable actions
     [
         \Slub\SlubEvents\Controller\EventController::class => 'new, update, create, delete',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Slub.SlubEvents',
+    'SlubEvents',
     'Eventsubscribe',
     [
         \Slub\SlubEvents\Controller\SubscriberController::class => 'new, create, delete, eventNotFound, subscriberNotFound',
@@ -22,11 +23,12 @@ defined('TYPO3_MODE') || die();
     // non-cacheable actions
     [
         \Slub\SlubEvents\Controller\SubscriberController::class => 'new, create, delete',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Slub.SlubEvents',
+    'SlubEvents',
     'Eventuserpanel',
     [
         \Slub\SlubEvents\Controller\EventController::class      => 'listOwn, show',
@@ -35,11 +37,12 @@ defined('TYPO3_MODE') || die();
     // non-cacheable actions
     [
         \Slub\SlubEvents\Controller\EventController::class => 'listOwn',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Slub.SlubEvents',
+    'SlubEvents',
     'Eventgeniusbar',
     [
         \Slub\SlubEvents\Controller\CategoryController::class => 'list, gbList',
@@ -47,11 +50,12 @@ defined('TYPO3_MODE') || die();
     // non-cacheable actions
     [
         \Slub\SlubEvents\Controller\CategoryController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Slub.SlubEvents',
+    'SlubEvents',
     'Apieventlist',
     [
         \Slub\SlubEvents\Controller\Api\EventController::class => 'list',
@@ -59,11 +63,12 @@ defined('TYPO3_MODE') || die();
     // non-cacheable actions
     [
         \Slub\SlubEvents\Controller\Api\EventController::class => 'list',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Slub.SlubEvents',
+    'SlubEvents',
     'Apieventlistuser',
     [
         \Slub\SlubEvents\Controller\Api\EventController::class => 'listUser',
@@ -71,7 +76,8 @@ defined('TYPO3_MODE') || die();
     // non-cacheable actions
     [
         \Slub\SlubEvents\Controller\Api\EventController::class => 'listUser',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 // Custom cache for category
@@ -105,19 +111,19 @@ if (TYPO3_MODE === 'BE') {
         Slub\SlubEvents\Slots\HookPostProcessing::class;
 
     $languageDir = 'slub_events/Resources/Private/Language/';
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Slub\\SlubEvents\\Task\\CheckeventsTask'] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Slub\SlubEvents\Task\CheckeventsTask::class] = [
         'extension'        => 'slub_events',
         'title'            => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.checkevents.name',
         'description'      => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.checkevents.description',
         'additionalFields' => Slub\SlubEvents\Task\CheckeventsTaskAdditionalFieldProvider::class
     ];
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Slub\\SlubEvents\\Task\\StatisticsTask'] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Slub\SlubEvents\Task\StatisticsTask::class] = [
         'extension'        => 'slub_events',
         'title'            => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.statistics.name',
         'description'      => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.statistics.description',
         'additionalFields' => Slub\SlubEvents\Task\StatisticsTaskAdditionalFieldProvider::class
     ];
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Slub\\SlubEvents\\Task\\CleanUpTask'] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Slub\SlubEvents\Task\CleanUpTask::class] = [
         'extension'        => 'slub_events',
         'title'            => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.cleanup.name',
         'description'      => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.cleanup.description',

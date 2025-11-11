@@ -47,6 +47,7 @@ class CategoryController extends AbstractController
      *
      * @return void
      */
+    #[\Override]
     public function initializeAction(): void
     {
 

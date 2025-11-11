@@ -62,6 +62,7 @@ class EventSubscriptionAllowedValidator extends AbstractValidator
      *
      * @return bool
      */
+    #[\Override]
     public function isValid(mixed $event): void
     {
 

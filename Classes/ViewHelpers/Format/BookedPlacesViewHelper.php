@@ -33,7 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Return Booked Places
@@ -43,11 +42,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class BookedPlacesViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -68,14 +66,10 @@ class BookedPlacesViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $event = $arguments['event'];
-        $booked = $event != null ? self::getSubscriberRepository()->countAllByEvent($event) : 0;
-
+    public function render()
+    {
+        $event = $this->arguments['event'];
+        $booked = $event != null ? $this->getSubscriberRepository()->countAllByEvent($event) : 0;
         return $booked;
     }
 
@@ -84,7 +78,7 @@ class BookedPlacesViewHelper extends AbstractViewHelper
      *
      * return subscriberRepository
      */
-    private static function getSubscriberRepository()
+    private function getSubscriberRepository()
     {
         if (null === static::$subscriberRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

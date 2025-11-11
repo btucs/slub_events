@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * returns one single line
@@ -37,11 +36,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class OneLineViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -55,18 +53,14 @@ class OneLineViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $text = str_replace("\t", ' ', $arguments['htmlString']);
+    public function render()
+    {
+        $text = str_replace("\t", ' ', $this->arguments['htmlString']);
         $text = str_replace('<br />', ' ', $text);
         // remove more than one empty line
         $text = preg_replace('/[\n]{1,}/', ' ', $text);
         // remove more than one space
         $text = preg_replace('/[\ ]{2,}/', ' ', $text);
-
         return trim($text);
     }
 }

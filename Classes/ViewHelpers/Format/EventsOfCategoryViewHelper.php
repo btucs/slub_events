@@ -32,7 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Counts future events of given category
@@ -42,11 +41,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class EventsOfCategoryViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -67,13 +65,10 @@ class EventsOfCategoryViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $category = $arguments['category'];
-        $events = self::getEventRepository()->findAllBySettings(['categoryList' => [0 => $category]]);
+    public function render()
+    {
+        $category = $this->arguments['category'];
+        $events = $this->getEventRepository()->findAllBySettings(['categoryList' => [0 => $category]]);
         if ($events) {
             return TRUE;
         } else {
@@ -86,7 +81,7 @@ class EventsOfCategoryViewHelper extends AbstractViewHelper
      *
      * return eventRepository
      */
-    private static function getEventRepository()
+    private function getEventRepository()
     {
         if (null === static::$eventRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

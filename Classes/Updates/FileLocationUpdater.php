@@ -96,6 +96,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * @return string
      */
+    #[\Override]
     public function getTitle(): string
     {
         return 'Migrate files used in EXT:slub_events to FAL.';
@@ -106,6 +107,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * @return string Longer description of this updater
      */
+    #[\Override]
     public function getDescription(): string
     {
         return 'Move contact photo images of EXT:slub_events to fileadmin/_migrated/tx_slubevents/ and convert reference in records.';
@@ -119,6 +121,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * @return bool
      */
+    #[\Override]
     public function updateNecessary(): bool
     {
         $numRecords = $this->falGetRecordsFromTable(true);
@@ -128,6 +131,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     /**
      * @return string[] All new fields and tables must exist
      */
+    #[\Override]
     public function getPrerequisites(): array
     {
         return [
@@ -138,6 +142,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     /**
      * @param OutputInterface $output
      */
+    #[\Override]
     public function setOutput(OutputInterface $output): void
     {
         $this->output = $output;
@@ -150,6 +155,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * @return bool
      */
+    #[\Override]
     public function executeUpdate(): bool
     {
         $result = true;

@@ -78,7 +78,7 @@ class IconsHelper
         . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 
         $icon = '<a href="'. $clickUrl .'" title="' . $title . '">'  .
-            $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() .
+            $this->iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
             '</a>';
         return $icon;
     }
@@ -100,7 +100,7 @@ class IconsHelper
             . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 
         $icon = '<a href="'. $clickUrl .'" title="' . $title . '">' .
-            $this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)->render() .
+            $this->iconFactory->getIcon('actions-document-new', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
             '</a>';
 
         return $icon;
@@ -126,7 +126,7 @@ class IconsHelper
             $hideLink = BackendUtility::getLinkToDataHandlerAction($params);
 
             $icon = '<a href="#" onclick="' . htmlspecialchars('return jumpToUrl(' . $quoteLink . $hideLink . $quoteLink . ');') . '" title="' . $title . '">' .
-                $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL)->render() .
+                $this->iconFactory->getIcon('actions-edit-unhide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
                 '</a>';
             // Hide
         } else {
@@ -138,7 +138,7 @@ class IconsHelper
             $hideLink = BackendUtility::getLinkToDataHandlerAction($params);
 
             $icon = '<a href="#" onclick="' . htmlspecialchars('return jumpToUrl(' . $quoteLink . $hideLink . $quoteLink . ');') . '" title="' . $title . '">' .
-                $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL)->render() .
+                $this->iconFactory->getIcon('actions-edit-hide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
                 '</a>';
         }
         return $icon;
@@ -159,7 +159,7 @@ class IconsHelper
             $inline = true;
             $invert = false;
             $visible = 'hidden';
-            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL)->render();
+            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-unhide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render();
             $title = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
             $toggleTitle = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
         } else {
@@ -167,7 +167,7 @@ class IconsHelper
             $inline = true;
             $invert = true;
             $visible = 'visible';
-            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL)->render();
+            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-hide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render();
             $title = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
             $toggleTitle = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
         }
@@ -197,7 +197,7 @@ class IconsHelper
      */
     public function getHiddenRecordIcon($table, $uid, $hidden)
     {
-        $hiddenRecordIcon = $this->iconFactory->getIconForRecord($table, ['uid' => $uid, 'hidden' => $hidden], Icon::SIZE_SMALL)->render();
+        $hiddenRecordIcon = $this->iconFactory->getIconForRecord($table, ['uid' => $uid, 'hidden' => $hidden], \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render();
 
         return '
         <td class="col-icon nowrap">

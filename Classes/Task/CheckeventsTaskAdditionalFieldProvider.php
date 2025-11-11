@@ -50,6 +50,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
      * @return array Additional fields
      * @see \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface->getAdditionalFields($taskInfo, $task, $schedulerModule)
      */
+    #[\Override]
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
@@ -129,6 +130,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
      *
      * @return boolean TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
      */
+    #[\Override]
     public function validateAdditionalFields(
         array &$submittedData,
         SchedulerModuleController $schedulerModule
@@ -161,6 +163,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
      *
      * @return void
      */
+    #[\Override]
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
         /** @var $task CheckeventTask */

@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format\Fullcalendar;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -42,11 +41,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class JsFooterViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -62,23 +60,17 @@ class JsFooterViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $categories = $arguments['categories'];
-        $settings = $arguments['settings'];
-        $link = $arguments['link'];
-
+    public function render()
+    {
+        $categories = $this->arguments['categories'];
+        $settings = $this->arguments['settings'];
+        $link = $this->arguments['link'];
         $js1 = '';
-
         $js1 .= "$(document).ready(function() {";
         $js1 .= "$('#calendar').fullCalendar({";
         if (!empty($settings['fullCalendarJS'])) {
             $js1 .= $settings['fullCalendarJS'];
         }
-
         $js1 .= "events: {
                     url: '".$link."',
                     data: function() {
@@ -104,7 +96,6 @@ class JsFooterViewHelper extends AbstractViewHelper
         $js1 .= "eventMouseover: function(event, jsEvent, view) {
                             $(jsEvent.target).attr('title', moment(event.start).format('LT') + ' - ' + moment(event.end).format('LT') + ' ' + event.title);
                     },";
-
         $js1 .= "eventRender: function(event, element, view) {
                         if (view.name === 'agendaDay' && event.freePlaces != '0') {
                             element.find('.fc-event-title')
@@ -119,16 +110,13 @@ class JsFooterViewHelper extends AbstractViewHelper
                             $('#loading').hide();
                         }
                     },";
-
         // close fullCalendar()
         $js1 .= '});';
         // close $(document).ready()
         $js1 .= '});';
-
         /** @var $pageRenderer PageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $pageRenderer->addJsFooterInlineCode('js-slub-fullcalendar-config', $js1);
-
         if (empty($settings['fullCalendarJS'])) {
             $pageRenderer->addJsFooterLibrary('js-slub-fullcalendar-init', 'typo3conf/ext/slub_events/Resources/Public/Js/slub-events-fullcalendar-init.js');
         }

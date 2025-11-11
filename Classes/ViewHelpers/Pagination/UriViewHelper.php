@@ -15,6 +15,7 @@ class UriViewHelper extends AbstractTagBasedViewHelper
     /**
      * Initialize arguments
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -27,6 +28,7 @@ class UriViewHelper extends AbstractTagBasedViewHelper
      *
      * @return string The rendered uri
      */
+    #[\Override]
     public function render(): string
     {
         $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();

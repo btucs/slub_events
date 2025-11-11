@@ -37,12 +37,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 class FunctionBarViewHelper extends AbstractBackendViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * As this ViewHelper renders HTML, the output must not be escaped.
      *
@@ -53,6 +50,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -79,7 +77,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
      */
     protected static function getGeniusBarIcon(Event $event)
     {
-        if ($event !== null && $event->getGeniusBar()) {
+        if ($event instanceof \Slub\SlubEvents\Domain\Model\Event && $event->getGeniusBar()) {
             $title = LocalizationUtility::translate('tx_slubevents_domain_model_event.genius_bar', 'slub_events', $arguments = null);
             return '<span title="' . $title . '" class="geniusbar">[W]&nbsp;</span>';
         }
@@ -94,26 +92,20 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $icon = $arguments['icon'];
-        $event = $arguments['event'];
+    public function render()
+    {
+        $icon = $this->arguments['icon'];
+        $event = $this->arguments['event'];
         if ($event !== null) {
             $row['uid'] = $event->getUid();
             $row['title'] = $event->getTitle();
             $row['hidden'] = $event->getHidden();
         }
-
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $storagePid = $frameworkConfiguration['persistence']['storagePid'];
-
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $iconHelper = $objectManager->get(IconsHelper::class);
-
         $content = match ($icon) {
             'new' => $iconHelper->getNewIcon('tx_slubevents_domain_model_event', $storagePid),
             'edit' => $iconHelper->getEditIcon('tx_slubevents_domain_model_event', $row),
@@ -122,9 +114,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
             'datepicker' => $iconHelper->getDatePickerIcon(),
             default => $content,
         };
-
         return $content;
-
     }
 
 }

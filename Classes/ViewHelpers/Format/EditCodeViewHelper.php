@@ -28,7 +28,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
 use \Slub\SlubEvents\Domain\Model\Event;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Adds the Editcode to the form and to the user session
@@ -38,11 +37,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class EditCodeViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -80,23 +78,16 @@ class EditCodeViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $event = $arguments['event'];
-
+    public function render()
+    {
+        $event = $this->arguments['event'];
         $editCodeDummy = self::getSessionData('editcode');
-
         // create new editcode-dummy code
         if (empty($editCodeDummy)) {
             $editCodeDummy = hash('sha256', random_int(0, mt_getrandmax()) . $event->getTitle() . time() . 'dummy');
         }
-
         // set editcode-dummy for Spam/Form-double-sent protection
         self::setSessionData('editcode', $editCodeDummy);
-
         return $editCodeDummy;
     }
 }

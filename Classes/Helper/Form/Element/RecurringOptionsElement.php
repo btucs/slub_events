@@ -29,6 +29,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class RecurringOptionsElement extends AbstractFormElement
 {
+    #[\Override]
     public function render()
     {
         // Custom TCA properties and other data can be found in $this->data, for example the above

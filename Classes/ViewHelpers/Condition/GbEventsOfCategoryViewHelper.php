@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Counts events of given category
@@ -45,11 +44,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class GbEventsOfCategoryViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -83,21 +81,17 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $category = $arguments['category'];
-        $events = self::getEventRepository()->findAllGbByCategory($category);
-        $categories = self::getCategoryRepository()->findCurrentBranch($category);
-
+    public function render()
+    {
+        $category = $this->arguments['category'];
+        $events = $this->getEventRepository()->findAllGbByCategory($category);
+        $categories = $this->getCategoryRepository()->findCurrentBranch($category);
         $showLink = false;
         if (empty($categories) || empty($events)) {
             /** @var \Slub\SlubEvents\Domain\Model\Event $event */
             foreach ($events as $event) {
                 $showLink = true;
-                if (self::getSubscriberRepository()->countAllByEvent($event) >= $event->getMaxSubscriber()) {
+                if ($this->getSubscriberRepository()->countAllByEvent($event) >= $event->getMaxSubscriber()) {
                     $showLink = false;
                 }
                 // event is cancelled
@@ -114,7 +108,6 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
                 }
             }
         }
-
         return $showLink;
     }
 
@@ -123,7 +116,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
      *
      * return eventRepository
      */
-    private static function getEventRepository()
+    private function getEventRepository()
     {
         if (null === static::$eventRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -138,7 +131,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
      *
      * return categoryRepository
      */
-    private static function getCategoryRepository()
+    private function getCategoryRepository()
     {
         if (null === static::$categoryRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -153,7 +146,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
      *
      * return subscriberRepository
      */
-    private static function getSubscriberRepository()
+    private function getSubscriberRepository()
     {
         if (null === static::$subscriberRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

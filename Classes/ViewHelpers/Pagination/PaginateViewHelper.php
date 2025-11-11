@@ -27,6 +27,7 @@ class PaginateViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -42,6 +43,7 @@ class PaginateViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
+    #[\Override]
     public static function renderStatic(
         array $arguments,
         Closure $renderChildrenClosure,

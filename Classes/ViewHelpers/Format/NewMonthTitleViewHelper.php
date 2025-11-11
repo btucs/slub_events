@@ -28,7 +28,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Show months as title in event listing
@@ -38,11 +37,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class NewMonthTitleViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -57,13 +55,10 @@ class NewMonthTitleViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $index = $arguments['index'];
-        $events = $arguments['events'];
+    public function render()
+    {
+        $index = $this->arguments['index'];
+        $events = $this->arguments['events'];
         // the first is shown anyway...
         if ($index == 0) {
 
@@ -86,7 +81,6 @@ class NewMonthTitleViewHelper extends AbstractViewHelper
                 return $date;
             }
         }
-
         return null;
     }
 }

@@ -49,6 +49,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * @return array Additional fields
      * @see \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface->getAdditionalFields($taskInfo, $task, $schedulerModule)
      */
+    #[\Override]
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
@@ -123,6 +124,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      *
      * @return boolean TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
      */
+    #[\Override]
     public function validateAdditionalFields(
         array &$submittedData,
         SchedulerModuleController $schedulerModule
@@ -165,6 +167,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      *
      * @return void
      */
+    #[\Override]
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
         /** @var $task CleanUpTask */

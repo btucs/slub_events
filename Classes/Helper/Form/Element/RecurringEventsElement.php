@@ -34,6 +34,7 @@ use Slub\SlubEvents\Helper\IconsHelper;
 
 class RecurringEventsElement extends AbstractFormElement
 {
+    #[\Override]
     public function render()
     {
         // Custom TCA properties and other data can be found in $this->data, for example the above

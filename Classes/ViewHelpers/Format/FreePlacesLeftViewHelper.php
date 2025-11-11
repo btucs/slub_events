@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Calculate Free Places
@@ -41,11 +40,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class FreePlacesLeftViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -66,14 +64,10 @@ class FreePlacesLeftViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $event = $arguments['event'];
-        $free = $event != null ? $event->getMaxSubscriber() - self::getSubscriberRepository()->countAllByEvent($event) : 0;
-
+    public function render()
+    {
+        $event = $this->arguments['event'];
+        $free = $event != null ? $event->getMaxSubscriber() - $this->getSubscriberRepository()->countAllByEvent($event) : 0;
         return ($free > 0) ? $free : 0;
     }
 
@@ -82,7 +76,7 @@ class FreePlacesLeftViewHelper extends AbstractViewHelper
      *
      * return SubscriberRepository
      */
-    private static function getSubscriberRepository()
+    private function getSubscriberRepository()
     {
         if (null === static::$subscriberRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

@@ -35,12 +35,11 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class MetaTagViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Arguments initialization
      *
      */
+    #[\Override]
     public function initializeArguments()
     {
         $this->registerArgument('property', 'string', 'Property of meta tag', false, '', false);
@@ -50,7 +49,7 @@ class MetaTagViewHelper extends AbstractViewHelper
         $this->registerArgument('forceAbsoluteUrl', 'boolean', 'Force absolut domain', false, false);
     }
 
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render()
     {
         // Skip if current record is part of tt_content CType shortcut
         if (!empty($GLOBALS['TSFE']->recordRegister)
@@ -61,16 +60,13 @@ class MetaTagViewHelper extends AbstractViewHelper
         ) {
             return;
         }
-
-        $useCurrentDomain = $arguments['useCurrentDomain'];
-        $forceAbsoluteUrl = $arguments['forceAbsoluteUrl'];
-        $content = (string)$arguments['content'];
-
+        $useCurrentDomain = $this->arguments['useCurrentDomain'];
+        $forceAbsoluteUrl = $this->arguments['forceAbsoluteUrl'];
+        $content = (string)$this->arguments['content'];
         // set current domain
         if ($useCurrentDomain) {
             $content = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
         }
-
         // prepend current domain
         if ($forceAbsoluteUrl) {
             $parsedPath = parse_url($content);
@@ -81,13 +77,12 @@ class MetaTagViewHelper extends AbstractViewHelper
                     . ltrim($content, '/');
             }
         }
-
         if ($content !== '') {
             $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-            if ($arguments['property']) {
-                $pageRenderer->setMetaTag('property', $arguments['property'], $content);
-            } elseif ($arguments['name']) {
-                $pageRenderer->setMetaTag('property', $arguments['name'], $content);
+            if ($this->arguments['property']) {
+                $pageRenderer->setMetaTag('property', $this->arguments['property'], $content);
+            } elseif ($this->arguments['name']) {
+                $pageRenderer->setMetaTag('property', $this->arguments['name'], $content);
             }
         }
     }

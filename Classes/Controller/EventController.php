@@ -53,6 +53,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
+    #[\Override]
     public function initializeAction(): void
     {
 
@@ -454,6 +455,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
+    #[\Override]
     public function errorAction(): \Psr\Http\Message\ResponseInterface
     {
         return $this->htmlResponse();

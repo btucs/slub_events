@@ -74,6 +74,7 @@ class SubscriberValidator extends AbstractValidator
      *
      * @return bool
      */
+    #[\Override]
     public function isValid(mixed $newSubscriber): void
     {
         if (strlen($newSubscriber->getName()) < 3) {

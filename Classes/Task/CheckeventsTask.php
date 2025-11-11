@@ -135,6 +135,7 @@ class CheckeventsTask extends AbstractTask
      * @return boolean TRUE on successful execution, FALSE on error
      * @throws \InvalidArgumentException if the email template file can not be read
      */
+    #[\Override]
     public function execute()
     {
         $successfullyExecuted = false;

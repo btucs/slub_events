@@ -32,7 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * check if given category has subcategories
@@ -42,11 +41,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class HasSubcategoriesViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -67,14 +65,10 @@ class HasSubcategoriesViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $category = $arguments['category'];
-        $categories = self::getCategoryRepository()->findCurrentBranch($category);
-
+    public function render()
+    {
+        $category = $this->arguments['category'];
+        $categories = $this->getCategoryRepository()->findCurrentBranch($category);
         if (empty($categories)) {
             return false;
         } else {
@@ -87,7 +81,7 @@ class HasSubcategoriesViewHelper extends AbstractViewHelper
      *
      * return categoryRepository
      */
-    private static function getCategoryRepository()
+    private function getCategoryRepository()
     {
         if (null === static::$categoryRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

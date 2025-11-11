@@ -122,7 +122,7 @@ class AbstractController extends ExtbaseActionController
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      */
-    protected $configurationManager;
+    protected \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager;
 
     /**
      * injectConfigurationManager
@@ -130,6 +130,7 @@ class AbstractController extends ExtbaseActionController
      * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
      * @return void
      */
+    #[\Override]
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
     {
 
@@ -223,6 +224,7 @@ class AbstractController extends ExtbaseActionController
      * initializeAction
      *
      */
+    #[\Override]
     protected function initializeAction(): void
     {
         if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {

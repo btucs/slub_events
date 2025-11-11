@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\ViewHelpers\Condition;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Check if value is in array
@@ -47,11 +46,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class InArrayViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -64,13 +62,10 @@ class InArrayViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $array = $arguments['array'];
-        $value = $arguments['value'];
+    public function render()
+    {
+        $array = $this->arguments['array'];
+        $value = $this->arguments['value'];
         if (is_array($array)) {
             return in_array($value, $array);
         } else {

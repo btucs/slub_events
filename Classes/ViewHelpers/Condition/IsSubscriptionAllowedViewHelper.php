@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Check if subscription is allowed for the given event
@@ -51,11 +50,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class IsSubscriptionAllowedViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -76,24 +74,19 @@ class IsSubscriptionAllowedViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $event = $arguments['event'];
-
+    public function render()
+    {
+        $event = $this->arguments['event'];
         // event is cancelled
         if ($event->getCancelled()) {
             return false;
         }
-
         // deadline reached....
         if (is_object($event->getSubEndDateTime()) && $event->getSubEndDateTime()->getTimestamp() < time()) {
             return false;
         }
         // limit reached already --> overbooked
-        return self::getSubscriberRepository()->countAllByEvent($event) < $event->getMaxSubscriber();
+        return $this->getSubscriberRepository()->countAllByEvent($event) < $event->getMaxSubscriber();
     }
 
     /**
@@ -101,7 +94,7 @@ class IsSubscriptionAllowedViewHelper extends AbstractViewHelper
      *
      * return SubscriberRepository
      */
-    private static function getSubscriberRepository()
+    private function getSubscriberRepository()
     {
         if (null === static::$subscriberRepository) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

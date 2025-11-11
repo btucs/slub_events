@@ -113,6 +113,7 @@ class JsonView extends ExtbaseJsonView
      * @param array $configuration
      * @return mixed
      */
+    #[\Override]
     protected function transformValue($value, array $configuration, $firstLevel = false)
     {
         if ($value instanceof ObjectStorage) {

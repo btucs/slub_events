@@ -28,7 +28,6 @@ namespace Slub\SlubEvents\ViewHelpers\Condition;
 use \Slub\SlubEvents\Domain\Model\Event;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Check if the given event is already in the past
@@ -48,11 +47,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class IsPastEventViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -66,19 +64,14 @@ class IsPastEventViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $event = $arguments['event'];
+    public function render()
+    {
+        $event = $this->arguments['event'];
         $isPast = false;
-
         // deadline reached...
         if (is_object($event->getSubEndDateTime()) && $event->getEndDateTime()->getTimestamp() < time()) {
             $isPast = true;
         }
-
         return $isPast;
     }
 }

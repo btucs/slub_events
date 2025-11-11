@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Get diff of DateTime object.
@@ -37,11 +36,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class DateDiffViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initialize arguments.
      */
+    #[\Override]
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -55,20 +53,16 @@ class DateDiffViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $dateEnd = $arguments['dateEnd'];
-        $dateStart = $arguments['dateStart'];
+    public function render()
+    {
+        $dateEnd = $this->arguments['dateEnd'];
+        $dateStart = $this->arguments['dateStart'];
         $diff = null;
         if ($dateEnd instanceof \DateTime
             && $dateStart instanceof \DateTime
         ) {
             $interval = $dateEnd->getTimestamp() - $dateStart->getTimestamp();
         }
-
         return ($interval / 60);
     }
 }
