@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Slub\SlubEvents\Domain\Repository;
 
 /***************************************************************
@@ -48,16 +49,9 @@ class CategoryRepository extends Repository
     public function findAllByUids($categories)
     {
         $query = $this->createQuery();
-
         // we have to ignore sys_language here
         $query->getQuerySettings()->setRespectSysLanguage(false);
-
-        $constraints = [];
-        $constraints[] = $query->in('uid', $categories);
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
+        $query->matching($query->in('uid', $categories));
 
         return $query->execute();
     }
@@ -101,14 +95,7 @@ class CategoryRepository extends Repository
     public function findAllByUidsTree($categories)
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->in('uid', $categories);
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
-
+        $query->matching($query->in('uid', $categories));
         $query->setOrderings(
             ['sorting' => QueryInterface::ORDER_ASCENDING]
         );
@@ -144,7 +131,11 @@ class CategoryRepository extends Repository
     #[Extbase\IgnoreValidation(['argumentName' => 'startCategory'])]
     public function findCurrentBranch($startCategory = null)
     {
-        $childCategorieIds = $this->findAllChildCategories($startCategory->getUid());
+      if($startCategory === null) {
+          return [];
+      }
+
+      $childCategorieIds = $this->findAllChildCategories($startCategory->getUid());
 
         // ups, no children found...
         if (count($childCategorieIds) == 0) {
@@ -202,18 +193,12 @@ class CategoryRepository extends Repository
     private function findChildCategories($startCategory = 0)
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-
-        $constraints[] = $query->equals('parent', $startCategory);
-
         $query->setOrderings(
             ['sorting' => QueryInterface::ORDER_DESCENDING]
         );
 
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
+        $query->matching($query->equals('parent', $startCategory));
+
         $categories = $query->execute();
 
         $childCategoriesIds = [];
@@ -242,16 +227,16 @@ class CategoryRepository extends Repository
     {
         $query = $this->createQuery();
 
-        $constraints = [];
+        $constraint = null;
 
         if ($startCategory !== null) {
-            $constraints[] = $query->equals('parents', $startCategory->getUid());
+            $constraint = $query->equals('parents', $startCategory->getUid());
         } else {
-            $constraints[] = $query->equals('parent', 0);
+            $constraint = $query->equals('parent', 0);
         }
 
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
+        if ($constraint !== null) {
+            $query->matching($constraint);
         }
         $categories = $query->execute();
 
@@ -294,7 +279,7 @@ class CategoryRepository extends Repository
 
         $constraints[] = $query->equals('parent', 0);
         $constraints[] = $query->equals('genius_bar', 1);
-        $query->matching($query->logicalAnd($constraints));
+        $query->matching($query->logicalAnd(...$constraints));
 
         // there should be only one !
         $query->setLimit(1);

@@ -517,13 +517,7 @@ class EventRepository extends Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored('hidden');
-
-        $constraints = [];
-        $constraints[] = $query->equals('uid', $uid);
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd(...$constraints));
-        }
+        $query->matching($query->equals('uid', $uid));
 
         return $query->execute()->getFirst();
     }
@@ -609,14 +603,7 @@ class EventRepository extends Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored('hidden');
-
-        $constraints = [];
-
-        $constraints[] = $query->lessThanOrEqual('end_date_time', strtotime(' - ' . $days . ' days'));
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd(...$constraints));
-        }
+        $query->matching($query->lessThanOrEqual('end_date_time', strtotime(' - ' . $days . ' days')));
 
         return $query->execute();
     }

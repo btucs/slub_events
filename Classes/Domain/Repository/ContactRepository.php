@@ -42,13 +42,6 @@ class ContactRepository extends Repository
     public function findAllSorted()
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
-
         $query->setOrderings(
             ['sorting' => QueryInterface::ORDER_ASCENDING]
         );
@@ -64,7 +57,6 @@ class ContactRepository extends Repository
      */
     public function findById($uid) {
         $query = $this->createQuery();
-        $constraints = [];
         $query->matching($query->equals('uid', $uid));
         $contact = $query->execute();
         return $contact;

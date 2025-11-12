@@ -45,14 +45,7 @@ class DisciplineRepository extends Repository
     public function findAllByUidsTree($disciplines)
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->in('uid', $disciplines);
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
-
+        $query->matching($query->in('uid', $disciplines));
         $query->setOrderings(
             ['sorting' => QueryInterface::ORDER_ASCENDING]
         );

@@ -54,7 +54,7 @@ class SubscriberRepository extends Repository
         }
 
         if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         return $query->execute();
@@ -80,7 +80,7 @@ class SubscriberRepository extends Repository
         }
 
         if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         return $query->execute();
@@ -96,13 +96,7 @@ class SubscriberRepository extends Repository
     public function countAllByEvent($event)
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->equals('event', $event->getUid());
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
+        $query->matching($query->equals('event', $event->getUid()));
 
         // extbase doesn't know Mysql SUM() :-(
         $allSubscribers = $query->execute();
@@ -125,14 +119,7 @@ class SubscriberRepository extends Repository
     public function findAllByEvents($events)
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->in('event', $events);
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
-
+        $query->matching($query->in('event', $events));
         // order by start_date -> start_time...
         $query->setOrderings(
             ['crdate' => QueryInterface::ORDER_DESCENDING]
@@ -152,14 +139,7 @@ class SubscriberRepository extends Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored('hidden');
-
-        $constraints = [];
-
-        $constraints[] = $query->lessThanOrEqual('crdate', strtotime(' - ' . $days . ' days'));
-
-        if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
-        }
+        $query->matching($query->lessThanOrEqual('crdate', strtotime(' - ' . $days . ' days')));
 
         return $query->execute();
 
