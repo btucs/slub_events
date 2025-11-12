@@ -628,11 +628,9 @@ class EventRepository extends Repository
     protected static function getTableName()
     {
         /**
-         * @var \TYPO3\CMS\Extbase\Object\ObjectManager                  $objectManager
          * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
          */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $dataMapper = $objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
+        $dataMapper = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
 
         return $dataMapper
             ->getDataMap(\Slub\SlubEvents\Domain\Model\Event::class)

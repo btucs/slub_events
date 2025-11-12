@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Scheduler Task for Statistics
@@ -184,13 +183,11 @@ class StatisticsTask extends AbstractTask
 //      $GLOBALS['BE_USER']->uc['lang'] = 'de';
         $GLOBALS['LANG']->init('de');
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->eventRepository = $objectManager->get(
+        $this->eventRepository = GeneralUtility::makeInstance(
             EventRepository::class
         );
 
-        $this->configurationManager = $objectManager->get(
+        $this->configurationManager = GeneralUtility::makeInstance(
             ConfigurationManagerInterface::class
         );
     }

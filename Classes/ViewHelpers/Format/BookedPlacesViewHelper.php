@@ -30,7 +30,6 @@ use \Slub\SlubEvents\Domain\Model\Event;
 use \Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -81,8 +80,7 @@ class BookedPlacesViewHelper extends AbstractViewHelper
     private function getSubscriberRepository()
     {
         if (null === static::$subscriberRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            static::$subscriberRepository = $objectManager->get(subscriberRepository::class);
+            static::$subscriberRepository = GeneralUtility::makeInstance(SubscriberRepository::class);
         }
 
         return static::$subscriberRepository;

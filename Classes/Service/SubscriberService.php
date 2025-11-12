@@ -19,7 +19,6 @@ use Slub\SlubEvents\Domain\Model\Event;
 use Slub\SlubEvents\Domain\Model\Subscriber;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @package slub_events
@@ -42,10 +41,7 @@ class SubscriberService
      */
     public function __construct()
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->uriBuilder = $objectManager->get(UriBuilder::class);
+        $this->uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
     }
 
     /**

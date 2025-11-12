@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\Helper\Form\Element;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
 use Slub\SlubEvents\Helper\IconsHelper;
@@ -41,8 +40,7 @@ class RecurringEventsElement extends AbstractFormElement
         // parameters are available in $this->data['parameterArray']['fieldConf']['config']['parameters']
         $result = $this->initializeResultArray();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
 
         $configurationArray = [
             'persistence' => [
@@ -51,7 +49,7 @@ class RecurringEventsElement extends AbstractFormElement
         ];
         $configurationManager->setConfiguration($configurationArray);
 
-        $eventRepository = $objectManager->get(EventRepository::class);
+        $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
 
         $childEvents = $eventRepository->findFutureByParent($this->data['databaseRow']['uid']);
 
@@ -83,7 +81,7 @@ class RecurringEventsElement extends AbstractFormElement
             $output .= '<div class="table-fit">';
             $output .= '<table data-table="'.$table.'" class="table table-striped table-hover">';
 
-            $iconHelper = $objectManager->get(IconsHelper::class);
+            $iconHelper = GeneralUtility::makeInstance(IconsHelper::class);
             foreach ($childEvents as $childEvent) {
               $output .= '<tr class="t3js-entity" data-table="tx_slubevents_domain_model_event" title="id='.$childEvent->getUid().'" data-uid="'.$childEvent->getUid().'" style="opacity: 1;">';
               $output .= $iconHelper->getHiddenRecordIcon('tx_slubevents_domain_model_event', $childEvent->getUid(), $childEvent->getHidden());

@@ -22,7 +22,6 @@ use Slub\SlubEvents\Service\ApiService;
 use Slub\SlubEvents\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @package slub_events
@@ -65,12 +64,9 @@ class EventController extends AbstractController
      */
     public function __construct()
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->apiService = $objectManager->get(ApiService::class);
-        $this->apiAuthentication = $objectManager->get(ApiAuthentication::class);
-        $this->eventService = $objectManager->get(EventService::class);
+        $this->apiService = GeneralUtility::makeInstance(ApiService::class);
+        $this->apiAuthentication = GeneralUtility::makeInstance(ApiAuthentication::class);
+        $this->eventService = GeneralUtility::makeInstance(EventService::class);
 
         $this->allowApiAccess = $this->apiAuthentication->authenticateUser();
     }

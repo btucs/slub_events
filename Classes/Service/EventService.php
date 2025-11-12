@@ -18,7 +18,6 @@ namespace Slub\SlubEvents\Service;
 use Slub\SlubEvents\Domain\Model\Event;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @package slub_events
@@ -46,12 +45,9 @@ class EventService
      */
     public function __construct()
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->categoryService = $objectManager->get(CategoryService::class);
-        $this->subscriberService = $objectManager->get(SubscriberService::class);
-        $this->eventRepository = $objectManager->get(EventRepository::class);
+        $this->categoryService =GeneralUtility::makeInstance(CategoryService::class);
+        $this->subscriberService = GeneralUtility::makeInstance(SubscriberService::class);
+        $this->eventRepository = GeneralUtility::makeInstance(EventRepository::class);
     }
 
     /**

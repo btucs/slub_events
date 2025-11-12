@@ -17,7 +17,6 @@ namespace Slub\SlubEvents\Service;
 
 use Slub\SlubEvents\Domain\Repository\DisciplineRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @package slub_events
@@ -35,11 +34,8 @@ class DisciplineService
      */
     public function __construct()
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         /** @var DisciplineRepository $disciplineRepository */
-        $this->disciplineRepository = $objectManager->get(DisciplineRepository::class);
+        $this->disciplineRepository = GeneralUtility::makeInstance(DisciplineRepository::class);
     }
 
     /**

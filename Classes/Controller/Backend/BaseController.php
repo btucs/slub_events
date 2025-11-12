@@ -37,7 +37,6 @@ class BaseController extends AbstractController
      * @var int
      */
     public $pageUid;
-    public $objectManager;
     /**
      * @var array
      */
@@ -88,7 +87,7 @@ class BaseController extends AbstractController
     protected function createMenu(): void
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
-        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
         $menu = $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();

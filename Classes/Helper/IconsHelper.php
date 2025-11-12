@@ -33,7 +33,6 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 class IconsHelper
 {
@@ -43,21 +42,13 @@ class IconsHelper
     protected $iconFactory;
 
     /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
      * FunctionBarViewHelper constructor.
      *
      * Use dependency injection depending on TYPO3 version
-     *
-     * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(ObjectManagerInterface $objectManager)
+    public function __construct()
     {
-        $this->objectManager = $objectManager;
-        $this->iconFactory = $this->objectManager->get(\TYPO3\CMS\Core\Imaging\IconFactory::class);
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
     }
 
     /**

@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
@@ -251,11 +250,8 @@ class EmailHelper
         ?ConfigurationManagerInterface $configurationManager,
         $format = 'html'
     ): string {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         /** @var StandaloneView $emailViewHTML */
-        $emailViewHTML = $objectManager->get(StandaloneView::class);
+        $emailViewHTML = GeneralUtility::makeInstance(StandaloneView::class);
         $emailViewHTML->getRequest()->setControllerExtensionName('SlubEvents');
         $emailViewHTML->setFormat($format);
         $emailViewHTML->assignMultiple($variables);

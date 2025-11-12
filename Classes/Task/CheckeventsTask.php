@@ -34,7 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -98,22 +97,19 @@ class CheckeventsTask extends AbstractTask
      */
     protected function initializeAction()
     {
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->subscriberRepository = $objectManager->get(
+        $this->subscriberRepository =GeneralUtility::makeInstance(
             SubscriberRepository::class
         );
 
-        $this->eventRepository = $objectManager->get(
+        $this->eventRepository = GeneralUtility::makeInstance(
             EventRepository::class
         );
 
-        $this->configurationManager = $objectManager->get(
+        $this->configurationManager = GeneralUtility::makeInstance(
             \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::class
         );
 
-        $this->persistenceManager = $objectManager->get(
+        $this->persistenceManager = GeneralUtility::makeInstance(
             PersistenceManager::class
         );
 

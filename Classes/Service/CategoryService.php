@@ -20,7 +20,6 @@ use Slub\SlubEvents\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @package slub_events
@@ -45,11 +44,8 @@ class CategoryService
      */
     public function __construct()
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         /** @var CategoryRepository $categoryRepository */
-        $this->categoryRepository = $objectManager->get(CategoryRepository::class);
+        $this->categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
 
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);

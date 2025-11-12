@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\Task;
 
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -163,22 +162,19 @@ class CleanUpTask extends AbstractTask
      */
     protected function initializeAction()
     {
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->subscriberRepository = $objectManager->get(
+        $this->subscriberRepository = GeneralUtility::makeInstance(
             SubscriberRepository::class
         );
 
-        $this->eventRepository = $objectManager->get(
+        $this->eventRepository = GeneralUtility::makeInstance(
             EventRepository::class
         );
 
-        $this->configurationManager = $objectManager->get(
+        $this->configurationManager = GeneralUtility::makeInstance(
             ConfigurationManagerInterface::class
         );
 
-        $this->persistenceManager = $objectManager->get(
+        $this->persistenceManager = GeneralUtility::makeInstance(
             PersistenceManager::class
         );
     }

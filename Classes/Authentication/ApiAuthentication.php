@@ -18,7 +18,6 @@ namespace Slub\SlubEvents\Authentication;
 use Slub\SlubEvents\Mvc\View\JsonView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class ApiAuthentication
@@ -43,10 +42,7 @@ class ApiAuthentication
 
     public function __construct()
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
     }
 
     /**

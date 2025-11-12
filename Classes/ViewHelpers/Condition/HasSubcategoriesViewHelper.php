@@ -29,7 +29,6 @@ use \Slub\SlubEvents\Domain\Model\Category;
 use \Slub\SlubEvents\Domain\Repository\CategoryRepository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -84,8 +83,7 @@ class HasSubcategoriesViewHelper extends AbstractViewHelper
     private function getCategoryRepository()
     {
         if (null === static::$categoryRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            static::$categoryRepository = $objectManager->get(categoryRepository::class);
+            static::$categoryRepository = GeneralUtility::makeInstance(categoryRepository::class);
         }
 
         return static::$categoryRepository;

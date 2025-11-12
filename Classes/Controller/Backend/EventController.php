@@ -30,7 +30,6 @@ use Slub\SlubEvents\Utility\TextUtility;
  */
 class EventController extends BaseController
 {
-    public $objectManager;
     /**
      * action beList
      */
@@ -121,7 +120,7 @@ class EventController extends BaseController
     {
         $availableProperties = ObjectAccess::getGettablePropertyNames($event);
         /** @var Event $newEvent */
-        $newEvent = $this->objectManager->get(Event::class);
+        $newEvent = GeneralUtility::makeInstance(Event::class);
 
         foreach ($availableProperties as $propertyName) {
             if (ObjectAccess::isPropertySettable($newEvent, $propertyName)

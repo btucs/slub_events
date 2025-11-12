@@ -32,7 +32,6 @@ use \Slub\SlubEvents\Domain\Repository\EventRepository;
 use \Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -119,8 +118,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
     private function getEventRepository()
     {
         if (null === static::$eventRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            static::$eventRepository = $objectManager->get(eventRepository::class);
+            static::$eventRepository = GeneralUtility::makeInstance(eventRepository::class);
         }
 
         return static::$eventRepository;
@@ -134,8 +132,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
     private function getCategoryRepository()
     {
         if (null === static::$categoryRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            static::$categoryRepository = $objectManager->get(categoryRepository::class);
+            static::$categoryRepository = GeneralUtility::makeInstance(categoryRepository::class);
         }
 
         return static::$categoryRepository;
@@ -149,8 +146,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
     private function getSubscriberRepository()
     {
         if (null === static::$subscriberRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            static::$subscriberRepository = $objectManager->get(subscriberRepository::class);
+            static::$subscriberRepository = GeneralUtility::makeInstance(subscriberRepository::class);
         }
 
         return static::$subscriberRepository;

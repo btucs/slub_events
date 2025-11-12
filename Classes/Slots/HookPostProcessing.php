@@ -24,7 +24,6 @@ namespace Slub\SlubEvents\Slots;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Slub\SlubEvents\Controller\EventController;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
@@ -134,8 +133,7 @@ class HookPostProcessing
             // we need to update/create or delete all child events
             if ($status == "update") {
 
-                $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-                $eventController = $objectManager->get(EventController::class);
+                $eventController = GeneralUtility::makeInstance(EventController::class);
 
                 if ($pObj->checkValue_currentRecord['recurring'] == 1) {
                     $eventController->createChildsAction($idElement);
@@ -182,17 +180,17 @@ class HookPostProcessing
     {
       if ($table == 'tx_slubevents_domain_model_event' && $recordToDelete['parent'] == 0) {
           //in case of a parent (recurring) event, delete all children, too
-          $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-          $configurationManager = $objectManager->get(ConfigurationManager::class);
+          $eventController = GeneralUtility::makeInstance(EventController::class);
+          $configurationManager = $eventController->getConfigurationManager();
           $configurationArray = [
               'persistence' => [
                   'storagePid' => $recordToDelete['pid'],
               ],
           ];
           $configurationManager->setConfiguration($configurationArray);
-          $eventRepository = $objectManager->get(EventRepository::class);
+          $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
           $eventRepository->deleteAllNotAllowedChildren([], $id);
-          $persistenceManager = $objectManager->get(PersistenceManager::class);
+          $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
           $persistenceManager->persistAll();
       }
     }

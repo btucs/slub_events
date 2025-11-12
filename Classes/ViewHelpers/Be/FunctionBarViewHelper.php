@@ -31,8 +31,6 @@ use \Slub\SlubEvents\Domain\Model\Event;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -62,12 +60,6 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
      * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
-
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
 
     /**
      * Returns the Genius Bar Icon
@@ -104,8 +96,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $storagePid = $frameworkConfiguration['persistence']['storagePid'];
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $iconHelper = $objectManager->get(IconsHelper::class);
+        $iconHelper = GeneralUtility::makeInstance(IconsHelper::class);
         $content = match ($icon) {
             'new' => $iconHelper->getNewIcon('tx_slubevents_domain_model_event', $storagePid),
             'edit' => $iconHelper->getEditIcon('tx_slubevents_domain_model_event', $row),
