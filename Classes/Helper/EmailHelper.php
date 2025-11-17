@@ -62,7 +62,7 @@ class EmailHelper
         $unlinkFiles = [];
         $emailTextHTML = self::renderEmailTemplate($templateName, $variables, $configurationManager);
 
-        /** @var $message \TYPO3\CMS\Core\Mail\MailMessage */
+        /** @var \TYPO3\CMS\Core\Mail\MailMessage $message*/
         $message = GeneralUtility::makeInstance(MailMessage::class);
         $message->setTo($recipient)
             ->setFrom($sender)

@@ -62,7 +62,7 @@ class EventController extends AbstractController
             // We only want to set the tag once in one request, so we have to cache that statically if it has been done
             static $cacheTagsSet = false;
 
-            /** @var $typoScriptFrontendController \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
+            /** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $typoScriptFrontendController */
             $typoScriptFrontendController = $GLOBALS['TSFE'];
             if (!$cacheTagsSet) {
                 $typoScriptFrontendController->addCacheTags(

@@ -166,7 +166,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
     #[\Override]
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
-        /** @var $task CheckeventTask */
+        /** @var CheckeventTask $task */
         $task->storagePid = $submittedData['slub_events']['storagePid'];
         $task->senderEmailAddress = $submittedData['slub_events']['senderEmailAddress'];
         $task->language = $submittedData['slub_events']['language'];

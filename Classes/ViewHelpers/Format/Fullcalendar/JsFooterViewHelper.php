@@ -114,7 +114,7 @@ class JsFooterViewHelper extends AbstractViewHelper
         $js1 .= '});';
         // close $(document).ready()
         $js1 .= '});';
-        /** @var $pageRenderer PageRenderer */
+        /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $pageRenderer->addJsFooterInlineCode('js-slub-fullcalendar-config', $js1);
         if (empty($settings['fullCalendarJS'])) {

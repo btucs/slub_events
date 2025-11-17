@@ -170,7 +170,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     #[\Override]
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
-        /** @var $task CleanUpTask */
+        /** @var CleanUpTask $task */
         $task->setStoragePid($submittedData['slub_events']['storagePid']);
         $task->setCleanupDays($submittedData['slub_events']['cleanupDays']);
         $task->setCleanupDaysEvents($submittedData['slub_events']['cleanupDaysEvents']);

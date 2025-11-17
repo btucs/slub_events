@@ -188,7 +188,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
     #[\Override]
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
-        /** @var $task StatisticsTask */
+        /** @var StatisticsTask $task */
         $task->setStoragePid($submittedData['slub_events']['storagePid']);
         $task->setReceiverEmailAddress(GeneralUtility::trimExplode(',',
             preg_replace('/[\n\s]+/', ',', (string) $submittedData['slub_events']['receiverEmailAddress'])));

@@ -271,7 +271,7 @@ class HookPreProcessing
         // render flash messages as text on CLI commands like impexp:import
         /** @var \TYPO3\CMS\Core\Messaging\FlashMessageService $flashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+        /** @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue $defaultFlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
         foreach ($flashMessages as $flashMessage) {
