@@ -8,9 +8,11 @@ use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -96,22 +98,29 @@ class PaginateViewHelper extends AbstractViewHelper
             $paginatorClass,
             $arguments['objects'],
             self::getPageNumber($arguments, $renderingContext),
-            $arguments['itemsPerPage']
+            (int)$arguments['itemsPerPage']
         );
     }
 
     /**
      * @param array $arguments
-     * @param RenderingContextInterface $renderingContext
+     * @param RenderingContextInterface&RenderingContext $renderingContext
      * @return int
      */
     protected static function getPageNumber(array $arguments, RenderingContextInterface $renderingContext): int
     {
-        $extensionName = $renderingContext->getControllerContext()->getRequest()->getControllerExtensionName();
-        $pluginName = $renderingContext->getControllerContext()->getRequest()->getPluginName();
+        $request = $renderingContext->getRequest();
+        $extbaseRequestParameters = $request->getAttribute('extbase');
+        if ($extbaseRequestParameters instanceof ExtbaseRequestParameters) {
+            $extensionName = $extbaseRequestParameters->getControllerExtensionName();
+            $pluginName = $extbaseRequestParameters->getPluginName();
+        } else {
+            // Fallback if extbase parameters are not available
+            return 1;
+        }
         $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
         $pluginNamespace = $extensionService->getPluginNamespace($extensionName, $pluginName);
-        $variables = $GLOBALS['TYPO3_REQUEST']->getParsedBody()[$pluginNamespace] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[$pluginNamespace] ?? null;
+        $variables = $request->getParsedBody()[$pluginNamespace] ?? $request->getQueryParams()[$pluginNamespace] ?? null;
         if ($variables !== null && !empty($variables[self::getName($arguments)]['currentPage'])) {
             return (int)$variables[self::getName($arguments)]['currentPage'];
         }

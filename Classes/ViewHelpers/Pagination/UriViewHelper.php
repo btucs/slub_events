@@ -4,7 +4,10 @@ declare(strict_types = 1);
 namespace Slub\SlubEvents\ViewHelpers\Pagination;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
@@ -31,9 +34,21 @@ class UriViewHelper extends AbstractTagBasedViewHelper
     #[\Override]
     public function render(): string
     {
-        $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
-        $extensionName = $this->renderingContext->getControllerContext()->getRequest()->getControllerExtensionName();
-        $pluginName = $this->renderingContext->getControllerContext()->getRequest()->getPluginName();
+        /** @var RenderingContext $renderingContext */
+        $renderingContext = $this->renderingContext;
+        $request = $renderingContext->getRequest();
+
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder->setRequest($request);
+
+        $extbaseRequestParameters = $request->getAttribute('extbase');
+        if ($extbaseRequestParameters instanceof ExtbaseRequestParameters) {
+            $extensionName = $extbaseRequestParameters->getControllerExtensionName();
+            $pluginName = $extbaseRequestParameters->getPluginName();
+        } else {
+            // Fallback if extbase parameters are not available
+            return '';
+        }
         $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
         $pluginNamespace = $extensionService->getPluginNamespace($extensionName, $pluginName);
         $argumentPrefix = $pluginNamespace . '[' . $this->arguments['name'] . ']';
@@ -48,10 +63,6 @@ class UriViewHelper extends AbstractTagBasedViewHelper
                    ->setArguments([$argumentPrefix => $arguments])
                    ->setAddQueryString(true)
                    ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash']);
-        $addQueryStringMethod = $this->arguments['addQueryStringMethod'] ?? null;
-        if (is_string($addQueryStringMethod)) {
-            $uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
-        }
         return $uriBuilder->build();
     }
 }
