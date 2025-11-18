@@ -150,26 +150,6 @@
                         </TCEforms>
                     </settings.limitByNextWeeks>
 
-                    <settings.eventOrdering>
-                        <TCEforms>
-                            <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.event_ordering</label>
-                            <config>
-                                <type>select</type>
-                                <renderType>selectSingle</renderType>
-                                <items>
-                                    <numIndex index="0">
-                                        <numIndex index="0">LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.ordering_ascending</numIndex>
-                                        <numIndex index="1">ASC</numIndex>
-                                    </numIndex>
-                                    <numIndex index="1">
-                                        <numIndex index="0">LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.ordering_descending</numIndex>
-                                        <numIndex index="1">DESC</numIndex>
-                                    </numIndex>
-                                </items>
-                            </config>
-                        </TCEforms>
-                    </settings.eventOrdering>
-
                     <settings.contactsSelection>
                         <TCEforms>
                             <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.show_contacts</label>

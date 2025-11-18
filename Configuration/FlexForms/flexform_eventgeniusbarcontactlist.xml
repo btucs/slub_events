@@ -10,62 +10,9 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <switchableControllerActions>
-                        <TCEforms>
-                            <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.select_function</label>
-                            <onChange>reload</onChange>
-                            <config>
-                                <type>select</type>
-                                <renderType>selectSingle</renderType>
-                                <items type="array">
-                                    <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.knowledgebar_view</numIndex>
-                                        <numIndex index="1">Category->list;Category->gbList;Category->contactList</numIndex>
-                                    </numIndex>
-                                    <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.contact_view</numIndex>
-                                        <numIndex index="1">Category->contactList;Category->list;Category->gbList</numIndex>
-                                    </numIndex>
-                                </items>
-                                <default></default>
-                            </config>
-                        </TCEforms>
-                    </switchableControllerActions>
-
-                    <settings.categorySelection>
-                        <TCEforms>
-                            <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.show_categories_start</label>
-                            <displayCond><![CDATA[FIELD:switchableControllerActions:=:Category->list;Category->gbList;Category->contactList]]></displayCond>
-                            <config>
-                                <type>select</type>
-                                <renderMode>tree</renderMode>
-                                <renderType>selectTree</renderType>
-                                <treeConfig>
-                                    <parentField>parent</parentField>
-                                    <appearance>
-                                        <expandAll>TRUE</expandAll>
-                                        <showHeader>TRUE</showHeader>
-                                        <width>600</width>
-                                    </appearance>
-                                </treeConfig>
-
-                                <foreign_table>tx_slubevents_domain_model_category</foreign_table>
-                                <foreign_table_where>AND tx_slubevents_domain_model_category.genius_bar = 1 AND
-                                    (tx_slubevents_domain_model_category.sys_language_uid = 0 OR
-                                    tx_slubevents_domain_model_category.l10n_parent = 0) AND
-                                    tx_slubevents_domain_model_category.hidden = 0
-                                    ORDER BY tx_slubevents_domain_model_category.sorting ASC
-                                </foreign_table_where>
-                                <minitems>1</minitems>
-                                <maxitems>1</maxitems>
-                            </config>
-                        </TCEforms>
-                    </settings.categorySelection>
-
                     <settings.contactSelection>
                         <TCEforms>
                             <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.contactperson</label>
-                            <displayCond><![CDATA[FIELD:switchableControllerActions:=:Category->contactList;Category->list;Category->gbList]]></displayCond>
                             <config>
                                 <type>select</type>
                                 <renderType>selectMultipleSideBySide</renderType>
@@ -85,7 +32,6 @@
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.showknowledgebar</label>
-                            <displayCond><![CDATA[FIELD:switchableControllerActions:=:Category->contactList;Category->list;Category->gbList]]></displayCond>
                             <config>
                                 <type>check</type>
                             </config>
@@ -97,7 +43,6 @@
                             <exclude>1</exclude>
                             <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.showevents</label>
                             <onChange>reload</onChange>
-                            <displayCond><![CDATA[FIELD:switchableControllerActions:=:Category->contactList;Category->list;Category->gbList]]></displayCond>
                             <config>
                                 <type>check</type>
                             </config>
@@ -134,7 +79,6 @@
                             <exclude>1</exclude>
                             <label>LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.showconsultations</label>
                             <onChange>reload</onChange>
-                            <displayCond><![CDATA[FIELD:switchableControllerActions:=:Category->contactList;Category->list;Category->gbList]]></displayCond>
                             <config>
                                 <type>check</type>
                             </config>

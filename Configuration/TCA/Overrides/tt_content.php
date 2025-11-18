@@ -4,67 +4,152 @@ defined('TYPO3') || die();
 /***************************************************************
  * Plugin Eventlist
  */
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'SlubEvents',
     'Eventlist',
-    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:plugin.Eventlist'
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.list_view'
 );
 
-$pluginSignature = 'slubevents_eventlist';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,', $pluginSignature, 'after:subheader');
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:slub_events/Configuration/FlexForms/flexform_eventlist.xml',
-    $pluginSignature
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
 );
 
 /***************************************************************
- * Plugin Eventsubscribe
+ * Plugin Eventlistupcoming
  */
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'SlubEvents',
-    'Eventsubscribe',
-    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:plugin.Eventsubscribe'
+    'Eventlistupcoming',
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.list_view_upcoming'
 );
 
-$pluginSignature = 'slubevents_eventsubscribe';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,', $pluginSignature, 'after:subheader');
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:slub_events/Configuration/FlexForms/flexform_eventsubscribe.xml',
-    $pluginSignature
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
+);
+
+/***************************************************************
+ * Plugin Eventlistmonth
+ */
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'SlubEvents',
+    'Eventlistmonth',
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.list_month_view'
+);
+
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
+);
+
+/***************************************************************
+ * Plugin Eventshow
+ */
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'SlubEvents',
+    'Eventshow',
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.single_view'
+);
+
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
+);
+
+/***************************************************************
+ * Plugin Eventsubscribecreate
+ */
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'SlubEvents',
+    'Eventsubscribecreate',
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.subscribe_view'
+);
+
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
+);
+
+/***************************************************************
+ * Plugin Eventsubscribedelete
+ */
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'SlubEvents',
+    'Eventsubscribedelete',
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.unsubscribe_view'
+);
+
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
 );
 
 /***************************************************************
  * Plugin Eventuserpanel
  */
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'SlubEvents',
     'Eventuserpanel',
-    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:plugin.Eventuserpanel'
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.userpanel_view'
 );
 
-$pluginSignature = 'slubevents_eventuserpanel';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,', $pluginSignature, 'after:subheader');
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:slub_events/Configuration/FlexForms/flexform_eventuserpanel.xml',
-    $pluginSignature
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
 );
 
 /***************************************************************
- * Plugin Eventgeniusbar
+ * Plugin Eventgeniusbarcontactlist
  */
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'SlubEvents',
-    'Eventgeniusbar',
-    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:plugin.Eventgeniusbar'
+    'Eventgeniusbarcontactlist',
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.contact_view'
 );
 
-$pluginSignature = 'slubevents_eventgeniusbar';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,', $pluginSignature, 'after:subheader');
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:slub_events/Configuration/FlexForms/flexform_eventgeniusbar.xml',
-    $pluginSignature
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
+);
+
+/***************************************************************
+ * Plugin Eventgeniusbarcategorylist
+ */
+$pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'SlubEvents',
+    'Eventgeniusbarcategorylist',
+    'LLL:EXT:slub_events/Resources/Private/Language/locallang_be.xlf:flexforms.knowledgebar_view'
+);
+
+[, $pluginName] = explode('_', $pluginSignature);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', '--div--;Configuration,pi_flexform,pages,recursive,', $pluginSignature, 'after:subheader');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+  '*',
+  'FILE:EXT:slub_events/Configuration/FlexForms/flexform_' . $pluginName . '.xml',
+  $pluginSignature,
 );
