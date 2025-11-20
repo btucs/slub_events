@@ -24,6 +24,8 @@ namespace Slub\SlubEvents\Slots;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use DateTimeZone;
+use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,6 +45,8 @@ class HookPreProcessing
      */
     protected $messages = [];
 
+    protected ?string $locale = null;
+
     /**
      * initializeAction
      *
@@ -50,16 +54,12 @@ class HookPreProcessing
      */
     protected function initialize()
     {
-        // TYPO3 doesn't set locales for backend-users --> so do it manually like this...
-        // is needed especially with gmstrftime
-        switch ($GLOBALS['BE_USER']->uc['lang']) {
-            case 'en':
-                setlocale(LC_ALL, 'en_GB.utf8');
-                break;
-            case 'de':
-                setlocale(LC_ALL, 'de_DE.utf8');
-                break;
-        }
+        $language = $GLOBALS['BE_USER']->uc['lang'] ?? null;
+        $this->locale = match ($language) {
+            'de' => 'de_DE',
+            'en' => 'en_GB',
+            default => $language,
+        };
     }
 
     /**
@@ -241,18 +241,20 @@ class HookPreProcessing
         // TYPO3 is working with dateTime values instead of unix timestamps in fieldArray
         // But on importing data, $time is a Unix timestamp
 
-        if ((int)$time === $time) {
-            // $time is integer == Unix timestamp
-            $dt = new \DateTime();
-            $dt->setTimestamp($time);
-        } else {
-            // $time is string e.g. "2021-05-25T02:24:00+00:00"
-            $dt = new \DateTime($time);
+        $dateTime = DateFormattingUtility::resolveDateTime($time);
+
+        if ($dateTime === null) {
+            return '';
         }
 
-        $formatedTimeString = gmstrftime('%a, %x %H:%M:%S', $dt->format('U'));
+        $utcDateTime = $dateTime->setTimezone(new DateTimeZone('UTC'));
 
-        return $formatedTimeString;
+        return DateFormattingUtility::formatPattern(
+            $utcDateTime,
+            'EEE, dd.MM.yyyy HH:mm:ss',
+            $this->locale ?? DateFormattingUtility::getDefaultLocale(),
+            'D, d.m.Y H:i:s'
+        );
     }
 
     /**

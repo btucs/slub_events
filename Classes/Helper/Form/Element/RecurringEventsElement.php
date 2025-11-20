@@ -24,6 +24,7 @@ namespace Slub\SlubEvents\Helper\Form\Element;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -53,13 +54,20 @@ class RecurringEventsElement extends AbstractFormElement
 
         $childEvents = $eventRepository->findFutureByParent($this->data['databaseRow']['uid']);
 
+        /** @var \Slub\SlubEvents\Domain\Model\Event|null $parentEvent */
         $parentEvent = $eventRepository->findOneByUidIncludeHidden($this->data['databaseRow']['uid']);
+        if (!$parentEvent) {
+            $result['html'] = '<div class="alert alert-danger">Parent event not found.</div>';
+            return $result;
+        }
 
-        $output .= '<script>require(["TYPO3/CMS/Recordlist/Tooltip"]);</script>
+        $output = '<script>require(["TYPO3/CMS/Recordlist/Tooltip"]);</script>
         ';
         $output .= '<h4>'. LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring',
             'slub_events').'</h4>';
+
+        $locale = DateFormattingUtility::getDefaultLocale();
 
         if ($this->data['databaseRow']['hidden'] == 1) {
             $output .= '<div class="alert alert-warning">'.LocalizationUtility::translate(
@@ -70,22 +78,32 @@ class RecurringEventsElement extends AbstractFormElement
                 'tx_slubevents_domain_model_event.recurring_parent',
                 'slub_events');
         }
-        $output .= ' <br /><strong>' . strftime('%A, %d.%m.%Y %H:%M', $parentEvent->getStartDateTime()->getTimestamp())
-        .'</strong></div>';
+        $output .= ' <br /><strong>' . DateFormattingUtility::formatPattern(
+            $parentEvent->getStartDateTime(),
+            'EEEE, dd.MM.yyyy HH:mm',
+            $locale,
+            'l, d.m.Y H:i'
+        ) .'</strong></div>';
 
-        if ($childEvents && count($childEvents)>0) {
+        if ($childEvents && count($childEvents) > 0) {
 
             $output .= '<p class="alert alert-info">'.LocalizationUtility::translate(
-              'tx_slubevents_domain_model_event.only_future_events',
-              'slub_events').'</p>';
+                'tx_slubevents_domain_model_event.only_future_events',
+                'slub_events').'</p>';
             $output .= '<div class="table-fit">';
+            $table = 'tx_slubevents_domain_model_event';
             $output .= '<table data-table="'.$table.'" class="table table-striped table-hover">';
 
             $iconHelper = GeneralUtility::makeInstance(IconsHelper::class);
             foreach ($childEvents as $childEvent) {
               $output .= '<tr class="t3js-entity" data-table="tx_slubevents_domain_model_event" title="id='.$childEvent->getUid().'" data-uid="'.$childEvent->getUid().'" style="opacity: 1;">';
               $output .= $iconHelper->getHiddenRecordIcon('tx_slubevents_domain_model_event', $childEvent->getUid(), $childEvent->getHidden());
-              $output .= '<td class="col-title col-responsive nowrap">'.strftime('%A, %d.%m.%Y %H:%M', $childEvent->getStartDateTime()->getTimestamp()).'</td>';
+              $output .= '<td class="col-title col-responsive nowrap">' . DateFormattingUtility::formatPattern(
+                  $childEvent->getStartDateTime(),
+                  'EEEE, dd.MM.yyyy HH:mm',
+                  $locale,
+                  'l, d.m.Y H:i'
+              ) . '</td>';
               $output .= $iconHelper->getHiddenCheckbox('tx_slubevents_domain_model_event', $childEvent->getUid(), $childEvent->getHidden());
               $output .= '</tr>';
             }

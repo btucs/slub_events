@@ -24,6 +24,8 @@ namespace Slub\SlubEvents\Helper\Form\Element;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use DateTimeImmutable;
+use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -38,17 +40,12 @@ class RecurringOptionsElement extends AbstractFormElement
 
         $recurring_options = unserialize($this->data['parameterArray']['itemFormElValue']);
 
-        $startDateTime = $this->data['databaseRow']['start_date_time'];
+        $startDateTime = DateFormattingUtility::resolveDateTime($this->data['databaseRow']['start_date_time']);
 
-        $week = [
-          1 => strftime("%A", strtotime('last Monday')),
-          2 => strftime("%A", strtotime('last Tuesday')),
-          3 => strftime("%A", strtotime('last Wednesday')),
-          4 => strftime("%A", strtotime('last Thursday')),
-          5 => strftime("%A", strtotime('last Friday')),
-          6 => strftime("%A", strtotime('last Saturday')),
-          7 => strftime("%A", strtotime('last Sunday')),
-        ];
+        $week = $this->buildWeekdayLabels();
+        $startWeekday = $startDateTime ? (int)$startDateTime->format('N') : 0;
+
+        $formField = '';
 
         // Weekday Settings ------
         if (!is_array($recurring_options['weekday'])) {
@@ -62,7 +59,7 @@ class RecurringOptionsElement extends AbstractFormElement
 
         for ($i=1; $i<8; $i++) {
           $disabled = FALSE;
-          if (strftime("%u", $startDateTime) == $i) {
+            if ($startWeekday === $i) {
               $active = 'active';
               $checked = 'checked="checked"';
               $disabled = TRUE;
@@ -190,4 +187,21 @@ class RecurringOptionsElement extends AbstractFormElement
 
         return $result;
     }
+
+      private function buildWeekdayLabels(): array
+      {
+        $weekStart = new DateTimeImmutable('monday this week');
+        $labels = [];
+
+        for ($i = 0; $i < 7; $i++) {
+          $labels[$i + 1] = DateFormattingUtility::formatPattern(
+            $weekStart->modify('+' . $i . ' days'),
+            'EEEE',
+            null,
+            'l'
+          );
+        }
+
+        return $labels;
+      }
 }

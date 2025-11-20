@@ -25,6 +25,7 @@ namespace Slub\SlubEvents\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -32,6 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use Slub\SlubEvents\Domain\Model\Event;
@@ -141,9 +143,11 @@ class EventController extends AbstractController
                             'tx_slubevents_domain_model_event',
                             'slub_events'
                         )
-                        . ': "' . $event->getTitle() . '" - ' . strftime(
-                            '%a, %x %H:%M',
-                            $event->getStartDateTime()->getTimeStamp()
+                        . ': "' . $event->getTitle() . '" - ' . DateFormattingUtility::formatPattern(
+                            $event->getStartDateTime(),
+                            'EEE, dd.MM.yyyy HH:mm',
+                            $this->resolveLocale(),
+                            'D, d.m.Y H:i'
                         ),
                     'eventPageDescription' => $shortDescription
                 ]
@@ -859,5 +863,15 @@ class EventController extends AbstractController
             }
         }
         return $disciplineIds;
+    }
+
+    private function resolveLocale(): ?string
+    {
+        $language = $this->request?->getAttribute('language');
+        if ($language instanceof SiteLanguage) {
+            return (string)$language->getLocale();
+        }
+
+        return null;
     }
 }

@@ -27,8 +27,11 @@ namespace Slub\SlubEvents\Task;
 use Psr\Http\Message\ServerRequestInterface;
 use Slub\SlubEvents\Helper\EmailHelper;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
+use Slub\SlubEvents\Utility\DateFormattingUtility;
+use IntlDateFormatter;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -184,10 +187,6 @@ class StatisticsTask extends AbstractTask
     protected function initializeAction()
     {
 
-        // TYPO3 doesn't set locales for backend-users --> so do it manually like this...
-        // is needed with strftime
-        setlocale(LC_ALL, 'de_DE.UTF-8');
-
         // simulate BE_USER setting to force fluid using the proper translation
 //      $GLOBALS['BE_USER']->uc['lang'] = 'de';
         $GLOBALS['LANG']->init('de');
@@ -262,17 +261,24 @@ class StatisticsTask extends AbstractTask
         $startDateTime = strtotime('first day of last month 00:00:00');
         $endDateTime = strtotime('last day of last month 23:59:59');
 
+        $startDate = DateFormattingUtility::createFromTimestamp($startDateTime);
+        $endDate = DateFormattingUtility::createFromTimestamp($endDateTime);
+
         $allevents = $this->eventRepository->findAllByDateInterval($startDateTime, $endDateTime);
 
         // used to name the csv file...
-        $nameTo = strftime('%Y%m', $startDateTime);
+        $nameTo = $startDate->format('Ym');
 
         // email to all receivers...
         $msg = 'Statistik Report Veranstaltungen: %s - %s';
         $successfullyExecuted = EmailHelper::sendTemplateEmail(
             $this->receiverEmailAddress,
             [$this->senderEmailAddress => 'SLUB Veranstaltungen - noreply'],
-            sprintf($msg, strftime('%x', $startDateTime), strftime('%x', $endDateTime)),
+            sprintf(
+                $msg,
+                DateFormattingUtility::formatLocalized($startDate, IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->resolveLocale()),
+                DateFormattingUtility::formatLocalized($endDate, IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->resolveLocale())
+            ),
             'Statistics',
             [
                 'events'    => $allevents,
@@ -284,5 +290,15 @@ class StatisticsTask extends AbstractTask
         );
 
         return $successfullyExecuted;
+    }
+
+    private function resolveLocale(): ?string
+    {
+        $language = $this->request?->getAttribute('language');
+        if ($language instanceof SiteLanguage) {
+            return (string)$language->getLocale();
+        }
+
+        return null;
     }
 }
