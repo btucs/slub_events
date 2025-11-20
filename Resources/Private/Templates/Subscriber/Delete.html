@@ -4,14 +4,14 @@
 <f:section name="main">
 
 <div class="event-short">
-	<h4><f:translate key="tx_slubevents_domain_model_event" />: {event.title}</h4>
+	<h4><f:translate key="tx_slubevents_domain_model_event" extensionName="slub_events" />: {event.title}</h4>
 	<f:render partial="Event/DateFromTo" arguments="{event : event}" />
 </div>
 
 <div class="hint">
 	<p>Sie haben sich erfolgreich von der o.g. Veranstaltung abgemeldet. Sie erhalten eine E-Mail an Ihre Adresse <b>{subscriber.email}</b>.</p>
 
-	<p>Hier finden Sie <f:link.action action="listOwn" controller="Event" pageUid="{settings.pidListOwn}" pluginName="Eventuserpanel"><f:translate key="view_my_events" /></f:link.action>.</p>
+	<p>Hier finden Sie <f:link.action action="listOwn" controller="Event" pageUid="{settings.pidListOwn}" pluginName="Eventuserpanel"><f:translate key="view_my_events" extensionName="slub_events" /></f:link.action>.</p>
 </div>
 
 </f:section>

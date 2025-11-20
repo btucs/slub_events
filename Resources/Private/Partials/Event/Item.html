@@ -24,7 +24,7 @@
 	<div class="teaser">
 		<f:if condition="{event.cancelled}">
 			<f:then>
-				<h4><f:translate key="tx_slubevents_domain_model_event.has_been_cancelled" /></h4>
+				<h4><f:translate key="tx_slubevents_domain_model_event.has_been_cancelled" extensionName="slub_events" /></h4>
 			</f:then>
 			<f:else>
 				<f:format.html>{event.teaser}</f:format.html>
@@ -37,23 +37,23 @@
 			<f:then>
 				<f:if condition="<se:format.freePlacesLeft event='{event}' /> == 1">
 					<f:then>
-						<f:translate key="tx_slubevents_domain_model_event.oneFreePlace" />
+						<f:translate key="tx_slubevents_domain_model_event.oneFreePlace" extensionName="slub_events" />
 					</f:then>
 					<f:else>
 						<se:format.freePlacesLeft event="{event}" />
-						<f:translate key="tx_slubevents_domain_model_event.freeplaces" />
+						<f:translate key="tx_slubevents_domain_model_event.freeplaces" extensionName="slub_events" />
 					</f:else>
 				</f:if>
 				-->
 				<f:link.action action="new" class="button subscribe" controller="Subscriber" pageUid="{settings.pidSubscribeForm}" arguments="{event : event}">
-					<f:translate key="tx_slubevents_domain_model_event.subscribe" />
+					<f:translate key="tx_slubevents_domain_model_event.subscribe" extensionName="slub_events" />
 				</f:link.action>
 			</f:then>
 			<f:else>
 				<f:if condition="{event.externalRegistration}">
 					<f:then>
 						<f:link.external uri="{event.externalRegistration}" class="button subscribe external" target="_blank">
-							<f:translate key="tx_slubevents_domain_model_event.external_registration" />
+							<f:translate key="tx_slubevents_domain_model_event.external_registration" extensionName="slub_events" />
 						</f:link.external>
 					</f:then>
 					<f:else>

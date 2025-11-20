@@ -4,15 +4,15 @@
 <f:section name="content">
     <f:flashMessages/>
 
-    <h1><f:translate key='be.writeNotificationHeading' /></h1>
+    <h1><f:translate key='be.writeNotificationHeading' extensionName="slub_events" /></h1>
 
     <div class="tx_slubevents">
         <f:form action="beSendNotification" controller="Backend\Subscriber" name="beSendNotification" method="post">
             <div class="emailtext">
                 <p>
-                    <f:translate key='be.onlineSurveyIntroPhrase' />
+                    <f:translate key='be.onlineSurveyIntroPhrase' extensionName="slub_events" />
                     <b>{event.contact.name} ({event.contact.email})</b>
-                    <f:translate key='be.onlineSurveyIntroPhraseEnd' />:
+                    <f:translate key='be.onlineSurveyIntroPhraseEnd' extensionName="slub_events" />:
                 </p>
                 <ul>
                     <f:for each="{event.subscribers}" as="subscriber">

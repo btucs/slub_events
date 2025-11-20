@@ -22,7 +22,7 @@
 								<f:then>
 								<li>
 									<div class="subscription">
-										<f:link.action action="delete" controller="Subscriber" pageUid="{settings.pidUnsubscribeForm}" pluginName="Eventsubscribe" arguments="{event : event, editcode : subscriber.editcode}"><f:translate key="tx_slubevents_domain_model_event.unsubscribe" /></f:link.action>
+										<f:link.action action="delete" controller="Subscriber" pageUid="{settings.pidUnsubscribeForm}" pluginName="Eventsubscribe" arguments="{event : event, editcode : subscriber.editcode}"><f:translate key="tx_slubevents_domain_model_event.unsubscribe" extensionName="slub_events" /></f:link.action>
 									</div>
 								</li>
 								</f:then>
@@ -34,7 +34,7 @@
 			</f:for>
 		</f:then>
 		<f:else>
-			<p><f:translate key="tx_slubevents_domain_model_subscriber.not_registered_to_events" /></p>
+			<p><f:translate key="tx_slubevents_domain_model_subscriber.not_registered_to_events" extensionName="slub_events" /></p>
 		</f:else>
 	</f:if>
 	</ul>
@@ -43,13 +43,13 @@
 	<!-- Check if user is logged in -->
 	<f:security.ifAuthenticated>
 		<f:then>
-			<p><f:translate key="tx_slubevents_domain_model_subscriber.not_registered_to_events" /></p>
+			<p><f:translate key="tx_slubevents_domain_model_subscriber.not_registered_to_events" extensionName="slub_events" /></p>
 		</f:then>
 		<f:else>
 			<div class="hint">
 				<p class="extrabox">
 					<f:format.raw>
-						<f:translate key="register.pleaseloginfirst" arguments="{0: '<a href=\'https://www.slub-dresden.de/Shibboleth.sso/Login?target={f:uri.page(absolute:\'1\', addQueryString:\'1\')->f:format.urlencode()}\'>', 1: '</a>'}" />
+						<f:translate key="register.pleaseloginfirst" extensionName="slub_events" arguments="{0: '<a href=\'https://www.slub-dresden.de/Shibboleth.sso/Login?target={f:uri.page(absolute:\'1\', addQueryString:\'1\')->f:format.urlencode()}\'>', 1: '</a>'}" />
 					</f:format.raw>
 				</p>
 			</div>

@@ -11,12 +11,12 @@
 			<f:if condition="{event.geniusBar}">
 				<f:then>
 					<h3>
-						<f:translate key="tx_slubevents_domain_model_event.individual_appointment"/>
+						<f:translate key="tx_slubevents_domain_model_event.individual_appointment" extensionName="slub_events"/>
 					</h3>
 				</f:then>
 				<f:else>
 					<h3>
-						<f:translate key="tx_slubevents_domain_model_event"/>
+						<f:translate key="tx_slubevents_domain_model_event" extensionName="slub_events"/>
 						: {event.title}
 					</h3>
 				</f:else>
@@ -31,7 +31,7 @@
 			</p>
 
 			<div class="category">
-				<f:translate key="tx_slubevents_domain_model_category"/>
+				<f:translate key="tx_slubevents_domain_model_category" extensionName="slub_events"/>
 				:
 				<f:for each="{event.categories}" as="category">
                     <span class="categorytitle"
@@ -39,7 +39,7 @@
 				</f:for>
 			</div>
 			<div class="location">
-				<f:translate key="tx_slubevents_domain_model_location"/>
+				<f:translate key="tx_slubevents_domain_model_location" extensionName="slub_events"/>
 				:
 				<f:if condition="{event.location.link}">
 					<f:then>

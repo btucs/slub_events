@@ -1,18 +1,18 @@
 {namespace se=Slub\SlubEvents\ViewHelpers}
 
 <label for="name">
-	<f:translate key="tx_slubevents_domain_model_subscriber.name"/>
+	<f:translate key="tx_slubevents_domain_model_subscriber.name" extensionName="slub_events"/>
 	<span class="required">*</span>
 </label>
 <f:form.textfield id="name" readonly="{readonly}" required="required" property="name"/><br/>
 <label for="email">
-	<f:translate key="tx_slubevents_domain_model_subscriber.email"/>
+	<f:translate key="tx_slubevents_domain_model_subscriber.email" extensionName="slub_events"/>
 	<span class="required">*</span>
 </label>
 <f:form.textfield id="email" type="email" readonly="{readonly}" required="required" property="email"/><br/>
 
 <label for="customerid">
-	<f:translate key="tx_slubevents_domain_model_subscriber.customerid"/>
+	<f:translate key="tx_slubevents_domain_model_subscriber.customerid" extensionName="slub_events"/>
 </label>
 <f:form.textfield id="customerid" type="text" readonly="{readonly}"
 				  property="customerid"/><br/>
@@ -21,12 +21,12 @@
 	<f:if condition="{event.maxNumber} >= {se:format.freePlacesLeft(event:'{event}')} || {event.maxNumber} == 0">
 		<f:then>
 			<f:format.printf arguments="{0: '<se:format.freePlacesLeft event=\'{event}\' />'}">
-				<f:translate key="tx_slubevents_domain_model_subscriber.number_max"/>
+				<f:translate key="tx_slubevents_domain_model_subscriber.number_max" extensionName="slub_events"/>
 			</f:format.printf>
 		</f:then>
 		<f:else>
 			<f:format.printf arguments="{0: '{event.maxNumber}'}">
-				<f:translate key="tx_slubevents_domain_model_subscriber.number_max"/>
+				<f:translate key="tx_slubevents_domain_model_subscriber.number_max" extensionName="slub_events"/>
 			</f:format.printf>
 		</f:else>
 	</f:if>
@@ -45,7 +45,7 @@
 		required="required"/>
 	</f:else>
 </f:if>
-<f:form.checkbox value="1" property="acceptpp" id="acceptpp"/> <label for="acceptpp"> <f:translate key="tx_slubevents_domain_model_subscriber.acceptpp"/> <span class="required">*</span> </label>
+<f:form.checkbox value="1" property="acceptpp" id="acceptpp"/> <label for="acceptpp"> <f:translate key="tx_slubevents_domain_model_subscriber.acceptpp" extensionName="slub_events"/> <span class="required">*</span> </label>
 
 <f:form.hidden property="editcode" value="<se:format.editCode event='{event}' />"/>
 <f:form.hidden property="message" value=""/>

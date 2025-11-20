@@ -4,7 +4,7 @@
 			<div class="col-sm-3">
 				<div class="form-group">
 					<label for="datetimepicker1" class="control-label">
-						<f:translate key="tx_slubevents_domain_model_event.start_date_time"/>
+						<f:translate key="tx_slubevents_domain_model_event.start_date_time" extensionName="slub_events"/>
 					</label>
 					<div class='input-group'>
 						<f:form.textfield id="datetimepicker1"
@@ -23,7 +23,7 @@
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<f:translate key="tx_slubevents_domain_model_category"/>
+				<f:translate key="tx_slubevents_domain_model_category" extensionName="slub_events"/>
 				<div class="foldtree">
 					<f:render partial="Backend/Event/CategoryTree"
 										section="categoryTree"

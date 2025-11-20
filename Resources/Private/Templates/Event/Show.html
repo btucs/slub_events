@@ -34,34 +34,33 @@
 				</f:if>
 
 				<div class="location">
-					<f:translate key="tx_slubevents_domain_model_location" />:
+					<f:translate key="tx_slubevents_domain_model_location" extensionName="slub_events"/>:
 					<f:render partial="Location/Link" arguments="{location: event.location, doLink: 'true', onlyParent: 'false'}" />
 					<f:format.html>{event.location.description}</f:format.html>
 				</div>
 
-				<div class="ics">
-					<f:link.action action="printCal" arguments="{event : event}" pageType="1469051993" controller="Event" pluginName="Eventlist" format="ics" title="{f:translate(key:'text.save_to_your_calendar')}" class="btn">ics</f:link.action>
-				</div>
-
-				<div class="subscription">
-					<f:if condition="<se:condition.IsSubscriptionAllowed event='{event}' />">
-						<f:then>
-							Mindestteilnehmerzahl: {event.minsubscriber} <br />
-							<f:if condition="<se:format.freePlacesLeft event='{event}' /> == 1">
-								<f:then>
-									<f:translate key="tx_slubevents_domain_model_event.oneFreePlace" />
-								</f:then>
-								<f:else>
-									<f:translate key="tx_slubevents_domain_model_event.freeplaces" />:
+			<div class="ics">
+				<f:link.action action="printCal" arguments="{event : event}" pageType="1469051993" controller="Event" pluginName="Eventlist" format="ics" title="{f:translate(key:'text.save_to_your_calendar', extensionName: 'slub_events')}" class="btn">ics</f:link.action>
+			</div>
+      <div class="subscription">
+				<f:if condition="<se:condition.IsSubscriptionAllowed event='{event}' />">
+					<f:then>
+						Mindestteilnehmerzahl: {event.minsubscriber} <br />
+						<f:if condition="<se:format.freePlacesLeft event='{event}' /> == 1">
+							<f:then>
+								<f:translate key="tx_slubevents_domain_model_event.oneFreePlace" extensionName="slub_events"/>
+							</f:then>
+							<f:else>
+								<f:translate key="tx_slubevents_domain_model_event.freeplaces" extensionName="slub_events"/>:
 									<se:format.freePlacesLeft event="{event}" />
 								</f:else>
 							</f:if>
 						</f:then>
-						<f:else>
-							<f:if condition="{event.externalRegistration}">
-								<f:then>
-									<f:link.external uri="{event.externalRegistration}" class="button subscribe external" target="_blank">
-										<f:translate key="tx_slubevents_domain_model_event.external_registration" />
+					<f:else>
+						<f:if condition="{event.externalRegistration}">
+							<f:then>
+								<f:link.external uri="{event.externalRegistration}" class="button subscribe external" target="_blank">
+									<f:translate key="tx_slubevents_domain_model_event.external_registration" extensionName="slub_events"/>
 									</f:link.external>
 								</f:then>
 								<f:else>
@@ -82,21 +81,21 @@
 					</f:if>
 				</div>
 
-				<div class="category">
-					<f:translate key="tx_slubevents_domain_model_category" />:
-					<f:for each="{event.categories}" as="category" iteration="categoryIterator">
-						{category.title}<f:if condition="{categoryIterator.isLast}"><f:else>,</f:else></f:if>
-					</f:for>
-				</div>
+			<div class="category">
+				<f:translate key="tx_slubevents_domain_model_category" extensionName="slub_events"/>:
+				<f:for each="{event.categories}" as="category" iteration="categoryIterator">
+					{category.title}<f:if condition="{categoryIterator.isLast}"><f:else>,</f:else></f:if>
+				</f:for>
+			</div>
 
-				<div class="submit">
-					<f:link.action action="list" class="button linkback" pageUid="{settings.pidListing}">
-						<f:translate key="paginate_back" />
+			<div class="submit">
+				<f:link.action action="list" class="button linkback" pageUid="{settings.pidListing}">
+					<f:translate key="paginate_back" extensionName="slub_events"/>
                     </f:link.action>
 					<f:if condition="<se:condition.IsSubscriptionAllowed event='{event}' />">
 						<f:then>
 							<f:link.action action="new" class="button subscribe" controller="Subscriber" pageUid="{settings.pidSubscribeForm}" arguments="{event : event}">
-								<f:translate key="tx_slubevents_domain_model_event.subscribe" />
+								<f:translate key="tx_slubevents_domain_model_event.subscribe" extensionName="slub_events" />
                             </f:link.action>
 						</f:then>
 					</f:if>
@@ -106,12 +105,12 @@
 			<f:else>
 				<div class="error">
 					<p>
-						<f:translate key="text.error.could_find_event" />
+						<f:translate key="text.error.could_find_event" extensionName="slub_events" />
 					</p>
 				</div>
 				<div class="submit">
 					<f:link.action action="list" class="button linkback" pageUid="{settings.pidListing}">
-						<f:translate key="paginate_back" /></f:link.action>
+						<f:translate key="paginate_back" extensionName="slub_events" /></f:link.action>
 				</div>
 			</f:else>
 		</f:if>

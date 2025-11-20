@@ -1,28 +1,28 @@
 {namespace se=Slub\SlubEvents\ViewHelpers}
 
 <label for="name">
-	<f:translate key="tx_slubevents_domain_model_subscriber.name"/>
+	<f:translate key="tx_slubevents_domain_model_subscriber.name" extensionName="slub_events"/>
 	<span class="required">*</span>
 </label>
 <f:form.textfield id="name" readonly="{readonly}" required="required" property="name"/><br/>
 <label for="email">
-	<f:translate key="tx_slubevents_domain_model_subscriber.email"/>
+	<f:translate key="tx_slubevents_domain_model_subscriber.email" extensionName="slub_events"/>
 	<span class="required">*</span>
 </label>
 <f:form.textfield id="email" type="email" readonly="{readonly}" required="required" property="email"/><br/>
 
 <label for="customerid">
-	<f:translate key="tx_slubevents_domain_model_subscriber.customerid"/>
+	<f:translate key="tx_slubevents_domain_model_subscriber.customerid" extensionName="slub_events"/>
 </label>
 <f:form.textfield id="customerid" type="number" additionalAttributes="{min: '1', max: '9999999'}" readonly="{readonly}"
 				  property="customerid"/><br/>
 
 <p>
-  <f:translate key="text.subscriber.please_ask_your_question"/>
+  <f:translate key="text.subscriber.please_ask_your_question" extensionName="slub_events"/>
 </p>
 
 <label for="message">
-	<f:translate key="tx_slubevents_domain_model_subscriber.message"/>
+	<f:translate key="tx_slubevents_domain_model_subscriber.message" extensionName="slub_events"/>
   <span class="required">*</span>
 </label>
 <f:form.textarea id="message" class="{readonly}" additionalAttributes="{required: 'required'}" property="message" cols="60" rows="8"/><br/>

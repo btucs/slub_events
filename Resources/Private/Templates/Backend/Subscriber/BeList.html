@@ -5,16 +5,16 @@
 	<table class="tx_slubevents table table-striped table-hover">
 		<tr>
 			<th>
-				<f:translate key="tx_slubevents_domain_model_subscriber.name"/>
+				<f:translate key="tx_slubevents_domain_model_subscriber.name" extensionName="slub_events"/>
 			</th>
 			<th>
-				<f:translate key="tx_slubevents_domain_model_subscriber.crdate"/>
+				<f:translate key="tx_slubevents_domain_model_subscriber.crdate" extensionName="slub_events"/>
 			</th>
 			<th>
-				<f:translate key="tx_slubevents_domain_model_event.title"/>
+				<f:translate key="tx_slubevents_domain_model_event.title" extensionName="slub_events"/>
 			</th>
 			<th>
-				<f:translate key="tx_slubevents_domain_model_subscriber.number"/>
+				<f:translate key="tx_slubevents_domain_model_subscriber.number" extensionName="slub_events"/>
 			</th>
 		</tr>
 		<f:for each="{subscribers}" as="subscriber" iteration="subscriberIterator">
@@ -39,7 +39,7 @@
 <f:section name="content">
 
 	<h1>
-		<f:translate key="tx_slubevents.be.subscriberlist"/>
+		<f:translate key="tx_slubevents.be.subscriberlist" extensionName="slub_events"/>
 	</h1>
 
 	<f:flashMessages/>
@@ -75,8 +75,8 @@
 			</f:if>
 		</f:then>
 		<f:else>
-			<f:be.infobox title="{f:translate(key: 'tx_slubevents.be.eventmanagement')}" state="2">
-				{f:translate(key: 'be.error.nofolderselected') -> f:format.raw()}
+			<f:be.infobox title="{f:translate(key: 'tx_slubevents.be.eventmanagement', extensionName: 'slub_events')}" state="2">
+				{f:translate(key: 'be.error.nofolderselected', extensionName: 'slub_events') -> f:format.raw()}
 			</f:be.infobox>
 		</f:else>
 	</f:if>

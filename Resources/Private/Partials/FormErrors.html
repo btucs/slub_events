@@ -4,7 +4,7 @@
 			<f:for each="{validationResults.flattenedErrors}" key="propertyPath" as="errors">
 				<f:groupedFor each="{errors}" as="errorsGrouped" groupBy="message" groupKey="message">
 					<li>
-						<f:translate key="validationerror_{message}"/>
+						<f:translate key="validationerror_{message}" extensionName="slub_events"/>
 					</li>
 				</f:groupedFor>
 			</f:for>

@@ -7,16 +7,16 @@
 <div class="event-short">
 	<f:if condition="{event.geniusBar}">
 		<f:then>
-			<h4><f:translate key="tx_slubevents_domain_model_event.individual_appointment" />: {category.title}</h4>
+			<h4><f:translate key="tx_slubevents_domain_model_event.individual_appointment" extensionName="slub_events" />: {category.title}</h4>
 		</f:then>
 		<f:else>
-			<h4><f:translate key="tx_slubevents_domain_model_event" />: {event.title}</h4>
+			<h4><f:translate key="tx_slubevents_domain_model_event" extensionName="slub_events" />: {event.title}</h4>
 		</f:else>
 	</f:if>
 	<strong><f:spaceless><f:render partial="Event/DateFromTo" arguments="{event : event}" /></f:spaceless></strong>
 
 	<div class="location">
-		<f:translate key="tx_slubevents_domain_model_location" />:
+		<f:translate key="tx_slubevents_domain_model_location" extensionName="slub_events" />:
 		<f:render partial="Location/Link" arguments="{location: event.location, doLink: 'true', onlyParent: 'false'}"/>
 	</div>
 
@@ -28,7 +28,7 @@
         <div class="hint">
             <p class="extrabox">
 				<f:format.raw>
-					<f:translate key="register.pleaseloginfirst" arguments="{0: '<a href=\'https://www.slub-dresden.de/Shibboleth.sso/Login?target={f:uri.page(absolute:\'1\', addQueryString:\'1\')->f:format.urlencode()}\'>', 1: '</a>'}" />
+					<f:translate key="register.pleaseloginfirst" extensionName="slub_events" arguments="{0: '<a href=\'https://www.slub-dresden.de/Shibboleth.sso/Login?target={f:uri.page(absolute:\'1\', addQueryString:\'1\')->f:format.urlencode()}\'>', 1: '</a>'}" />
 				</f:format.raw>
             </p>
         </div>
@@ -55,9 +55,9 @@
 
 	<div class="submit">
 		<div class="subscription">
-			<f:form.submit class="button submit" value="<f:translate key='tx_slubevents_domain_model_subscriber.submit_registration' />" />
+			<f:form.submit class="button submit" value="<f:translate key='tx_slubevents_domain_model_subscriber.submit_registration' extensionName='slub_events' />" />
 		</div>
-		<f:link.external class="button linkback" uri="javascript:history.back();"><f:translate key="paginate_back" /></f:link.external>
+		<f:link.external class="button linkback" uri="javascript:history.back();"><f:translate key="paginate_back" extensionName="slub_events" /></f:link.external>
 	</div>
 
 </f:form>

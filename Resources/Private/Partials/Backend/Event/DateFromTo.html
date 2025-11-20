@@ -3,7 +3,7 @@
 <f:if condition="{event.Allday} !=1 ">
 	<f:then>
 		<f:format.date date="{event.startDateTime}" format="%H:%M"/>
-		<f:translate key="tx_slubevents_domain_model_event.time_oclock"/>
+		<f:translate key="tx_slubevents_domain_model_event.time_oclock" extensionName="slub_events"/>
 	</f:then>
 </f:if>
 <f:if condition="{event.endDateTime}">
@@ -16,7 +16,7 @@
 				<f:if condition="{event.Allday} !=1 ">
 					<f:then>
 						<f:format.date date="{event.endDateTime}" format="%H:%M"/>
-						<f:translate key="tx_slubevents_domain_model_event.time_oclock"/>
+						<f:translate key="tx_slubevents_domain_model_event.time_oclock" extensionName="slub_events"/>
 					</f:then>
 				</f:if>
 			</f:then>
@@ -25,7 +25,7 @@
 					<f:then>
 						-
 						<f:format.date date="{event.endDateTime}" format="%H:%M"/>
-						<f:translate key="tx_slubevents_domain_model_event.time_oclock"/>
+						<f:translate key="tx_slubevents_domain_model_event.time_oclock" extensionName="slub_events"/>
 					</f:then>
 				</f:if>
 			</f:else>

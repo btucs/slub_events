@@ -40,7 +40,7 @@
 		</f:then>
 		<f:else>
 			<div class="contacts">
-				<p><f:translate key="tx_slubevents.gb.i_consult_you" /></p>
+				<p><f:translate key="tx_slubevents.gb.i_consult_you" extensionName="slub_events" /></p>
 				<f:for each="{contacts}" as="contact">
 					<div class="single-contact">
 						<f:if condition="{contact.photo}">
@@ -60,7 +60,7 @@
 				<f:then>
 					<f:if condition="{wibas}">
 						<f:then>
-                            <h3><f:translate key="tx_slubevents_domain_model_event.genius_bar" /></h3>
+                            <h3><f:translate key="tx_slubevents_domain_model_event.genius_bar" extensionName="slub_events" /></h3>
 							<f:if condition="{settings.hidePagination}">
 								<f:then>
 									<f:render section="wibaListing" arguments="{wibas: wibas, category: category, kind: 1}" />
@@ -106,7 +106,7 @@
 				<f:then>
 					<f:if condition="{events}">
 						<f:then>
-                            <h3><f:translate key="persEvents" /></h3>
+                            <h3><f:translate key="persEvents" extensionName="slub_events" /></h3>
 							<f:if condition="{settings.hidePagination}">
 								<f:then>
 									<f:render section="wibaListing" arguments="{wibas: events, category: category, kind: 2}" />
@@ -136,7 +136,7 @@
 				<f:then>
 					<f:if condition="{consultation}">
 						<f:then>
-                            <h3><f:translate key="persConsultingHours" /></h3>
+                            <h3><f:translate key="persConsultingHours" extensionName="slub_events" /></h3>
 							<f:if condition="{settings.hidePagination}">
 								<f:then>
 									<f:render section="wibaListing" arguments="{wibas: consultation, category: category, kind: 3}" />
@@ -174,7 +174,7 @@
                               <f:then></f:then>
                               <f:else>
                                   <ul>
-                                      <li><f:translate key="tx_slubevents.gb.no_date_neither_event" /></li>
+                                      <li><f:translate key="tx_slubevents.gb.no_date_neither_event" extensionName="slub_events" /></li>
                                   </ul>
                               </f:else>
                           </f:if>

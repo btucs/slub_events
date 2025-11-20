@@ -8,14 +8,14 @@
             <f:then>
                 <f:link.action action="new" class="button subscribe" controller="Subscriber" pageUid="{settings.pidSubscribeForm}"
                 title="Anmelden bei {event.contact.name}" arguments="{event : event, category: category}">
-                <f:translate key="tx_slubevents_domain_model_event.subscribe"/>
+                <f:translate key="tx_slubevents_domain_model_event.subscribe" extensionName="slub_events"/>
             </f:link.action>
             </f:then>
             <f:else>
                 <f:if condition="{event.externalRegistration}">
                     <f:then>
                         <f:link.external uri="{event.externalRegistration}" class="button subscribe external" target="_blank">
-                            <f:translate key="tx_slubevents_domain_model_event.external_registration" />
+                            <f:translate key="tx_slubevents_domain_model_event.external_registration" extensionName="slub_events" />
                         </f:link.external>
                     </f:then>
                 </f:if>

@@ -52,7 +52,7 @@
 		</f:if>
 
 		<div class="contacts">
-			<p><f:translate key="tx_slubevents.gb.we_consult_you" /></p>
+			<p><f:translate key="tx_slubevents.gb.we_consult_you" extensionName="slub_events" /></p>
 			<f:groupedFor each="{events}" as="cevent" groupBy="contact" groupKey="contact">
 				<div class="single-contact">
 					<f:if condition="{contact.photo}">
@@ -79,7 +79,7 @@
 </f:if>
 
 	<div class="submit">
-		<f:link.action action="list" class="button linkback" controller="Category" arguments="{category : parentcategory}"><f:translate key="paginate_back" /></f:link.action>
+		<f:link.action action="list" class="button linkback" controller="Category" arguments="{category : parentcategory}"><f:translate key="paginate_back" extensionName="slub_events" /></f:link.action>
 	</div>
 
 </div>
