@@ -24,8 +24,12 @@ namespace Slub\SlubEvents\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Psr\Http\Message\ServerRequestInterface;
 use Slub\SlubEvents\Helper\EmailHelper;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -75,6 +79,11 @@ class StatisticsTask extends AbstractTask
      * @var \Slub\SlubEvents\Domain\Repository\EventRepository
      */
     protected $eventRepository;
+
+    /**
+     * @var ServerRequestInterface
+     */
+    protected $request;
 
 	/**
      * @param \Slub\SlubEvents\Domain\Repository\EventRepository $eventRepository
@@ -190,6 +199,21 @@ class StatisticsTask extends AbstractTask
         $this->configurationManager = GeneralUtility::makeInstance(
             ConfigurationManagerInterface::class
         );
+
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        try {
+            if (!MathUtility::canBeInterpretedAsInteger($this->storagePid)) {
+                throw new \UnexpectedValueException('Invalid storagePid for request context');
+            }
+            $site = $siteFinder->getSiteByPageId((int)$this->storagePid);
+            $language = $site->getDefaultLanguage();
+
+            $this->request = (new ServerRequest(new Uri((string)$site->getBase())))
+                ->withAttribute('site', $site)
+                ->withAttribute('language', $language);
+        } catch (\Throwable $e) {
+            $this->request = new ServerRequest(new Uri('http://localhost/'));
+        }
     }
 
     /**
@@ -252,11 +276,11 @@ class StatisticsTask extends AbstractTask
             'Statistics',
             [
                 'events'    => $allevents,
-                'helper'    => $helper,
                 'nameTo'    => $nameTo,
                 'attachCsv' => true,
                 'attachIcs' => false,
-            ]
+            ],
+            $this->request
         );
 
         return $successfullyExecuted;

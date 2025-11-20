@@ -118,7 +118,7 @@ class SubscriberController extends BaseController
                 'subscriber' => ['name' => '###Name wird automatisch ausgefüllt###']
             ];
 
-            $emailTextHTML = EmailHelper::renderEmailTemplate('OnlineSurvey', $variables, $this->configurationManager);
+            $emailTextHTML = EmailHelper::renderEmailTemplate($this->request, 'OnlineSurvey', $variables, $this->configurationManager);
         }
 
         if ($step == 1) {
@@ -142,6 +142,7 @@ class SubscriberController extends BaseController
                         'attachCsv'  => false,
                         'attachIcs'  => false,
                     ],
+                    $this->request,
                     $this->configurationManager
                 );
             }
@@ -173,7 +174,7 @@ class SubscriberController extends BaseController
             'subscriber' => ['name' => '###Name wird automatisch ausgefüllt###'],
             'emailBody' => '###Text bitte unten eingeben###'
         ];
-        $emailTextHTML = EmailHelper::renderEmailTemplate('EventNotification', $templateVariables, $this->configurationManager);
+        $emailTextHTML = EmailHelper::renderEmailTemplate($this->request,'EventNotification', $templateVariables, $this->configurationManager);
 
         $this->view->assign('event', $event);
         $this->view->assign('emailTextPreview', $emailTextHTML);
@@ -214,6 +215,7 @@ class SubscriberController extends BaseController
                     'subscriber' => $subscriber,
                     'settings'   => $this->settings,
                 ],
+                $this->request,
                 $this->configurationManager
             );
         }

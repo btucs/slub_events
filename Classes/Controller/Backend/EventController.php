@@ -244,6 +244,7 @@ class EventController extends BaseController
                 'attachCsv'   => true,
                 'attachIcs'   => true,
             ],
+            $this->request,
             $this->configurationManager
         );
 

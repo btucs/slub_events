@@ -216,6 +216,7 @@ class SubscriberController extends AbstractController
                 'attachCsv'  => false,
                 'attachIcs'  => true,
             ],
+            $this->request,
             $this->configurationManager
         );
 
@@ -245,6 +246,7 @@ class SubscriberController extends AbstractController
                     'attachCsv'   => true,
                     'attachIcs'   => true,
                 ],
+                $this->request,
                 $this->configurationManager
             );
         } elseif ($this->settings['emailToContact']['sendEmailOnEveryBooking']) {
@@ -272,6 +274,7 @@ class SubscriberController extends AbstractController
                     'attachCsv'     => false,
                     'attachIcs'     => false,
                 ],
+                $this->request,
                 $this->configurationManager
             );
         }
@@ -396,6 +399,7 @@ class SubscriberController extends AbstractController
                     'attachCsv'       => false,
                     'attachIcs'       => true,
                 ],
+                $this->request,
                 $this->configurationManager
             );
         }
@@ -414,6 +418,7 @@ class SubscriberController extends AbstractController
                 'attachCsv'  => false,
                 'attachIcs'  => true,
             ],
+            $this->request,
             $this->configurationManager
         );
 

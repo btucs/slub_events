@@ -25,11 +25,15 @@ namespace Slub\SlubEvents\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Psr\Http\Message\ServerRequestInterface;
 use Slub\SlubEvents\Helper\EmailHelper;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
 use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 use Slub\SlubEvents\Helper\EventHelper;
 use Slub\SlubEvents\Utility\TextUtility;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -91,6 +95,11 @@ class CheckeventsTask extends AbstractTask
     protected $persistenceManager;
 
     /**
+     * @var ServerRequestInterface
+     */
+    protected $request;
+
+    /**
      * initializeAction
      *
      * @return void
@@ -114,14 +123,42 @@ class CheckeventsTask extends AbstractTask
         );
 
         switch ($this->language) {
-            case 'de':  setlocale(LC_ALL, 'de_DE.utf8');
-                        $GLOBALS['LANG']->init('de');
-                        break;
-            case 'en':
+          case 'en':
+              setlocale(LC_ALL, 'en_US.utf8');
+              $GLOBALS['LANG']->init('en');
+              break;
+          case 'de':
             default:
-                        setlocale(LC_ALL, 'en_US.utf8');
-                        $GLOBALS['LANG']->init('en');
+              setlocale(LC_ALL, 'de_DE.utf8');
+              $GLOBALS['LANG']->init('de');
+              break;
+        }
+
+        // Create a request object for email template rendering with ViewHelpers
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        try {
+            $site = $siteFinder->getSiteByPageId($this->storagePid);
+
+            // Try to find the matching language in the site configuration
+            $languageId = 0; // default
+            if ($this->language === 'de') {
+                // Look for German language in site configuration
+                foreach ($site->getLanguages() as $siteLanguage) {
+                    if ($siteLanguage->getLocale()->getLanguageCode() === 'de') {
+                        $languageId = $siteLanguage->getLanguageId();
                         break;
+                    }
+                }
+            }
+
+            $language = $site->getLanguageById($languageId);
+
+            $this->request = (new ServerRequest(new Uri($site->getBase())))
+                ->withAttribute('site', $site)
+                ->withAttribute('language', $language);
+        } catch (\Exception $e) {
+            // Fallback: create basic request without site context
+            $this->request = new ServerRequest(new Uri('http://localhost/'));
         }
     }
 
@@ -192,7 +229,8 @@ class CheckeventsTask extends AbstractTask
                                 'subscriber' => $subscriber,
                                 'helper' => $helper,
                                 'attachIcs' => true,
-                            ]
+                            ],
+                            $this->request
                         );
                     }
 
@@ -208,7 +246,8 @@ class CheckeventsTask extends AbstractTask
                             'helper' => $helper,
                             'attachCsv' => true,
                             'attachIcs' => true,
-                        ]
+                        ],
+                        $this->request
                     );
                     if ($out) {
                         $event->setSubEndDateInfoSent(true);
@@ -230,7 +269,8 @@ class CheckeventsTask extends AbstractTask
                             'helper' => $helper,
                             'attachCsv' => true,
                             'attachIcs' => true,
-                        ]
+                        ],
+                        $this->request
                     );
                     if ($out) {
                         $event->setSubEndDateInfoSent(true);

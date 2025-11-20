@@ -24,6 +24,7 @@ namespace Slub\SlubEvents\Helper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -55,12 +56,13 @@ class EmailHelper
         array $sender,
         string $subject,
         string $templateName,
-        array $variables = [],
-        ConfigurationManagerInterface $configurationManager = null
+        array $variables,
+        ServerRequestInterface $request,
+        ?ConfigurationManagerInterface $configurationManager = null
     ): bool {
         // array of files to unlink after email has been sent
         $unlinkFiles = [];
-        $emailTextHTML = self::renderEmailTemplate($templateName, $variables, $configurationManager);
+        $emailTextHTML = self::renderEmailTemplate($request, $templateName, $variables, $configurationManager);
 
         /** @var \TYPO3\CMS\Core\Mail\MailMessage $message*/
         $message = GeneralUtility::makeInstance(MailMessage::class);
@@ -73,7 +75,7 @@ class EmailHelper
 
         // attach ics-File
         if ($variables['attachIcs'] == true) {
-            $renderedIcs = self::renderEmailTemplate($templateName, $variables, $configurationManager, 'ics');
+            $renderedIcs = self::renderEmailTemplate($request,$templateName, $variables, $configurationManager, 'ics');
 
             // the total basename length must not be more than 60 characters --> see writeFileToTypo3tempDir()
             $eventIcsFile = Environment::getPublicPath() . '/typo3temp/tx_slubevents/' .
@@ -108,7 +110,7 @@ class EmailHelper
         }
         // attach CSV-File
         if ($variables['attachCsv'] == true) {
-            $renderedCsv = self::renderEmailTemplate($templateName, $variables, $configurationManager, 'csv');
+            $renderedCsv = self::renderEmailTemplate($request,$templateName, $variables, $configurationManager, 'csv');
 
             $eventCsvFile = Environment::getPublicPath() . '/typo3temp/tx_slubevents/' .
                 substr(
@@ -199,7 +201,7 @@ class EmailHelper
      *
      * @return string[]
      */
-    public static function resolveTemplateRootPaths(ConfigurationManagerInterface $configurationManager = null): array
+    public static function resolveTemplateRootPaths(?ConfigurationManagerInterface $configurationManager = null): array
     {
         if ($configurationManager instanceof \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
@@ -218,7 +220,7 @@ class EmailHelper
      *
      * @return string[]
      */
-    public static function resolvePartialRootPaths(ConfigurationManagerInterface $configurationManager = null): array
+    public static function resolvePartialRootPaths(?ConfigurationManagerInterface $configurationManager = null): array
     {
         if ($configurationManager instanceof \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
@@ -245,6 +247,7 @@ class EmailHelper
     }
 
     public static function renderEmailTemplate(
+        ServerRequestInterface $request,
         string $templateName,
         array $variables,
         ?ConfigurationManagerInterface $configurationManager,
@@ -252,7 +255,7 @@ class EmailHelper
     ): string {
         /** @var StandaloneView $emailViewHTML */
         $emailViewHTML = GeneralUtility::makeInstance(StandaloneView::class);
-        $emailViewHTML->getRequest()->setControllerExtensionName('SlubEvents');
+        $emailViewHTML->setRequest($request);
         $emailViewHTML->setFormat($format);
         $emailViewHTML->assignMultiple($variables);
 
