@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'web_Slub.SlubEventsSlubevents' => [
+    'web_SlubEvents' => [
         'parent' => 'web',
         'access' => 'user',
         'labels' => 'LLL:EXT:slub_events/Resources/Private/Language/locallang_slubevents.xlf',
-        'extensionName' => 'Slub.SlubEvents',
+        'extensionName' => 'SlubEvents',
         'controllerActions' => [
             \Slub\SlubEvents\Controller\Backend\EventController::class => [
                 'beList',

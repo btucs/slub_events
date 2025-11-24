@@ -101,9 +101,9 @@ class SubscriberController extends AbstractController
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
     #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
     public function newAction(
-        Subscriber $newSubscriber = null,
-        Event $event = null,
-        Category $category = null
+        ?Subscriber $newSubscriber = null,
+        ?Event $event = null,
+        ?Category $category = null
     )
     {
 
@@ -142,7 +142,8 @@ class SubscriberController extends AbstractController
         $this->view->assign('category', $category);
         $this->view->assign('newSubscriber', $newSubscriber);
         $this->view->assign('loggedIn', $loggedIn);
-        return null;
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -163,7 +164,7 @@ class SubscriberController extends AbstractController
     public function createAction(
         Subscriber $newSubscriber,
         Event $event,
-        Category $category = null
+        ?Category $category = null
     ): \Psr\Http\Message\ResponseInterface
     {
 
@@ -322,7 +323,7 @@ class SubscriberController extends AbstractController
      * @return \Psr\Http\Message\ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
-    public function deleteAction(Event $event = null, $editcode = null)
+    public function deleteAction(?Event $event = null, $editcode = null)
     {
         // somebody is calling the action without giving an event --> useless
         if (!$event instanceof \Slub\SlubEvents\Domain\Model\Event || $editcode === null) {

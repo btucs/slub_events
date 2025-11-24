@@ -25,8 +25,6 @@ namespace Slub\SlubEvents\Helper;
  ***************************************************************/
 
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -62,14 +60,14 @@ class IconsHelper
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
 
-        $params .= '&edit[' . $table . '][' . $row['uid'] . ']=edit';
+        $params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
         $title = LocalizationUtility::translate('be.editEvent', 'slub_events',
                 $arguments = null) . ' ' . $row['uid'] . ': ' . $row['title'];
         $clickUrl = $uriBuilder->buildUriFromRoute('record_edit') . $params
         . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 
         $icon = '<a href="'. $clickUrl .'" title="' . $title . '">'  .
-            $this->iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
+            $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() .
             '</a>';
         return $icon;
     }
@@ -91,7 +89,7 @@ class IconsHelper
             . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 
         $icon = '<a href="'. $clickUrl .'" title="' . $title . '">' .
-            $this->iconFactory->getIcon('actions-document-new', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
+            $this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)->render() .
             '</a>';
 
         return $icon;
@@ -107,29 +105,37 @@ class IconsHelper
      */
     public function getHideIcon($table, $uid, $hidden)
     {
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $redirectUrl = (string)GeneralUtility::getIndpEnv('REQUEST_URI');
 
         if ($hidden) {
             $title = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
-            $params = '&data[' . $table . '][' . $uid . '][hidden]=0';
+            $hideLink = (string)$uriBuilder->buildUriFromRoute('tce_db', [
+                'redirect' => $redirectUrl,
+                'data' => [
+                    $table => [
+                        $uid => ['hidden' => 0],
+                    ],
+                ],
+            ]);
 
-            $hideLink = '';
-            $quoteLink = "'";
-            $hideLink = BackendUtility::getLinkToDataHandlerAction($params);
-
-            $icon = '<a href="#" onclick="' . htmlspecialchars('return jumpToUrl(' . $quoteLink . $hideLink . $quoteLink . ');') . '" title="' . $title . '">' .
-                $this->iconFactory->getIcon('actions-edit-unhide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
+            $icon = '<a href="' . htmlspecialchars($hideLink, ENT_QUOTES | ENT_HTML5) . '" title="' . $title . '">' .
+                $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL)->render() .
                 '</a>';
             // Hide
         } else {
             $title = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
-            $params = '&data[' . $table . '][' . $uid . '][hidden]=1';
+            $hideLink = (string)$uriBuilder->buildUriFromRoute('tce_db', [
+                'redirect' => $redirectUrl,
+                'data' => [
+                    $table => [
+                        $uid => ['hidden' => 1],
+                    ],
+                ],
+            ]);
 
-            $hideLink = '';
-            $quoteLink = "'";
-            $hideLink = BackendUtility::getLinkToDataHandlerAction($params);
-
-            $icon = '<a href="#" onclick="' . htmlspecialchars('return jumpToUrl(' . $quoteLink . $hideLink . $quoteLink . ');') . '" title="' . $title . '">' .
-                $this->iconFactory->getIcon('actions-edit-hide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render() .
+            $icon = '<a href="' . htmlspecialchars($hideLink, ENT_QUOTES | ENT_HTML5) . '" title="' . $title . '">' .
+                $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL)->render() .
                 '</a>';
         }
         return $icon;
@@ -150,7 +156,7 @@ class IconsHelper
             $inline = true;
             $invert = false;
             $visible = 'hidden';
-            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-unhide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render();
+            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL)->render();
             $title = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
             $toggleTitle = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
         } else {
@@ -158,7 +164,7 @@ class IconsHelper
             $inline = true;
             $invert = true;
             $visible = 'visible';
-            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-hide', \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render();
+            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL)->render();
             $title = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
             $toggleTitle = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
         }
@@ -188,7 +194,7 @@ class IconsHelper
      */
     public function getHiddenRecordIcon($table, $uid, $hidden)
     {
-        $hiddenRecordIcon = $this->iconFactory->getIconForRecord($table, ['uid' => $uid, 'hidden' => $hidden], \TYPO3\CMS\Core\Imaging\IconSize::SMALL)->render();
+        $hiddenRecordIcon = $this->iconFactory->getIconForRecord($table, ['uid' => $uid, 'hidden' => $hidden], Icon::SIZE_SMALL)->render();
 
         return '
         <td class="col-icon nowrap">

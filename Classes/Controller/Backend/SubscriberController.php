@@ -40,7 +40,7 @@ class SubscriberController extends BaseController
 
         // set the startDateStamp
         if (empty($searchParameter['selectedStartDateStamp'])) {
-            $searchParameter['selectedStartDateStamp'] = date('d-m-Y');
+            $searchParameter['selectedStartDateStamp'] = date('Y-m-d');
         }
 
         // if search was triggered
@@ -58,9 +58,12 @@ class SubscriberController extends BaseController
 
         // get the categories
         $categories = $this->categoryRepository->findAllTree();
+        if(!isset($searchParameter['category'])) {
+            $searchParameter['category'] = [];
+        }
 
         // check which categories have been selected
-        if (!is_array($submittedSearchParams['category'])) {
+        if (isset($submittedSearchParams['category']) && !is_array($submittedSearchParams['category'])) {
             $allCategories = $this->categoryRepository->findAll()->toArray();
             foreach ($allCategories as $category) {
                 $searchParameter['category'][$category->getUid()] = $category->getUid();

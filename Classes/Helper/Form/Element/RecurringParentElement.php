@@ -81,7 +81,7 @@ class RecurringParentElement extends AbstractFormElement
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
 
-        $params .= '&edit[' . $table . '][' . $row['uid'] . ']=edit';
+        $params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
         $title = LocalizationUtility::translate('be.editEvent', 'slub_events',
               $arguments = null) . ' ' .
               LocalizationUtility::translate('tx_slubevents_domain_model_event.recurring', 'slub_events',

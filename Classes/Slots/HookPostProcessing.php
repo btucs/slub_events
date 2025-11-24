@@ -24,9 +24,12 @@ namespace Slub\SlubEvents\Slots;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 use Slub\SlubEvents\Controller\EventController;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
+use Throwable;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -38,8 +41,21 @@ use TYPO3\CMS\Core\Core\Environment;
  *
  * @author    Alexander Bigga <typo3@slub-dresden.de>
  */
-class HookPostProcessing
+class HookPostProcessing implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    protected EventRepository $eventRepository;
+    protected PersistenceManager $persistenceManager;
+
+    public function __construct(
+        EventRepository $eventRepository,
+        PersistenceManager $persistenceManager
+    ) {
+        $this->eventRepository = $eventRepository;
+        $this->persistenceManager = $persistenceManager;
+        $this->logger = $this->logger ?? new NullLogger();
+    }
 
     /**
      * Clear cache of all pages with slubevents_eventlist plugin
@@ -179,20 +195,39 @@ class HookPostProcessing
     public function processCmdmap_deleteAction($table, $id, $recordToDelete, &$recordWasDeleted, $fieldArray)
     {
       if ($table == 'tx_slubevents_domain_model_event' && $recordToDelete['parent'] == 0) {
-          //in case of a parent (recurring) event, delete all children, too
-          $eventController = GeneralUtility::makeInstance(EventController::class);
-          $configurationManager = $eventController->getConfigurationManager();
-          $configurationArray = [
-              'persistence' => [
-                  'storagePid' => $recordToDelete['pid'],
-              ],
-          ];
-          $configurationManager->setConfiguration($configurationArray);
-          $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
-          $eventRepository->deleteAllNotAllowedChildren([], $id);
-          $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-          $persistenceManager->persistAll();
+          try {
+              $deletedChildren = $this->deleteChildEventsOfParent((int)$id, (int)$recordToDelete['pid']);
+              if ($deletedChildren > 0) {
+                  $this->logger->info(
+                      'Removed {count} child events while deleting recurring parent {parentId} (pid {pid}).',
+                      ['count' => $deletedChildren, 'parentId' => (int)$id, 'pid' => (int)$recordToDelete['pid']]
+                  );
+              } else {
+                  $this->logger->debug(
+                      'No child events found for recurring parent {parentId} (pid {pid}).',
+                      ['parentId' => (int)$id, 'pid' => (int)$recordToDelete['pid']]
+                  );
+              }
+          } catch (Throwable $exception) {
+              $this->logger->error(
+                  'Failed to delete child events for recurring parent {parentId}: {message}',
+                  ['parentId' => (int)$id, 'message' => $exception->getMessage(), 'exception' => $exception]
+              );
+              throw $exception;
+          }
       }
+    }
+
+    protected function deleteChildEventsOfParent(int $parentId, int $storagePid): int
+    {
+        $deletedChildren = $this->eventRepository->deleteAllNotAllowedChildren(
+            [],
+            $parentId,
+            $storagePid > 0 ? $storagePid : null
+        );
+        $this->persistenceManager->persistAll();
+
+        return $deletedChildren;
     }
 
     /**

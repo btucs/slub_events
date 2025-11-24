@@ -29,7 +29,6 @@ use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 use Slub\SlubEvents\Helper\IconsHelper;
 use \Slub\SlubEvents\Domain\Model\Event;
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -102,8 +101,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
             'edit' => $iconHelper->getEditIcon('tx_slubevents_domain_model_event', $row),
             'hide' => $iconHelper->getHideIcon('tx_slubevents_domain_model_event', $row['uid'], $row['hidden']),
             'geniusbar' => self::getGeniusBarIcon($event),
-            'datepicker' => $iconHelper->getDatePickerIcon(),
-            default => $content,
+            default => null,
         };
         return $content;
     }

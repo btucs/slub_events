@@ -50,11 +50,6 @@ class EventController extends AbstractController
     protected $view;
 
     /**
-     * @var string
-     */
-    protected string $defaultViewObjectName = JsonView::class;
-
-    /**
      * @var bool
      */
     protected $allowApiAccess = false;

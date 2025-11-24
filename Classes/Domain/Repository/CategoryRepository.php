@@ -155,7 +155,7 @@ class CategoryRepository extends Repository
 
         $tree = [];
         foreach ($flatCategories as $id => &$node) {
-            if ($node['parent'] === null) {
+            if (!isset($node['parent'])) {
                 $tree[$id] = &$node;
             } else {
                 $flatCategories[$node['parent']]['children'][$id] = &$node;

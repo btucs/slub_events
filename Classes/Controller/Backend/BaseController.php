@@ -14,10 +14,11 @@ namespace Slub\SlubEvents\Controller\Backend;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ResponseInterface;
 use Slub\SlubEvents\Controller\AbstractController;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
@@ -33,6 +34,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class BaseController extends AbstractController
 {
+    protected ?ModuleTemplate $moduleTemplate = null;
+
     /**
      * @var int
      */
@@ -65,20 +68,11 @@ class BaseController extends AbstractController
      */
     protected function initializeView($view): void
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
-        if ($moduleTemplate) {
-            $moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
 
-            $moduleTemplate->addJavaScriptCode('jumpUrl', '
-                function jumpToUrl(URL) {
-                    window.location.href = URL;
-                    return false;
-                }
-            ');
-
-            $this->createMenu();
-            $this->createButtons();
-        }
+        $this->createMenu();
+        $this->createButtons();
     }
 
     /**
@@ -86,7 +80,7 @@ class BaseController extends AbstractController
      */
     protected function createMenu(): void
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate = $this->getModuleTemplate();
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
@@ -124,14 +118,18 @@ class BaseController extends AbstractController
      */
     protected function createButtons(): void
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate = $this->getModuleTemplate();
         $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
         // Shortcut
         if ($this->getBackendUser()->mayMakeShortcut()) {
             $shortcutButton = $buttonBar->makeShortcutButton()
-                ->setModuleName('web_SlubEventsSlubevents')
-                ->setGetVariables(['route', 'module', 'id'])
+                ->setRouteIdentifier('web_SlubEvents')
+                ->setArguments([
+                  'route' => [],
+                  'module' => [],
+                  'id' => []
+                ])
                 ->setDisplayName('Shortcut');
             $buttonBar->addButton($shortcutButton, ButtonBar::BUTTON_POSITION_RIGHT);
         }
@@ -145,5 +143,22 @@ class BaseController extends AbstractController
     protected function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
+    }
+
+    protected function getModuleTemplate(): ModuleTemplate
+    {
+        if ($this->moduleTemplate === null) {
+            $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        }
+        return $this->moduleTemplate;
+    }
+
+    #[\Override]
+    protected function htmlResponse(?string $html = null): ResponseInterface
+    {
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->assign('content', $html ?? $this->view->render());
+
+        return $moduleTemplate->renderResponse('ModuleTemplate/Module');
     }
 }

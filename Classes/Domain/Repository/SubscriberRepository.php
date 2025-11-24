@@ -27,6 +27,7 @@ namespace Slub\SlubEvents\Domain\Repository;
 
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * @package slub_events
@@ -40,7 +41,7 @@ class SubscriberRepository extends Repository
      *
      * @param int $pid
      *
-     * @return array The found Subscriber Objects
+     * @return QueryResultInterface|list<array<string, mixed>> The found Subscriber Objects
      */
     public function findAllByFeuser($pid = 0)
     {
@@ -66,7 +67,7 @@ class SubscriberRepository extends Repository
      * @param string $editcode
      * @param int    $pid
      *
-     * @return array The found Subscriber Objects
+     * @return QueryResultInterface|list<array<string, mixed>> The found Subscriber Objects
      */
     public function findAllByEditcode($editcode, $pid = 0)
     {
@@ -91,7 +92,7 @@ class SubscriberRepository extends Repository
      *
      * @param \Slub\SlubEvents\Domain\Model\Event $event
      *
-     * @return array The found Subscriber Objects
+     * @return int
      */
     public function countAllByEvent($event)
     {
@@ -114,7 +115,7 @@ class SubscriberRepository extends Repository
      *
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Event> $events
      *
-     * @return array The found Subscriber Objects
+     * @return QueryResultInterface|list<array<string, mixed>> The found Subscriber Objects
      */
     public function findAllByEvents($events)
     {
@@ -132,7 +133,7 @@ class SubscriberRepository extends Repository
 	 * Find all subscriber older than given days
 	 *
 	 * @param integer $days
-	 * @return objects found old emails
+	 * @return QueryResultInterface|list<array<string, mixed>> found old emails
 	 */
 	public function findOlderThan($days) {
 

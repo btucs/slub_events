@@ -120,11 +120,6 @@ class AbstractController extends ExtbaseActionController
     }
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     */
-    protected \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager;
-
-    /**
      * injectConfigurationManager
      *
      * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
@@ -133,11 +128,7 @@ class AbstractController extends ExtbaseActionController
     #[\Override]
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
     {
-
-        $this->configurationManager = $configurationManager;
-
-        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-
+        parent::injectConfigurationManager($configurationManager);
         // merge the storagePid into settings for the cache tags
         $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $this->settings['storagePid'] = $frameworkConfiguration['persistence']['storagePid'];
@@ -200,11 +191,8 @@ class AbstractController extends ExtbaseActionController
         $configurationData = [];
 
         if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-
-            $ucData = $userGlobals->uc['moduleData']['slubevents'];
-
-            $configurationData = $ucData[$key];
-
+            $ucData = isset($userGlobals->uc['moduleData']['slubevents']) ? $userGlobals->uc['moduleData']['slubevents'] : [];
+            $configurationData = isset($ucData[$key]) ? $ucData[$key] : [];
 
             if (!empty($configurationData) && !(empty($sessionData))) {
                 // merge session and configuration data

@@ -319,16 +319,16 @@ class EventRepository extends Repository
      * @param string $categories separated by comma
      * @param string $searchString
      * @param int    $startDateStamp
-     * @param array  $contacts   separated by comma
+     * @param array  $contacts
      * @param int    $recurring   is recurring event
      *
-     * @return array The found Event Objects
+     * @return QueryResultInterface|list<array<string, mixed>> The found Event Objects
      */
     public function findAllByCategoriesAndDate($categories, $startDateStamp, $searchString = '', $contacts = [], $recurring = 0)
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
-        $query->getQuerySettings()->setEnableFieldsToBeIgnored('hidden');
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored(['hidden']);
 
         $constraints = [];
 
@@ -467,7 +467,7 @@ class EventRepository extends Repository
      * @param \DateTime $startDateStamp
      * @param Event $parent
      *
-     * @return array The found Event Objects
+     * @return QueryResultInterface|list<array<string, mixed>> The found Event Objects
      */
     public function findByStartDateTimeAndParent($startDateStamp, $parent)
     {
@@ -526,15 +526,24 @@ class EventRepository extends Repository
      * Delete all child events which are not in the list of allowed startDateTimes
      *
      * @param array $childDateTimes
-     * @param Event $parent
+     * @param Event|int $parent
+     * @param int|null $storagePid Optional storage PID for backend hook invocations
      *
-     * @return void
+     * @return int Number of removed child events
      */
-    public function deleteAllNotAllowedChildren($childDateTimes, $parent)
+    public function deleteAllNotAllowedChildren($childDateTimes, $parent, ?int $storagePid = null)
     {
         $query = $this->createQuery();
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-        $query->getQuerySettings()->setEnableFieldsToBeIgnored('hidden');
+        $querySettings = $query->getQuerySettings();
+        $querySettings->setIgnoreEnableFields(true);
+        $querySettings->setEnableFieldsToBeIgnored('hidden');
+
+        if ($storagePid !== null) {
+            $querySettings->setRespectStoragePage(true);
+            $querySettings->setStoragePageIds([$storagePid]);
+        } else {
+            $querySettings->setRespectStoragePage(false);
+        }
 
         $constraints = [];
 
@@ -557,9 +566,13 @@ class EventRepository extends Repository
 
         $eventsToBeRemoved = $query->execute();
 
+        $removedCount = 0;
         foreach ($eventsToBeRemoved as $eventRemove) {
             $this->remove($eventRemove);
+            $removedCount++;
         }
+
+        return $removedCount;
     }
 
     /**

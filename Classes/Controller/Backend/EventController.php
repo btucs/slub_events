@@ -56,7 +56,7 @@ class EventController extends BaseController
 
         // set the startDateStamp
         if (empty($searchParameter['selectedStartDateStamp'])) {
-            $searchParameter['selectedStartDateStamp'] = date('d-m-Y');
+            $searchParameter['selectedStartDateStamp'] = date('Y-m-d');
         }
 
         // Categories
@@ -64,9 +64,9 @@ class EventController extends BaseController
 
         // get the categories
         $categories = $this->categoryRepository->findAllTree();
-
         // check which categories have been selected
-        if (!is_array($searchParameter['category'])) {
+        if (!isset($searchParameter['category']) || !is_array($searchParameter['category'])) {
+            $searchParameter['category'] = [];
             $allCategories = $this->categoryRepository->findAll()->toArray();
             foreach ($allCategories as $category) {
                 $searchParameter['category'][$category->getUid()] = $category->getUid();
@@ -81,7 +81,7 @@ class EventController extends BaseController
         $contacts = $this->contactRepository->findAllSorted();
 
         // if no contacts selection in user settings present --> look for the root categories
-        if (!is_array($searchParameter['contacts'])) {
+        if (!isset($searchParameter['contacts']) || !is_array($searchParameter['contacts'])) {
             $searchParameter['contacts'] = [];
             foreach ($contacts as $uid => $contact) {
                 $searchParameter['contacts'][$uid] = $contact->getUid();
@@ -94,18 +94,18 @@ class EventController extends BaseController
         $events = $this->eventRepository->findAllByCategoriesAndDate(
             $searchParameter['category'],
             strtotime((string) $searchParameter['selectedStartDateStamp']),
-            $searchParameter['searchString'],
+            $searchParameter['searchString'] ?? '',
             $searchParameter['contacts'],
-            $searchParameter['recurring']
+            $searchParameter['recurring'] ?? 0
         );
 
         $this->view->assign('selectedStartDateStamp', $searchParameter['selectedStartDateStamp']);
-        $this->view->assign('searchString', $searchParameter['searchString']);
+        $this->view->assign('searchString', $searchParameter['searchString'] ?? '');
         $this->view->assign('categories', $categories);
         $this->view->assign('events', $events);
         $this->view->assign('contacts', $contacts);
         $this->view->assign('currentActiveEvent', $currentActiveEvent);
-        $this->view->assign('recurring', $searchParameter['recurring']);
+        $this->view->assign('recurring', $searchParameter['recurring'] ?? 0);
         return $this->htmlResponse();
     }
 
