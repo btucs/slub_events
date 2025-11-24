@@ -1,228 +1,156 @@
-function checkBoxes(objThis) {
-    // Checkbox selected? (true/false)
-    var blnChecked = objThis.checked;
-    // parent node
-    var objHelp = objThis.parentNode;
+(() => {
+    'use strict';
 
-    while (objHelp.nodeName.toUpperCase() != "LI") {
-        // next parent node
-        objHelp = objHelp.parentNode;
-    }
-
-    var arrInput = objHelp.getElementsByTagName("input");
-    var intLen = arrInput.length;
-
-    for (var i = 0; i < intLen; i++) {
-        // select/unselect Checkbox
-        if (arrInput[i].type == "checkbox") {
-            arrInput[i].checked = blnChecked;
+    function checkBoxes(trigger) {
+        if (!trigger) {
+            return;
         }
-    }
-}
-
-function checkBoxContacts(objThis) {
-
-    // Checkbox selected? (true/false)
-    var blnChecked = objThis.checked;
-    var selectlist = document.getElementById('field-contact-search');
-
-    // un-/select all according to the checkbox state
-    for (var i = 0; i < selectlist.length; i++) {
-        selectlist.options[i].selected = blnChecked;
-    }
-    if (blnChecked)
-        selectlist.disabled = true;
-    else
-        selectlist.disabled = false;
-
-}
-
-// add new event initCheckBoxContacts
-addEvent(window, "load", initCheckBoxContacts);
-function initCheckBoxContacts() {
-    CheckBoxContacts.init();
-}
-var CheckBoxContacts = new function () {
-};
-
-// init
-CheckBoxContacts.init = function () {
-
-    // Find td with classname 'foldtree' which contains the foldable tree
-    if (!document.getElementById) return;
-    var chkbox = document.getElementById("checkbox-all-contacts");
-    var selectlist = document.getElementById('field-contact-search');
-    var selected = 0;
-    if (selectlist != null) {
-      for (var i = 0; i < selectlist.length; i++) {
-          if (selectlist.options[i].selected == true)
-              selected++;
-      }
-      if (selected == selectlist.length) {
-          chkbox.checked = true;
-          selectlist.disabled = "disabled";
-      }
-      else {
-          chkbox.checked = false;
-          selectlist.disabled = false;
-      }
-    }
-};
-
-
-// --------------------
-// fold tree js part
-// --------------------
-
-// add new event initTreefolder
-addEvent(window, "load", initTreeFolder);
-function initTreeFolder() {
-    TreeFolder.init();
-    var active = document.getElementsByClassName('active')[0];
-    if (active) {
-      var message = document.getElementsByClassName('typo3-messages')[0];
-      if (message) {
-          active.insertAdjacentHTML('beforebegin', '<tr id="t3message" class="active"><td colspan="9"> ' + message.innerHTML +'</td></tr>');
-          active = document.getElementById('t3message');
-      }
-      active.scrollIntoView();
-    }
-}
-
-// add class name
-function addClassName(oNode, sClass, bAdd) {
-    if (bAdd == null) bAdd = true;
-    var aClass = oNode.className.split(" ");
-    var iPos = -1;
-    for (var i = 0; i < aClass.length; i++) {
-        if (aClass[i] == sClass) {
-            iPos = i;
-            break;
+        const listItem = trigger.closest('li');
+        if (!listItem) {
+            return;
         }
-    }
-    if (bAdd && iPos == -1) aClass.push(sClass);
-    else if (!bAdd && iPos >= 0) aClass.splice(iPos, 1);
-    oNode.className = aClass.join(" ");
-}
-
-// isClassName
-function isClassName(oNode, sClass) {
-    return (" " + oNode.className + " ").indexOf(sClass) != -1;
-}
-
-// addEvent
-function addEvent(obj, type, fn) {
-    if (obj.attachEvent) {
-        obj['e' + type + fn] = fn;
-        obj[type + fn] = function () {
-            obj['e' + type + fn](window.event);
-        };
-        obj.attachEvent('on' + type, obj[type + fn]);
-    } else obj.addEventListener(type, fn, false);
-}
-function removeEvent(obj, type, fn) {
-    if (obj.detachEvent) {
-        obj.detachEvent('on' + type, obj[type + fn]);
-        obj[type + fn] = null;
-    } else obj.removeEventListener(type, fn, false);
-}
-
-// construct
-var oSelectedPage;
-var TreeFolder = new function () {
-};
-
-// init
-TreeFolder.init = function () {
-    // Find td with classname 'foldtree' which contains the foldable tree
-    if (!document.getElementsByClassName) return;
-    var aUls = document.getElementsByClassName("foldtree");
-    for (var i = 0; i < aUls.length; i++) {
-        TreeFolder.prepare(aUls[i]);
-    }
-};
-
-// prepare
-TreeFolder.prepare = function (oElement, iDepth) {
-    // we currently don't need the iDepth but... nobody knows.
-    if (iDepth == null) var iDepth = -1;
-    iDepth++;
-    var bFold = true;
-    var iUl = -1;
-    var iLi = -1;
-    var iA = -1;
-    for (var i = 0; i < oElement.childNodes.length; i++) {
-        var oChild = oElement.childNodes[i];
-        switch (oChild.nodeName.toLowerCase()) {
-            case "ul":
-                iUl = i;
-                TreeFolder.prepare(oChild, iDepth);
-
-                // check if some checkboxes are checked and fold everything else by default
-                var av = oChild.getElementsByTagName("input");
-                for (e = 0; e < av.length; e++) {
-                    if (av[e].checked == true) {
-                        bFold = false;
-                    }
-                }
-                if (bFold && iDepth > 0) oChild.style.display = "none";
-                break;
-            case "li":
-                iLi = i;
-                TreeFolder.prepare(oChild, iDepth);
-                break;
-            case "input":
-                iA = i;
-                break;
-        }
-    }
-    // insert extra anchor
-    if (iA >= 0 && iUl >= 0) {
-        var oA = oElement.childNodes[iA];
-        iOnclick = -1;
-        var oUl = oElement.childNodes[iUl];
-        for (var j = 0; j < oA.attributes.length; j++) {
-            if (oA.attributes[j].nodeName.toLowerCase() == "onclick") {
-                iOnclick = j;
-            }
-        }
-        // name class of parent list element
-        oElement.className = (bFold ? "closed" : "open");
-        // create extra fold anchor
-        var oAfold = document.createElement("a");
-        oAfold.className = "foldicon";
-
-        oAfold.innerHTML = "<span>" + (bFold ? "+" : "-") + "</span> ";
-
-        oElement.insertBefore(oAfold, oA);
-        addEvent(oAfold, "click", function () {
-            TreeFolder.liAClicked(oAfold)
+        listItem.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+            checkbox.checked = trigger.checked;
         });
-    } else if (iA >= 0 && iDepth > 2) {
-
-        var oAfold = document.createElement("a");
-        oAfold.className = "foldicon";
-
-        oAfold.innerHTML = "<span>&nbsp;</span>";
-
-        oElement.insertBefore(oAfold, oElement.childNodes[iA]);
     }
-};
 
-// activateALi
-TreeFolder.liAClicked = function (oAnchor) {
-    var oLi = oAnchor.parentNode;
-    var aSibling = oLi.childNodes;
-    var bDisplay = false;
-    for (var i = 0; i < aSibling.length; i++) {
-        var oSibling = aSibling[i];
-        if (oSibling.nodeName.toLowerCase() == "ul") {
-            bDisplay = oSibling.style.display == "none";
-            oSibling.style.display = bDisplay ? "block" : "none";
+    function checkBoxContacts(toggle) {
+        const select = document.getElementById('field-contact-search');
+        if (!toggle || !select) {
+            return;
         }
-        var oSpan = oAnchor.getElementsByTagName("span")[0];
-        oSpan.innerHTML = bDisplay ? "-" : "+";
+        const shouldSelectAll = Boolean(toggle.checked);
+        Array.from(select.options).forEach((option) => {
+            option.selected = shouldSelectAll;
+        });
+        select.disabled = shouldSelectAll;
     }
-    addClassName(oAnchor.parentNode, "open", bDisplay);
-    addClassName(oAnchor.parentNode, "closed", !bDisplay);
-};
+
+    function hydrateContactState() {
+        const toggle = document.getElementById('checkbox-all-contacts');
+        const select = document.getElementById('field-contact-search');
+        if (!toggle || !select) {
+            return;
+        }
+        const selectedOptions = Array.from(select.options).filter((option) => option.selected).length;
+        const allSelected = select.options.length > 0 && selectedOptions === select.options.length;
+        toggle.checked = allSelected;
+        select.disabled = allSelected;
+    }
+
+    function initCategoryTree() {
+        document.querySelectorAll('.category_tree input[type="checkbox"]').forEach((checkbox) => {
+            checkbox.addEventListener('click', (event) => {
+                checkBoxes(event.currentTarget);
+            });
+        });
+    }
+
+    function initContactControls() {
+        const toggle = document.getElementById('checkbox-all-contacts');
+        const select = document.getElementById('field-contact-search');
+        if (!toggle || !select) {
+            return;
+        }
+        toggle.addEventListener('change', (event) => {
+            checkBoxContacts(event.currentTarget);
+        });
+        hydrateContactState();
+    }
+
+    const TreeFolder = {
+        init() {
+            document.querySelectorAll('.foldtree').forEach((tree) => {
+                TreeFolder.prepare(tree);
+            });
+        },
+        prepare(element, depth = -1) {
+            const nextDepth = depth + 1;
+            let foldByDefault = true;
+            let nestedList = null;
+            let checkbox = null;
+
+            Array.from(element.children).forEach((child) => {
+                const nodeName = child.nodeName.toLowerCase();
+                if (nodeName === 'ul') {
+                    nestedList = child;
+                    TreeFolder.prepare(child, nextDepth);
+                    if (child.querySelector('input[type="checkbox"]:checked')) {
+                        foldByDefault = false;
+                    }
+                    if (foldByDefault && nextDepth > 0) {
+                        child.style.display = 'none';
+                    }
+                } else if (nodeName === 'li') {
+                    TreeFolder.prepare(child, nextDepth);
+                } else if (nodeName === 'input') {
+                    checkbox = child;
+                }
+            });
+
+            if (checkbox && nestedList) {
+                element.classList.toggle('closed', foldByDefault);
+                element.classList.toggle('open', !foldByDefault);
+                const toggle = document.createElement('a');
+                toggle.className = 'foldicon';
+                toggle.innerHTML = `<span>${foldByDefault ? '+' : '-'}</span> `;
+                element.insertBefore(toggle, checkbox);
+                toggle.addEventListener('click', () => {
+                    TreeFolder.liAClicked(toggle);
+                });
+            } else if (checkbox && nextDepth > 2) {
+                const spacer = document.createElement('a');
+                spacer.className = 'foldicon';
+                spacer.innerHTML = '<span>&nbsp;</span>';
+                element.insertBefore(spacer, checkbox);
+            }
+        },
+        liAClicked(anchor) {
+            const parent = anchor.parentElement;
+            if (!parent) {
+                return;
+            }
+            const nestedLists = Array.from(parent.children).filter((child) => child.nodeName.toLowerCase() === 'ul');
+            let showList = false;
+            nestedLists.forEach((list) => {
+                showList = list.style.display === 'none';
+                list.style.display = showList ? 'block' : 'none';
+            });
+            const indicator = anchor.querySelector('span');
+            if (indicator) {
+                indicator.textContent = showList ? '-' : '+';
+            }
+            parent.classList.toggle('open', showList);
+            parent.classList.toggle('closed', !showList);
+        }
+    };
+
+    function focusActiveRow() {
+        const activeRow = document.querySelector('.active');
+        if (!activeRow) {
+            return;
+        }
+        const message = document.querySelector('.typo3-messages');
+        let scrollTarget = activeRow;
+        if (message) {
+            activeRow.insertAdjacentHTML('beforebegin', '<tr id="t3message" class="active"><td colspan="9"> ' + message.innerHTML + '</td></tr>');
+            scrollTarget = document.getElementById('t3message') || activeRow;
+        }
+        if (scrollTarget.scrollIntoView) {
+            scrollTarget.scrollIntoView();
+        }
+    }
+
+    function onDomReady() {
+        initCategoryTree();
+        initContactControls();
+        TreeFolder.init();
+        focusActiveRow();
+    }
+
+    document.addEventListener('DOMContentLoaded', onDomReady);
+
+    // expose helpers for legacy templates/tests
+    window.checkBoxes = checkBoxes;
+    window.checkBoxContacts = checkBoxContacts;
+})();
