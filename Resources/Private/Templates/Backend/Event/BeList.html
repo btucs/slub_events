@@ -46,11 +46,11 @@
 					<td>
 						<f:if condition="{event.parent}">
 							<f:then>
-								<img title="<f:translate key='tx_slubevents_domain_model_event.recurring' extensionName='slub_events' />" src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/arrow-circle.png'/>
+								<f:image title="<f:translate key='tx_slubevents_domain_model_event.recurring' extensionName='slub_events' />" src='EXT:slub_events/Resources/Public/Icons/fugue-icons/arrow-circle.png'/>
 							</f:then>
 							<f:else>
 								<f:if condition="{event.recurring}">
-									<img title="<f:translate key='tx_slubevents_domain_model_event.recurring_parent' extensionName='slub_events' />" src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/arrow-repeat.png'/>
+									<f:image title="<f:translate key='tx_slubevents_domain_model_event.recurring_parent' extensionName='slub_events' />" src='EXT:slub_events/Resources/Public/Icons/fugue-icons/arrow-repeat.png'/>
 								</f:if>
 							</f:else>
 						</f:if>
@@ -120,8 +120,8 @@
 											   title="<f:translate key='be.sendIcsInvitationTo' extensionName='slub_events' /> {event.contact.name}, {event.contact.email}"
 											   arguments="{event : event}"
 											   addQueryString="1">
-									<img
-											src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/calendar-import.png'/>
+									<f:image
+											src='EXT:slub_events/Resources/Public/Icons/fugue-icons/calendar-import.png'/>
 								</f:link.action>
 							</f:then>
 						</f:if>
@@ -136,20 +136,20 @@
 											<f:link.action action="beOnlineSurvey" controller="Backend\Subscriber"
 														   title="{f:translate(key:'be.sendOnlineSurvey', extensionName: 'slub_events')}"
 														   arguments="{event : event}">
-												<img src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
+												<f:image src='EXT:slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
 											</f:link.action>
 										</f:then>
 										<f:else>
-											<img class="inactive"
+											<f:image class="inactive"
 												 title="{f:translate(key:'be.sendOnlineSurveyNoSubscribers', extensionName: 'slub_events')}"
-													 src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
+													 src='EXT:slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
 											</f:else>
 										</f:if>
 									</f:then>
 								<f:else>
-									<img class="inactive"
+									<f:image class="inactive"
 										 title="{f:translate(key:'be.sendOnlineSurveyNotYetPossible', extensionName: 'slub_events')}"
-										 src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
+										 src='EXT:slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
 									</f:else>
 								</f:if>
 							</f:then>
@@ -161,16 +161,16 @@
                                 <f:link.action action="beWriteNotification" controller="Backend\Subscriber"
                                                title="{f:translate(key:'be.sendCircularMail', extensionName: 'slub_events')}"
                                                arguments="{event : event}">
-                                    <img
+                                    <f:image
 										alt="{f:translate(key:'be.sendCircularMail', extensionName: 'slub_events')}"
-										src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
+										src='EXT:slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
                                 </f:link.action>
                             </f:then>
                             <f:else>
-                                <img class="inactive"
+                                <f:image class="inactive"
                                      title="{f:translate(key:'be.sendCircularMailNoSubscribers', extensionName: 'slub_events')}"
                                      alt="{f:translate(key:'be.sendCircularMailNoSubscribers', extensionName: 'slub_events')}"
-                                     src='/typo3conf/ext/slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
+                                     src='EXT:slub_events/Resources/Public/Icons/fugue-icons/mail-send.png'/>
                             </f:else>
                         </f:if>
                     </td>
