@@ -34,6 +34,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Log\Logger;
 
 /**
  * This hook extends the tcemain class.
@@ -48,13 +49,24 @@ class HookPostProcessing implements LoggerAwareInterface
     protected EventRepository $eventRepository;
     protected PersistenceManager $persistenceManager;
 
-    public function __construct(
-        EventRepository $eventRepository,
-        PersistenceManager $persistenceManager
-    ) {
+    public function injectEventRepository(EventRepository $eventRepository): void
+    {
         $this->eventRepository = $eventRepository;
+    }
+
+    public function injectLogger(Logger $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    public function injectPersistenceManager(PersistenceManager $persistenceManager): void
+    {
         $this->persistenceManager = $persistenceManager;
-        $this->logger = $this->logger ?? new NullLogger();
+    }
+
+    public function __construct(
+    ) {
+        $this->logger = new NullLogger();
     }
 
     /**
