@@ -139,7 +139,7 @@ class SubscriberRepository extends Repository
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
-        $query->getQuerySettings()->setEnableFieldsToBeIgnored('hidden');
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored(['hidden']);
         $query->matching($query->lessThanOrEqual('crdate', strtotime(' - ' . $days . ' days')));
 
         return $query->execute();
