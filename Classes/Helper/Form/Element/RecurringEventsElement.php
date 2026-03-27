@@ -61,9 +61,7 @@ class RecurringEventsElement extends AbstractFormElement
             return $result;
         }
 
-        $output = '<script>require(["TYPO3/CMS/Recordlist/Tooltip"]);</script>
-        ';
-        $output .= '<h4>'. LocalizationUtility::translate(
+        $output = '<h4>'. LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring',
             'slub_events').'</h4>';
 
