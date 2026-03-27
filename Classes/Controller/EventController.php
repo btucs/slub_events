@@ -309,9 +309,11 @@ class EventController extends AbstractController
             ->setMaxResults(1)
             ->executeQuery();
 
-        if ($resArray = $result->fetchAssociative()) {
-          $parentEventRow = $resArray;
-        }
+                $parentEventRow = $result->fetchAssociative() ?: null;
+
+                if ($parentEventRow === null) {
+                        return;
+                }
 
         $this->settings['storagePid'] = $parentEventRow['pid'];
         // set storagePid to point extbase to the right repositories
@@ -332,98 +334,7 @@ class EventController extends AbstractController
      */
     public function createChildsAction($id): \Psr\Http\Message\ResponseInterface
     {
-        $this->initializeCreateChildsAction($id);
-
-        $parentEvent = $this->eventRepository->findOneByUidIncludeHidden($id);
-
-        if ($parentEvent) {
-
-            $childDateTimes = $this->getChildDateTimes($parentEvent);
-
-            $availableProperties = ObjectAccess::getGettablePropertyNames($parentEvent);
-
-            // delete all present child events which are not requested (e.g. from former settings)
-            $this->eventRepository->deleteAllNotAllowedChildren($childDateTimes, $parentEvent);
-
-            foreach ($childDateTimes as $childDateTime) {
-
-                $isUpdate = FALSE;
-
-                $childEvent = $this->eventRepository->findOneByStartDateTimeAndParent($childDateTime['startDateTime'], $parentEvent);
-
-                // a childevent for the given startDateTime already exists
-                if ($childEvent) {
-                    $isUpdate = TRUE;
-                } else {
-                    // no child event found - create a new one
-                    /** @var Event $childEvent */
-                    $childEvent = GeneralUtility::makeInstance(Event::class);
-                }
-
-                foreach ($availableProperties as $propertyName) {
-                    if (ObjectAccess::isPropertySettable($childEvent, $propertyName)
-                        && !in_array($propertyName, [
-                            'uid',
-                            'pid',
-                            'hidden',
-                            'parent',
-                            'recurring',
-                            'recurring_options',
-                            'recurring_end_date_time',
-                            'startDateTime',
-                            'endDateTime',
-                            'subscribers',
-                            'cancelled',
-                            'subEndDateTime',
-                            'subEndDateInfoSent',
-                            'categories',
-                            'discipline',
-                        ])
-                    ) {
-                        $propertyValue = ObjectAccess::getProperty($parentEvent, $propertyName);
-                        // special handling for onlinesurvey field to remove trailing timestamp with sent date
-                        if ($propertyName == 'onlinesurvey' && (strpos((string) $propertyValue, '|') > 0)) {
-                            $propertyValue = substr((string) $propertyValue, 0, strpos((string) $propertyValue, '|'));
-                        }
-                        ObjectAccess::setProperty($childEvent, $propertyName, $propertyValue);
-                    }
-                }
-
-                $childEvent->setParent($parentEvent);
-
-                $childEvent->setStartDateTime($childDateTime['startDateTime']);
-
-                $childEvent->setEndDateTime($childDateTime['endDateTime']);
-
-                if ($childDateTime['subEndDateTime']) {
-                    $childEvent->setSubEndDateTime($childDateTime['subEndDateTime']);
-                }
-
-                foreach ($parentEvent->getCategories() as $cat) {
-                    $childEvent->addCategory($cat);
-                }
-
-                foreach ($parentEvent->getDiscipline() as $discipline) {
-                    $childEvent->addDiscipline($discipline);
-                }
-
-                if ($parentEvent->getGeniusBar()) {
-                    $childEvent->setTitle('Wissensbar ' . $childEvent->getContact()->getName());
-                } else {
-                    $childEvent->setTitle($childEvent->getTitle());
-                }
-
-                if ($isUpdate) {
-                    $this->eventRepository->update($childEvent);
-                } else {
-                    $this->eventRepository->add($childEvent);
-                }
-
-            }
-
-            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-            $persistenceManager->persistAll();
-        }
+        $this->createChilds($id);
         return $this->htmlResponse();
 
     }
@@ -437,21 +348,112 @@ class EventController extends AbstractController
      */
     public function deleteChildsAction($id): \Psr\Http\Message\ResponseInterface
     {
-        $this->initializeCreateChildsAction($id);
-
-        $parentEvent = $this->eventRepository->findOneBy(['uid' => $id]);
-
-        if ($parentEvent) {
-
-            // delete all present child events
-            $this->eventRepository->deleteAllNotAllowedChildren([], $parentEvent);
-
-            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-            $persistenceManager->persistAll();
-
-        }
+        $this->deleteChilds($id);
         return $this->htmlResponse();
 
+    }
+
+    public function createChilds(int $id): void
+    {
+        $this->initializeCreateChildsAction($id);
+
+        $parentEvent = $this->eventRepository->findOneByUidIncludeHidden($id);
+        if (!$parentEvent instanceof Event) {
+            return;
+        }
+
+        $childDateTimes = $this->getChildDateTimes($parentEvent);
+        $availableProperties = ObjectAccess::getGettablePropertyNames($parentEvent);
+
+        // delete all present child events which are not requested (e.g. from former settings)
+        $this->eventRepository->deleteAllNotAllowedChildren($childDateTimes, $parentEvent);
+
+        foreach ($childDateTimes as $childDateTime) {
+            $isUpdate = false;
+
+            $childEvent = $this->eventRepository->findOneByStartDateTimeAndParent($childDateTime['startDateTime'], $parentEvent);
+
+            if ($childEvent instanceof Event) {
+                $isUpdate = true;
+            } else {
+                /** @var Event $childEvent */
+                $childEvent = GeneralUtility::makeInstance(Event::class);
+            }
+
+            foreach ($availableProperties as $propertyName) {
+                if (ObjectAccess::isPropertySettable($childEvent, $propertyName)
+                    && !in_array($propertyName, [
+                        'uid',
+                        'pid',
+                        'hidden',
+                        'parent',
+                        'recurring',
+                        'recurring_options',
+                        'recurring_end_date_time',
+                        'startDateTime',
+                        'endDateTime',
+                        'subscribers',
+                        'cancelled',
+                        'subEndDateTime',
+                        'subEndDateInfoSent',
+                        'categories',
+                        'discipline',
+                    ])
+                ) {
+                    $propertyValue = ObjectAccess::getProperty($parentEvent, $propertyName);
+                    if ($propertyName == 'onlinesurvey' && (strpos((string) $propertyValue, '|') > 0)) {
+                        $propertyValue = substr((string) $propertyValue, 0, strpos((string) $propertyValue, '|'));
+                    }
+                    ObjectAccess::setProperty($childEvent, $propertyName, $propertyValue);
+                }
+            }
+
+            $childEvent->setParent($parentEvent);
+            $childEvent->setStartDateTime($childDateTime['startDateTime']);
+            $childEvent->setEndDateTime($childDateTime['endDateTime']);
+
+            if ($childDateTime['subEndDateTime']) {
+                $childEvent->setSubEndDateTime($childDateTime['subEndDateTime']);
+            }
+
+            foreach ($parentEvent->getCategories() as $cat) {
+                $childEvent->addCategory($cat);
+            }
+
+            foreach ($parentEvent->getDiscipline() as $discipline) {
+                $childEvent->addDiscipline($discipline);
+            }
+
+            if ($parentEvent->getGeniusBar()) {
+                $childEvent->setTitle('Wissensbar ' . $childEvent->getContact()->getName());
+            } else {
+                $childEvent->setTitle($childEvent->getTitle());
+            }
+
+            if ($isUpdate) {
+                $this->eventRepository->update($childEvent);
+            } else {
+                $this->eventRepository->add($childEvent);
+            }
+        }
+
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persistenceManager->persistAll();
+    }
+
+    public function deleteChilds(int $id): void
+    {
+        $this->initializeCreateChildsAction($id);
+
+        $parentEvent = $this->eventRepository->findOneByUidIncludeHidden($id);
+        if (!$parentEvent instanceof Event) {
+            return;
+        }
+
+        $this->eventRepository->deleteAllNotAllowedChildren([], $parentEvent);
+
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persistenceManager->persistAll();
     }
 
     /**

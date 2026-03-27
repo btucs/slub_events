@@ -98,6 +98,7 @@ class HookPreProcessing
                 ];
             } else {
                 $message_text = 'Wissensbar-Veranstaltung gespeichert: ';
+                $category_text = '';
                 // most time the category field is something like
                 // 5|Literatur%20finden%3A%20Recherchestr...,11|Spezielle%20Datenbanken%3A%20Normen,12|Thematische%20Recherche
                 // but in some cases it's:
@@ -112,7 +113,7 @@ class HookPreProcessing
                     // get away last ', ' and add formating:
                     $category_text = '"' . substr($category_text, 0, strlen($category_text) - 2) . '"';
                 }
-                $message_text .= $category_text . ' am ' . $this->gmstrftime(
+                $message_text .= ($category_text !== '' ? $category_text . ' ' : '') . 'am ' . $this->gmstrftime(
                         $fieldArray['start_date_time']) . '.';
                 $this->messages[] = [
                     \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK,

@@ -67,7 +67,7 @@ class IconsHelper
         . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 
         $icon = '<a href="'. $clickUrl .'" title="' . $title . '">'  .
-            $this->iconFactory->getIcon('actions-document-open', Icon::SIZE_SMALL)->render() .
+            $this->renderIcon('actions-document-open') .
             '</a>';
         return $icon;
     }
@@ -89,7 +89,7 @@ class IconsHelper
             . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 
         $icon = '<a href="'. $clickUrl .'" title="' . $title . '">' .
-            $this->iconFactory->getIcon('actions-document-new', Icon::SIZE_SMALL)->render() .
+            $this->renderIcon('actions-document-new') .
             '</a>';
 
         return $icon;
@@ -120,7 +120,7 @@ class IconsHelper
             ]);
 
             $icon = '<a href="' . htmlspecialchars($hideLink, ENT_QUOTES | ENT_HTML5) . '" title="' . $title . '">' .
-                $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL)->render() .
+                $this->renderIcon('actions-edit-unhide') .
                 '</a>';
             // Hide
         } else {
@@ -135,7 +135,7 @@ class IconsHelper
             ]);
 
             $icon = '<a href="' . htmlspecialchars($hideLink, ENT_QUOTES | ENT_HTML5) . '" title="' . $title . '">' .
-                $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL)->render() .
+                $this->renderIcon('actions-edit-hide') .
                 '</a>';
         }
         return $icon;
@@ -156,7 +156,7 @@ class IconsHelper
             $inline = true;
             $invert = false;
             $visible = 'hidden';
-            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-unhide', Icon::SIZE_SMALL)->render();
+            $hiddenIcon = $this->renderIcon('actions-edit-unhide');
             $title = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
             $toggleTitle = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
         } else {
@@ -164,7 +164,7 @@ class IconsHelper
             $inline = true;
             $invert = true;
             $visible = 'visible';
-            $hiddenIcon = $this->iconFactory->getIcon('actions-edit-hide', Icon::SIZE_SMALL)->render();
+            $hiddenIcon = $this->renderIcon('actions-edit-hide');
             $title = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
             $toggleTitle = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
         }
@@ -194,7 +194,7 @@ class IconsHelper
      */
     public function getHiddenRecordIcon($table, $uid, $hidden)
     {
-        $hiddenRecordIcon = $this->iconFactory->getIconForRecord($table, ['uid' => $uid, 'hidden' => $hidden], Icon::SIZE_SMALL)->render();
+        $hiddenRecordIcon = $this->renderRecordIcon($table, ['uid' => $uid, 'hidden' => $hidden]);
 
         return '
         <td class="col-icon nowrap">
@@ -206,5 +206,15 @@ class IconsHelper
             </a>
         </td>
         ';
+    }
+
+    protected function renderIcon(string $identifier): string
+    {
+        return $this->iconFactory->getIcon($identifier, Icon::SIZE_SMALL)?->render() ?? '';
+    }
+
+    protected function renderRecordIcon(string $table, array $row): string
+    {
+        return $this->iconFactory->getIconForRecord($table, $row, Icon::SIZE_SMALL)?->render() ?? '';
     }
 }

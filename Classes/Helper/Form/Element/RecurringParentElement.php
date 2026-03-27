@@ -60,8 +60,11 @@ class RecurringParentElement extends AbstractFormElement
                 )
             )->setMaxResults(1)->executeQuery();
 
-        if ($resArray = $resultQuery->fetchAssociative()) {
-            $parentEventRow = $resArray;
+        $parentEventRow = $resultQuery->fetchAssociative() ?: null;
+
+        if ($parentEventRow === null) {
+            $result['html'] = '';
+            return $result;
         }
 
         $result['html'] = $this->getEditLink('tx_slubevents_domain_model_event', $parentEventRow);

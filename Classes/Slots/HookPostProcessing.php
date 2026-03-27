@@ -164,9 +164,9 @@ class HookPostProcessing implements LoggerAwareInterface
                 $eventController = GeneralUtility::makeInstance(EventController::class);
 
                 if ($pObj->checkValue_currentRecord['recurring'] == 1) {
-                    $eventController->createChildsAction($idElement);
+                    $eventController->createChilds((int)$idElement);
                 } elseif ($pObj->checkValue_currentRecord['recurring'] == 0) {
-                    $eventController->deleteChildsAction($idElement);
+                    $eventController->deleteChilds((int)$idElement);
                 }
 
 
