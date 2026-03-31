@@ -27,6 +27,7 @@ namespace Slub\SlubEvents\Helper\Form\Element;
 use DateTimeImmutable;
 use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class RecurringOptionsElement extends AbstractFormElement
@@ -44,6 +45,10 @@ class RecurringOptionsElement extends AbstractFormElement
 
         $week = $this->buildWeekdayLabels();
         $startWeekday = $startDateTime ? (int)$startDateTime->format('N') : 0;
+        $fieldChangeAttributes = GeneralUtility::implodeAttributes(
+          $this->getOnFieldChangeAttrs('click', $this->data['parameterArray']['fieldChangeFunc'] ?? []),
+          true
+        );
 
         $formField = '';
 
@@ -81,7 +86,9 @@ class RecurringOptionsElement extends AbstractFormElement
           if ($disabled) {
               $formField .= ' readonly disabled';
           }
-          $formField .= ' onchange="' . htmlspecialchars(implode('', $this->data['parameterArray']['fieldChangeFunc'])) . '"';
+            if ($fieldChangeAttributes !== '') {
+              $formField .= ' ' . $fieldChangeAttributes;
+            }
           $formField .= ' />';
           $formField .= $week[$i] . '</label>';
         }
@@ -108,7 +115,9 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= '<label for="interval-weekly" class="btn btn-primary '.$active.'">';
         $formField .= '<input type="radio" id="interval-weekly" name="' . $this->data['parameterArray']['itemFormElName'] . '[interval]"';
         $formField .= ' value="weekly" '.$checked;
-        $formField .= ' onchange="' . htmlspecialchars(implode('', $this->data['parameterArray']['fieldChangeFunc'])) . '"';
+        if ($fieldChangeAttributes !== '') {
+          $formField .= ' ' . $fieldChangeAttributes;
+        }
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.weekly',
@@ -125,7 +134,9 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= '<label for="interval-2weekly" class="btn btn-primary '.$active.'">';
         $formField .= '<input type="radio" id="interval-2weekly" name="' . $this->data['parameterArray']['itemFormElName'] . '[interval]"';
         $formField .= ' value="2weekly" '.$checked;
-        $formField .= ' onchange="' . htmlspecialchars(implode('', $this->data['parameterArray']['fieldChangeFunc'])) . '"';
+        if ($fieldChangeAttributes !== '') {
+          $formField .= ' ' . $fieldChangeAttributes;
+        }
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.2weekly',
@@ -142,7 +153,9 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= '<label for="interval-4weekly" class="btn btn-primary '.$active.'">';
         $formField .= '<input type="radio" id="interval-4weekly" name="' . $this->data['parameterArray']['itemFormElName'] . '[interval]"';
         $formField .= ' value="4weekly" '.$checked;
-        $formField .= ' onchange="' . htmlspecialchars(implode('', $this->data['parameterArray']['fieldChangeFunc'])) . '"';
+        if ($fieldChangeAttributes !== '') {
+          $formField .= ' ' . $fieldChangeAttributes;
+        }
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.4weekly',
@@ -159,7 +172,9 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= '<label for="interval-monthly" class="btn btn-primary '.$active.'">';
         $formField .= '<input type="radio" id="interval-monthly" name="' . $this->data['parameterArray']['itemFormElName'] . '[interval]"';
         $formField .= ' value="monthly" '.$checked;
-        $formField .= ' onchange="' . htmlspecialchars(implode('', $this->data['parameterArray']['fieldChangeFunc'])) . '"';
+        if ($fieldChangeAttributes !== '') {
+          $formField .= ' ' . $fieldChangeAttributes;
+        }
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.monthly',
@@ -176,7 +191,9 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= '<label for="interval-yearly" class="btn btn-primary '.$active.'">';
         $formField .= '<input type="radio" id="interval-yearly" name="' . $this->data['parameterArray']['itemFormElName'] . '[interval]"';
         $formField .= ' value="yearly" '.$checked;
-        $formField .= ' onchange="' . htmlspecialchars(implode('', $this->data['parameterArray']['fieldChangeFunc'])) . '"';
+        if ($fieldChangeAttributes !== '') {
+          $formField .= ' ' . $fieldChangeAttributes;
+        }
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.yearly',
