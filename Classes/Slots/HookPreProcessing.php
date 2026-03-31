@@ -26,6 +26,7 @@ namespace Slub\SlubEvents\Slots;
 
 use DateTimeZone;
 use Slub\SlubEvents\Utility\DateFormattingUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -147,8 +148,12 @@ class HookPreProcessing
 
             // touch the subscribtion end only if minimum subscribers are set
             if ($fieldArray['min_subscriber'] > 0 || $fieldArray['max_subscriber'] > 0) {
-                if (($fieldArray['start_date_time'] < $fieldArray['sub_end_date_time'] || $fieldArray['min_subscriber'] > 0 && empty($fieldArray['sub_end_date_time'])) && !empty($fieldArray['sub_end_date_time_select'])) {
+                $startDateTimestamp = $this->resolveTimestamp($fieldArray['start_date_time'] ?? null);
+                $subEndDateTimestamp = $this->resolveTimestamp($fieldArray['sub_end_date_time'] ?? null);
+
+                if ((($startDateTimestamp !== null && $subEndDateTimestamp !== null && $startDateTimestamp < $subEndDateTimestamp) || $fieldArray['min_subscriber'] > 0 && empty($fieldArray['sub_end_date_time'])) && !empty($fieldArray['sub_end_date_time_select'])) {
                     $fieldArray['sub_end_date_time'] = $this->calculateEndDateTime($fieldArray['start_date_time'], $fieldArray['sub_end_date_time_select'], FALSE);
+                    $subEndDateTimestamp = $this->resolveTimestamp($fieldArray['sub_end_date_time']);
                     $this->messages[] = [
                         \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
                         'Bitte prüfen:',
@@ -159,12 +164,12 @@ class HookPreProcessing
                 unset($fieldArray['sub_end_date_time_select']);
 
                 // warn if subscription deadline is more than 3 days before the event.
-                if ($fieldArray['sub_end_date_time'] > 0 && ($fieldArray['start_date_time'] > $fieldArray['sub_end_date_time'] + (3 * 86400))) {
+                if ($subEndDateTimestamp !== null && $startDateTimestamp !== null && $startDateTimestamp > $subEndDateTimestamp + (3 * 86400)) {
                     $this->messages[] = [
                         \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::WARNING,
                         'Bitte prüfen:',
                         'Ende der Anmeldungsfrist ist aktuell gesetzt auf ' . $this->gmstrftime(
-                            $fieldArray['sub_end_date_time']) . ' ==> ' . (int)(($fieldArray['start_date_time'] - $fieldArray['sub_end_date_time']) / 86400) . ' Tage vorher!'
+                            $fieldArray['sub_end_date_time']) . ' ==> ' . (int)(($startDateTimestamp - $subEndDateTimestamp) / 86400) . ' Tage vorher!'
                     ];
                 }
 
@@ -194,6 +199,11 @@ class HookPreProcessing
                     'Bitte prüfen:',
                     'Die Mindest- und Maximalteilnehmerzahl beträgt in der Wissensbar immer 1. Dies wurde automatisch korrigiert. '
                 ];
+            }
+
+            $generatedTitle = $this->buildEventTitleFromContact($fieldArray, $id);
+            if ($generatedTitle !== null) {
+                $fieldArray['title'] = $generatedTitle;
             }
 
             if ($fieldArray['max_subscriber'] > 0 && $fieldArray['max_number'] == 0) {
@@ -229,6 +239,37 @@ class HookPreProcessing
         $endDateTime = $edt->format(\DateTime::ATOM);
 
         return $endDateTime;
+    }
+
+    protected function resolveTimestamp(mixed $time): ?int
+    {
+        $dateTime = DateFormattingUtility::resolveDateTime($time);
+
+        return $dateTime?->getTimestamp();
+    }
+
+    protected function buildEventTitleFromContact(array $fieldArray, mixed $id): ?string
+    {
+        $currentRecord = is_numeric((string)$id)
+            ? BackendUtility::getRecord('tx_slubevents_domain_model_event', (int)$id, 'uid,title,contact,genius_bar')
+            : null;
+
+        $isGeniusBar = (bool)($fieldArray['genius_bar'] ?? $currentRecord['genius_bar'] ?? false);
+        if (!$isGeniusBar) {
+            return null;
+        }
+
+        $contactUid = (int)($fieldArray['contact'] ?? $currentRecord['contact'] ?? 0);
+        if ($contactUid <= 0) {
+            return null;
+        }
+
+        $contactRecord = BackendUtility::getRecord('tx_slubevents_domain_model_contact', $contactUid, 'uid,name');
+        if (!is_array($contactRecord) || trim((string)($contactRecord['name'] ?? '')) === '') {
+            return null;
+        }
+
+        return 'Wissensbar ' . trim((string)$contactRecord['name']);
     }
 
     /**
