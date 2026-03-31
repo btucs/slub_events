@@ -39,7 +39,13 @@ class RecurringOptionsElement extends AbstractFormElement
         // parameters are available in $this->data['parameterArray']['fieldConf']['config']['parameters']
         $result = $this->initializeResultArray();
 
-        $recurring_options = unserialize($this->data['parameterArray']['itemFormElValue']);
+        $serializedRecurringOptions = (string)($this->data['parameterArray']['itemFormElValue'] ?? '');
+        $recurring_options = $serializedRecurringOptions !== ''
+          ? unserialize($serializedRecurringOptions, ['allowed_classes' => false])
+          : [];
+        if (!is_array($recurring_options)) {
+          $recurring_options = [];
+        }
 
         $startDateTime = DateFormattingUtility::resolveDateTime($this->data['databaseRow']['start_date_time']);
 
@@ -53,7 +59,7 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField = '';
 
         // Weekday Settings ------
-        if (!is_array($recurring_options['weekday'])) {
+        if (!is_array($recurring_options['weekday'] ?? null)) {
             // initialize empty array if new recurring settings
             $recurring_options['weekday'] = [];
         }
@@ -68,7 +74,7 @@ class RecurringOptionsElement extends AbstractFormElement
               $active = 'active';
               $checked = 'checked="checked"';
               $disabled = TRUE;
-          } elseif (in_array($i, $recurring_options['weekday'])) {
+          } elseif (in_array($i, $recurring_options['weekday'], true)) {
               $active = 'active';
               $checked = 'checked="checked"';
           } else {
