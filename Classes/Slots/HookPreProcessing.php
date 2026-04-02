@@ -146,12 +146,17 @@ class HookPreProcessing
                 $fieldArray['end_date_time'] = 0;
             }
 
+            $minSubscriber = (int)($fieldArray['min_subscriber'] ?? 0);
+            $maxSubscriber = (int)($fieldArray['max_subscriber'] ?? 0);
+            $fieldArray['min_subscriber'] = $minSubscriber;
+            $fieldArray['max_subscriber'] = $maxSubscriber;
+
             // touch the subscribtion end only if minimum subscribers are set
-            if ($fieldArray['min_subscriber'] > 0 || $fieldArray['max_subscriber'] > 0) {
+            if ($minSubscriber > 0 || $maxSubscriber > 0) {
                 $startDateTimestamp = $this->resolveTimestamp($fieldArray['start_date_time'] ?? null);
                 $subEndDateTimestamp = $this->resolveTimestamp($fieldArray['sub_end_date_time'] ?? null);
 
-                if ((($startDateTimestamp !== null && $subEndDateTimestamp !== null && $startDateTimestamp < $subEndDateTimestamp) || $fieldArray['min_subscriber'] > 0 && empty($fieldArray['sub_end_date_time'])) && !empty($fieldArray['sub_end_date_time_select'])) {
+                if ((($startDateTimestamp !== null && $subEndDateTimestamp !== null && $startDateTimestamp < $subEndDateTimestamp) || $minSubscriber > 0 && empty($fieldArray['sub_end_date_time'])) && !empty($fieldArray['sub_end_date_time_select'])) {
                     $fieldArray['sub_end_date_time'] = $this->calculateEndDateTime($fieldArray['start_date_time'], $fieldArray['sub_end_date_time_select'], FALSE);
                     $subEndDateTimestamp = $this->resolveTimestamp($fieldArray['sub_end_date_time']);
                     $this->messages[] = [
@@ -191,7 +196,7 @@ class HookPreProcessing
             }
 
             // force genius bar events with min_ and max_subscriber == 1
-            if ($fieldArray['genius_bar'] == true && ($fieldArray['min_subscriber'] != 1 || $fieldArray['max_subscriber'] != 1)) {
+            if ($fieldArray['genius_bar'] == true && ($minSubscriber != 1 || $maxSubscriber != 1)) {
                 $fieldArray['min_subscriber'] = 1;
                 $fieldArray['max_subscriber'] = 1;
                 $this->messages[] = [
@@ -206,8 +211,9 @@ class HookPreProcessing
                 $fieldArray['title'] = $generatedTitle;
             }
 
-            if ($fieldArray['max_subscriber'] > 0 && $fieldArray['max_number'] == 0) {
-                $fieldArray['max_number'] = $fieldArray['max_subscriber'];
+            $maxNumber = (int)($fieldArray['max_number'] ?? 0);
+            if ($maxSubscriber > 0 && $maxNumber == 0) {
+                $fieldArray['max_number'] = $maxSubscriber;
             }
 
             // save recurring options as serialized Array

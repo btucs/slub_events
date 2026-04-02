@@ -412,8 +412,9 @@ class EventController extends AbstractController
             $childEvent->setStartDateTime($childDateTime['startDateTime']);
             $childEvent->setEndDateTime($childDateTime['endDateTime']);
 
-            if ($childDateTime['subEndDateTime']) {
-                $childEvent->setSubEndDateTime($childDateTime['subEndDateTime']);
+                $childSubEndDateTime = $childDateTime['subEndDateTime'] ?? null;
+                if ($childSubEndDateTime instanceof \DateTime) {
+                    $childEvent->setSubEndDateTime($childSubEndDateTime);
             }
 
             foreach ($parentEvent->getCategories() as $cat) {
@@ -662,9 +663,9 @@ class EventController extends AbstractController
         // start cloning
         $eventStartDateTime = clone $parentStartDateTime;
         $eventEndDateTime = clone $parentEndDateTime;
-        if ($parentSubEndDateTime) {
-            $eventSubEndDateTime = clone $parentSubEndDateTime;
-        }
+        $eventSubEndDateTime = $parentSubEndDateTime instanceof \DateTime
+            ? clone $parentSubEndDateTime
+            : null;
         switch ($recurring_options['interval']) {
             case 'weekly':
                   $dateTimeInterval = new \DateInterval("P1W");
@@ -692,9 +693,9 @@ class EventController extends AbstractController
         if ($diffDays !== []) {
             $diffDayEventStartDateTime = clone $eventStartDateTime;
             $diffDayEventEndDateTime = clone $eventEndDateTime;
-            if ($eventSubEndDateTime) {
-                $diffDayEventSubEndDateTime = clone $eventSubEndDateTime;
-            }
+            $diffDayEventSubEndDateTime = $eventSubEndDateTime instanceof \DateTime
+                ? clone $eventSubEndDateTime
+                : null;
             $adjustDlstDone = FALSE;
             foreach ($diffDays as $weekDayInterval) {
                 $diffDayEventStartDateTime->add($weekDayInterval);
@@ -714,7 +715,7 @@ class EventController extends AbstractController
                 $this->daylightOffset($diffDayEventStartDateTime, $daylightOffset);
                 $diffDayEventEndDateTime->add($weekDayInterval);
                 $this->daylightOffset($diffDayEventEndDateTime, $daylightOffset);
-                if ($diffDayEventSubEndDateTime) {
+                if ($diffDayEventSubEndDateTime instanceof \DateTime) {
                     $diffDayEventSubEndDateTime->add($weekDayInterval);
                     $this->daylightOffset($diffDayEventSubEndDateTime, $daylightOffset);
                 }
@@ -723,7 +724,7 @@ class EventController extends AbstractController
                 $childDateTime = [];
                 $childDateTime['endDateTime'] = clone $diffDayEventEndDateTime;
                 $childDateTime['startDateTime'] = clone $diffDayEventStartDateTime;
-                if ($eventSubEndDateTime) {
+                if ($diffDayEventSubEndDateTime instanceof \DateTime) {
                     $childDateTime['subEndDateTime'] = clone $diffDayEventSubEndDateTime;
                 }
                 if ($childDateTime['startDateTime'] < $recurringEndDateTime){
@@ -750,14 +751,14 @@ class EventController extends AbstractController
 
             $eventEndDateTime->add($dateTimeInterval);
             $this->daylightOffset($eventEndDateTime, $daylightOffset);
-            if ($parentSubEndDateTime) {
+            if ($eventSubEndDateTime instanceof \DateTime) {
                 $eventSubEndDateTime->add($dateTimeInterval);
                 $this->daylightOffset($eventSubEndDateTime, $daylightOffset);
             }
             $childDateTime = [];
             $childDateTime['startDateTime'] = clone $eventStartDateTime;
             $childDateTime['endDateTime'] = clone $eventEndDateTime;
-            if ($eventSubEndDateTime) {
+            if ($eventSubEndDateTime instanceof \DateTime) {
                 $childDateTime['subEndDateTime'] = clone $eventSubEndDateTime;
             }
             if ($childDateTime['startDateTime'] < $recurringEndDateTime){
@@ -768,9 +769,9 @@ class EventController extends AbstractController
             if ($diffDays !== []) {
                 $diffDayEventStartDateTime = clone $eventStartDateTime;
                 $diffDayEventEndDateTime = clone $eventEndDateTime;
-                if ($eventSubEndDateTime) {
-                    $diffDayEventSubEndDateTime = clone $eventSubEndDateTime;
-                }
+                $diffDayEventSubEndDateTime = $eventSubEndDateTime instanceof \DateTime
+                    ? clone $eventSubEndDateTime
+                    : null;
                 $adjustDlstDone = FALSE;
                 foreach ($diffDays as $weekDayInterval) {
                     $diffDayEventStartDateTime->add($weekDayInterval);
@@ -790,7 +791,7 @@ class EventController extends AbstractController
                     $this->daylightOffset($diffDayEventStartDateTime, $daylightOffset);
                     $diffDayEventEndDateTime->add($weekDayInterval);
                     $this->daylightOffset($diffDayEventEndDateTime, $daylightOffset);
-                    if ($diffDayEventSubEndDateTime) {
+                    if ($diffDayEventSubEndDateTime instanceof \DateTime) {
                         $diffDayEventSubEndDateTime->add($weekDayInterval);
                         $this->daylightOffset($diffDayEventSubEndDateTime, $daylightOffset);
                     }
@@ -799,7 +800,7 @@ class EventController extends AbstractController
                     $childDateTime = [];
                     $childDateTime['endDateTime'] = clone $diffDayEventEndDateTime;
                     $childDateTime['startDateTime'] = clone $diffDayEventStartDateTime;
-                    if ($eventSubEndDateTime) {
+                    if ($diffDayEventSubEndDateTime instanceof \DateTime) {
                         $childDateTime['subEndDateTime'] = clone $diffDayEventSubEndDateTime;
                     }
                     if ($childDateTime['startDateTime'] < $recurringEndDateTime){
