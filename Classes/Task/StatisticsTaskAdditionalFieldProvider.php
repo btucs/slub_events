@@ -24,8 +24,6 @@ namespace Slub\SlubEvents\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -59,41 +57,35 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
     ) {
         $additionalFields = [];
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
+        $currentTask = $task instanceof StatisticsTask ? $task : null;
 
         if (empty($taskInfo['storagePid'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['storagePid'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['storagePid'] = $task->getStoragePid();
             } else {
-                $taskInfo['storagePid'] = $task->getStoragePid();
+                $taskInfo['storagePid'] = $currentTask?->getStoragePid() ?? '';
             }
         }
 
         if (empty($taskInfo['senderEmailAddress'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['senderEmailAddress'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['senderEmailAddress'] = $task->getSenderEmailAddress();
             } else {
-                $taskInfo['senderEmailAddress'] = $task->getSenderEmailAddress();
+                $taskInfo['senderEmailAddress'] = $currentTask?->getSenderEmailAddress() ?? '';
             }
         }
 
         if (empty($taskInfo['receiverEmailAddress'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['receiverEmailAddress'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['receiverEmailAddress'] = $task->getReceiverEmailAddress();
             } else {
-                $taskInfo['receiverEmailAddress'] = $task->getReceiverEmailAddress();
+                $taskInfo['receiverEmailAddress'] = $currentTask?->getReceiverEmailAddress() ?? '';
             }
         }
 
         $fieldId = 'task_storagePid';
         $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][storagePid]" id="' . $fieldId . '" value="' . htmlspecialchars((string) $taskInfo['storagePid']) . '"/>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.storagePid');
-        $label = BackendUtility::wrapInHelp('slub_events', $fieldId, $label);
         $additionalFields[$fieldId] = [
             'code'  => $fieldCode,
             'label' => $label,
@@ -102,7 +94,6 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
         $fieldId = 'task_senderEmailAddress';
         $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][senderEmailAddress]" id="' . $fieldId . '" value="' . htmlspecialchars((string) $taskInfo['senderEmailAddress']) . '"/>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.senderEmailAddress');
-        $label = BackendUtility::wrapInHelp('slub_events', $fieldId, $label);
         $additionalFields[$fieldId] = [
             'code'  => $fieldCode,
             'label' => $label,
@@ -121,7 +112,6 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
         }
         $fieldCode .= '</textarea>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.receiverEmailAddress');
-        $label = BackendUtility::wrapInHelp('slub_events', $fieldId, $label);
         $additionalFields[$fieldId] = [
             'code'  => $fieldCode,
             'label' => $label,

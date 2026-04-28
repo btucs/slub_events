@@ -106,7 +106,7 @@ class DisciplineRepository extends Repository
         $constraints[] = $query->equals('parent', $startCategory);
 
         if ($constraints !== []) {
-            $query->matching($query->logicalAnd($constraints));
+                $query->matching($query->logicalAnd(...$constraints));
         }
         $categories = $query->execute();
 

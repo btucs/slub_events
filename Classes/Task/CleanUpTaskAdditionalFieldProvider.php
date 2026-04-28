@@ -26,7 +26,6 @@ namespace Slub\SlubEvents\Task;
  ***************************************************************/
 
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -57,34 +56,29 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     ) {
         $additionalFields = [];
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
+        $currentTask = $task instanceof CleanUpTask ? $task : null;
 
         if (empty($taskInfo['storagePid'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['storagePid'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['storagePid'] = $task->getStoragePid();
             } else {
-                $taskInfo['storagePid'] = $task->getStoragePid();
+                $taskInfo['storagePid'] = $currentTask?->getStoragePid() ?? '';
             }
         }
 
         if (empty($taskInfo['cleanupDays'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['cleanupDays'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['cleanupDays'] = $task->getCleanupDays();
             } else {
-                $taskInfo['cleanupDays'] = $task->getCleanupDays();
+                $taskInfo['cleanupDays'] = $currentTask?->getCleanupDays() ?? '';
             }
         }
 
         if (empty($taskInfo['cleanupDaysEvents'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['cleanupDaysEvents'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['cleanupDaysEvents'] = $task->getCleanupDaysEvents();
             } else {
-                $taskInfo['cleanupDaysEvents'] = $task->getCleanupDaysEvents();
+                $taskInfo['cleanupDaysEvents'] = $currentTask?->getCleanupDaysEvents() ?? '';
             }
         }
 

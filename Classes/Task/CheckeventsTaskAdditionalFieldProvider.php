@@ -27,7 +27,6 @@ namespace Slub\SlubEvents\Task;
 
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -58,34 +57,29 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
     ) {
         $additionalFields = [];
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
+        $currentTask = $task instanceof CheckeventsTask ? $task : null;
 
         if (empty($taskInfo['storagePid'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['storagePid'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['storagePid'] = $task->storagePid;
             } else {
-                $taskInfo['storagePid'] = $task->storagePid;
+                $taskInfo['storagePid'] = $currentTask?->storagePid ?? '';
             }
         }
 
         if (empty($taskInfo['senderEmailAddress'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['senderEmailAddress'] = '';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['senderEmailAddress'] = $task->senderEmailAddress;
             } else {
-                $taskInfo['senderEmailAddress'] = $task->senderEmailAddress;
+                $taskInfo['senderEmailAddress'] = $currentTask?->senderEmailAddress ?? '';
             }
         }
 
         if (empty($taskInfo['language'])) {
             if ($currentSchedulerModuleAction->equals(Action::ADD)) {
                 $taskInfo['language'] = 'en';
-            } elseif ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-                $taskInfo['language'] = $task->language;
             } else {
-                $taskInfo['language'] = $task->language;
+                $taskInfo['language'] = $currentTask?->language ?? 'en';
             }
         }
 
@@ -100,7 +94,6 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
         $fieldId = 'task_senderEmailAddress';
         $fieldCode = '<input class="form-control" type="text" name="tx_scheduler[slub_events][senderEmailAddress]" id="' . $fieldId . '" value="' . htmlspecialchars((string) $taskInfo['senderEmailAddress']) . '"/>';
         $label = $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.senderEmailAddress');
-        $label = BackendUtility::wrapInHelp('slub_events', $fieldId, $label);
         $additionalFields[$fieldId] = [
             'code'  => $fieldCode,
             'label' => $label,
@@ -148,7 +141,7 @@ class CheckeventsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProv
         if (!GeneralUtility::validEmail($submittedData['slub_events']['senderEmailAddress'])) {
             $isValid = false;
             $this->addMessage($GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.invalidEmail'),
-                FlashMessage::ERROR);
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
         }
 
         return $isValid;
