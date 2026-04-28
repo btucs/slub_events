@@ -5,7 +5,7 @@
 
 	<div class="subscription">
 
-    <f:form name="subscribe_{event.uid}" object="{subscriber}" pageUid="{settings.pidSubscribeForm}" action="new" controller="Subscriber" arguments="{event : event}">
+    <f:form name="subscribe_{event.uid}" object="{subscriber}" pageUid="{settings.pidSubscribeForm}" pluginName="Eventsubscribecreate" action="new" controller="Subscriber" arguments="{event : event}">
         <f:comment><f:form.select name="category" class="form-control" options="{event.categories}" /></f:comment>
 
         <select class="form-control" id="sel_{event.uid}" name="tx_slubevents_eventsubscribe[category]" onchange="check_wiba({event.uid});">
@@ -23,7 +23,7 @@
 
 
         <f:comment>
-        <f:link.action action="new" class="button subscribe" controller="Subscriber" pageUid="{settings.pidSubscribeForm}"
+        <f:link.action action="new" class="button subscribe" controller="Subscriber" pageUid="{settings.pidSubscribeForm}" pluginName="Eventsubscribecreate"
                        title="Anmelden bei {event.contact.name}" arguments="{event : event, category: category}">
             <f:translate key="tx_slubevents_domain_model_event.subscribe" extensionName="slub_events"/>
         </f:link.action>

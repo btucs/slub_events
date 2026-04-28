@@ -35,11 +35,7 @@ ajaxEvents {
         pluginName = Eventlist
         extensionName = SlubEvents
         controller = Event
-        switchableControllerActions {
-            Event {
-                1 = ajax
-            }
-        }
+        action = ajax
 
         settings =< plugin.tx_slubevents.settings
         persistence =< plugin.tx_slubevents.persistence

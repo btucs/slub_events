@@ -5,11 +5,11 @@ defined('TYPO3') || die();
     'SlubEvents',
     'Eventlist',
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'list, new, update, create, delete, printCal',
+        \Slub\SlubEvents\Controller\EventController::class => 'list, new, update, create, delete, printCal, ajax',
     ],
     // non-cacheable actions
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'new, update, create, delete',
+        \Slub\SlubEvents\Controller\EventController::class => 'new, update, create, delete, ajax',
     ],
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );

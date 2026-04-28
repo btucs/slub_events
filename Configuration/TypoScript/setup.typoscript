@@ -116,14 +116,18 @@ plugin.tx_slubevents_apieventlistuser {
 printCal = PAGE
 printCal {
     typeNum = 1469051993
-    10 =< tt_content.list.20.slubevents_eventlist
-	10 {
-		switchableControllerActions {
-			Event {
-				1 = printCal
-			  }
-			}
-		}
+    10 = USER
+    10 {
+        userFunc = TYPO3\\CMS\\Extbase\\Core\\Bootstrap->run
+        vendorName = Slub
+        pluginName = Eventlist
+        extensionName = SlubEvents
+        controller = Event
+        action = printCal
+
+        settings =< plugin.tx_slubevents.settings
+        persistence =< plugin.tx_slubevents.persistence
+    }
 
 	config {
 		disableAllHeaderCode = 1
@@ -143,23 +147,45 @@ printCal {
 apiEventList = PAGE
 apiEventList {
     typeNum = 1452982642
+    10 = USER
+    10 {
+        userFunc = TYPO3\\CMS\\Extbase\\Core\\Bootstrap->run
+        vendorName = Slub
+        pluginName = Apieventlist
+        extensionName = SlubEvents
+        controller = Event
+        action = list
+
+        settings =< plugin.tx_slubevents.settings
+        persistence =< plugin.tx_slubevents.persistence
+    }
     config {
         # deactivate Standard-Header
         disableAllHeaderCode = 1
         # disable cache notice
         debug = 0
     }
-    10 < tt_content.list.20.slubevents_apieventlist
 }
 
 apiEventListUser = PAGE
 apiEventListUser {
     typeNum = 1452982643
+    10 = USER
+    10 {
+        userFunc = TYPO3\\CMS\\Extbase\\Core\\Bootstrap->run
+        vendorName = Slub
+        pluginName = Apieventlistuser
+        extensionName = SlubEvents
+        controller = Event
+        action = listUser
+
+        settings =< plugin.tx_slubevents.settings
+        persistence =< plugin.tx_slubevents.persistence
+    }
     config {
         # deactivate Standard-Header
         disableAllHeaderCode = 1
         # disable cache notice
         debug = 0
     }
-    10 < tt_content.list.20.slubevents_apieventlistuser
 }

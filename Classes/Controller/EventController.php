@@ -521,7 +521,7 @@ class EventController extends AbstractController
                 // Link to current page
                 'parameter'        => $this->request->getQueryParams()['detailPid'] ?? null,
                 // Set additional parameters
-                'additionalParams' => '&type=0&tx_slubevents_eventlist%5Bevent%5D=' . $event->getUid() . '&tx_slubevents_eventlist%5Baction%5D=show',
+                'additionalParams' => '&type=0&tx_slubevents_eventshow%5Bevent%5D=' . $event->getUid() . '&tx_slubevents_eventshow%5Baction%5D=show',
                 // We must add cHash because we use parameters
                 'useCacheHash'     => 1,
                 // We want link only
@@ -612,6 +612,8 @@ class EventController extends AbstractController
       $this->view->assign('helper', $helper);
       $this->view->assign('event', $event);
   }
+
+                return $this->htmlResponse();
     }
 
     /**

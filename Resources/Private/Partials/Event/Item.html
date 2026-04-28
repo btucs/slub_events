@@ -4,7 +4,7 @@
 	<h4>
 		<f:if condition="{settings.pidDetails}">
 			<f:then>
-				<f:link.action action="show" controller="Event" pluginName="Eventlist"
+				<f:link.action action="show" controller="Event" pluginName="Eventshow"
 							   title="{event.description -> f:format.stripTags()}" pageUid="{settings.pidDetails}"
 							   arguments="{event : event}">{event.title}
 				</f:link.action>
@@ -45,7 +45,7 @@
 					</f:else>
 				</f:if>
 				-->
-				<f:link.action action="new" class="button subscribe" controller="Subscriber" pageUid="{settings.pidSubscribeForm}" arguments="{event : event}">
+				<f:link.action action="new" class="button subscribe" controller="Subscriber" pageUid="{settings.pidSubscribeForm}" pluginName="Eventsubscribecreate" arguments="{event : event}">
 					<f:translate key="tx_slubevents_domain_model_event.subscribe" extensionName="slub_events" />
 				</f:link.action>
 			</f:then>
