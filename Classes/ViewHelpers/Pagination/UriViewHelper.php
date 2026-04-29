@@ -16,6 +16,11 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 class UriViewHelper extends AbstractTagBasedViewHelper
 {
     /**
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
+    /**
      * Initialize arguments
      */
     #[\Override]
@@ -51,7 +56,6 @@ class UriViewHelper extends AbstractTagBasedViewHelper
         }
         $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
         $pluginNamespace = $extensionService->getPluginNamespace($extensionName, $pluginName);
-        $argumentPrefix = $pluginNamespace . '[' . $this->arguments['name'] . ']';
         $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($this->hasArgument('action')) {
             $arguments['action'] = $this->arguments['action'];
@@ -59,10 +63,17 @@ class UriViewHelper extends AbstractTagBasedViewHelper
         if ($this->hasArgument('format') && $this->arguments['format'] !== '') {
             $arguments['format'] = $this->arguments['format'];
         }
+
+        $pluginArguments = $request->getParsedBody()[$pluginNamespace] ?? $request->getQueryParams()[$pluginNamespace] ?? [];
+        if (!is_array($pluginArguments)) {
+            $pluginArguments = [];
+        }
+        $pluginArguments[$this->arguments['name']] = $arguments;
+
         $uriBuilder->reset()
-                   ->setArguments([$argumentPrefix => $arguments])
+                   ->setArguments([$pluginNamespace => $pluginArguments])
                    ->setAddQueryString(true)
-                   ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash']);
+                   ->setArgumentsToBeExcludedFromQueryString(['cHash']);
         return $uriBuilder->build();
     }
 }
