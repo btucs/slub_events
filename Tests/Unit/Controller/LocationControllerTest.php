@@ -1,8 +1,8 @@
 <?php
 namespace Slub\SlubEvents\Tests\Unit\Controller;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Location;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /***************************************************************
  *  Copyright notice
@@ -40,19 +40,19 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class LocationControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class LocationControllerTest extends UnitTestCase
 {
     /**
      * @var Location
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Location();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -60,7 +60,7 @@ class LocationControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function dummyMethod()
+    public function dummyMethod(): void
     {
         $this->markTestIncomplete();
     }

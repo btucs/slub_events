@@ -53,7 +53,7 @@ class IsSubscriptionAllowedViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('event', Event::class, 'Events', true);

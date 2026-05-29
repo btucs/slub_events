@@ -24,7 +24,8 @@ namespace Slub\SlubEvents\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Slub\SlubEvents\Domain\Model\Event;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -48,7 +49,7 @@ class SubscriberRepository extends Repository
         $query = $this->createQuery();
 
         $constraints = [];
-        $constraints[] = $query->equals('customerid', $GLOBALS['TSFE']->fe_user->user['username']);
+        $constraints[] = $query->equals('customerid', $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user')->user['username']);
         if ($pid) {
             $query->getQuerySettings()->setRespectStoragePage(false);
             $constraints[] = $query->equals('pid', $pid);
@@ -90,7 +91,7 @@ class SubscriberRepository extends Repository
     /**
      * Count all Subscribers by number for a given event
      *
-     * @param \Slub\SlubEvents\Domain\Model\Event $event
+     * @param Event $event
      *
      * @return int
      */
@@ -113,7 +114,7 @@ class SubscriberRepository extends Repository
     /**
      * Finds subscriber by fe_user data
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Event> $events
+     * @param ObjectStorage<Event> $events
      *
      * @return QueryResultInterface|list<array<string, mixed>> The found Subscriber Objects
      */

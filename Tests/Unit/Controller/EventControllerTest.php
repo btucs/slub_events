@@ -1,8 +1,8 @@
 <?php
 namespace Slub\SlubEvents\Tests\Unit\Controller;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Event;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 
 /***************************************************************
@@ -41,19 +41,19 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class EventControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class EventControllerTest extends UnitTestCase
 {
     /**
      * @var Event
      */
     protected $subject = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Event();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -61,7 +61,7 @@ class EventControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function dummyMethod()
+    public function dummyMethod(): void
     {
         $this->markTestIncomplete();
     }

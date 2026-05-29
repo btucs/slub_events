@@ -14,7 +14,7 @@ namespace Slub\SlubEvents\Controller\Api;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use Psr\Http\Message\ResponseInterface;
 use Slub\SlubEvents\Authentication\ApiAuthentication;
 use Slub\SlubEvents\Controller\AbstractController;
 use Slub\SlubEvents\Mvc\View\JsonView;
@@ -80,7 +80,7 @@ class EventController extends AbstractController
     /**
      * @return void
      */
-    public function listAction(): \Psr\Http\Message\ResponseInterface
+    public function listAction(): ResponseInterface
     {
         if ($this->allowApiAccess) {
             $arguments = $this->apiService->prepareArgumentsDefault($this->request->getArguments());
@@ -95,7 +95,7 @@ class EventController extends AbstractController
     /**
      * @return void
      */
-    public function listUserAction(): \Psr\Http\Message\ResponseInterface
+    public function listUserAction(): ResponseInterface
     {
         if ($this->allowApiAccess) {
             $arguments = $this->apiService->prepareArgumentsUser($this->request->getArguments());

@@ -44,7 +44,7 @@ class HasSubcategoriesViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('category', Category::class, 'Category', true);

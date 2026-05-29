@@ -64,7 +64,7 @@ class HookPostProcessing implements LoggerAwareInterface
         $this->persistenceManager = $persistenceManager;
     }
 
-    public function __construct(
+    public function __construct(private readonly CacheManager $cacheManager
     ) {
         $this->logger = new NullLogger();
     }
@@ -78,7 +78,7 @@ class HookPostProcessing implements LoggerAwareInterface
      *
      * @return void
      */
-    public function clearAllEventListCache($pid = 0, $isGeniusBar = false)
+    public function clearAllEventListCache($pid = 0, $isGeniusBar = false): void
     {
         $cacheTag = $isGeniusBar ? 'tx_slubevents_cat_' . $pid : 'tx_slubevents_' . $pid;
         $this->getCacheManager()->flushCachesInGroupByTags('pages', [$cacheTag]);
@@ -91,7 +91,7 @@ class HookPostProcessing implements LoggerAwareInterface
      *
      * @return void
      */
-    public function clearAjaxCacheFiles($startDate = null)
+    public function clearAjaxCacheFiles($startDate = null): void
     {
         $dir = Environment::getPublicPath() . '/typo3temp/tx_slubevents/';
         if (!file_exists($dir)) {
@@ -132,7 +132,7 @@ class HookPostProcessing implements LoggerAwareInterface
      * @return      void
      *
      */
-    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$pObj)
+    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$pObj): void
     {
         if ($table == 'tx_slubevents_domain_model_event') {
             // should be already unset in HookPreProcessing
@@ -154,7 +154,7 @@ class HookPostProcessing implements LoggerAwareInterface
      *
      * @return      void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $idElement, &$fieldArray, &$pObj)
+    public function processDatamap_afterDatabaseOperations($status, $table, $idElement, &$fieldArray, &$pObj): void
     {
         // we are only interested in tx_slubevents_domain_model_event
         if ($table == 'tx_slubevents_domain_model_event') {
@@ -204,7 +204,7 @@ class HookPostProcessing implements LoggerAwareInterface
      * @return    void
      * @access public
      */
-    public function processCmdmap_deleteAction($table, $id, $recordToDelete, &$recordWasDeleted, $fieldArray)
+    public function processCmdmap_deleteAction($table, $id, $recordToDelete, &$recordWasDeleted, $fieldArray): void
     {
       if ($table == 'tx_slubevents_domain_model_event' && $recordToDelete['parent'] == 0) {
           try {
@@ -249,7 +249,7 @@ class HookPostProcessing implements LoggerAwareInterface
      */
     protected function getCacheManager()
     {
-        return GeneralUtility::makeInstance(CacheManager::class);
+        return $this->cacheManager;
     }
 
 }

@@ -10,9 +10,7 @@ namespace Slub\SlubEvents\ViewHelpers;
  */
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * ViewHelper to render meta tags
@@ -35,12 +33,15 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class MetaTagViewHelper extends AbstractViewHelper
 {
+    public function __construct(private readonly PageRenderer $pageRenderer)
+    {
+    }
     /**
      * Arguments initialization
      *
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('property', 'string', 'Property of meta tag', false, '', false);
         $this->registerArgument('name', 'string', 'Content of meta tag using the name attribute', false, '', false);
@@ -49,14 +50,14 @@ class MetaTagViewHelper extends AbstractViewHelper
         $this->registerArgument('forceAbsoluteUrl', 'boolean', 'Force absolut domain', false, false);
     }
 
-    public function render()
+    public function render(): void
     {
         // Skip if current record is part of tt_content CType shortcut
         if (!empty($GLOBALS['TSFE']->recordRegister)
             && is_array($GLOBALS['TSFE']->recordRegister)
-            && str_contains(array_keys($GLOBALS['TSFE']->recordRegister)[0], 'tt_content:')
+            && str_contains((string) array_keys($GLOBALS['TSFE']->recordRegister)[0], 'tt_content:')
             && !empty($GLOBALS['TSFE']->currentRecord)
-            && str_contains($GLOBALS['TSFE']->currentRecord, 'tx_news_domain_model_news:')
+            && str_contains((string) $GLOBALS['TSFE']->currentRecord, 'tx_news_domain_model_news:')
         ) {
             return;
         }
@@ -78,7 +79,7 @@ class MetaTagViewHelper extends AbstractViewHelper
             }
         }
         if ($content !== '') {
-            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer = $this->pageRenderer;
             if ($this->arguments['property']) {
                 $pageRenderer->setMetaTag('property', $this->arguments['property'], $content);
             } elseif ($this->arguments['name']) {

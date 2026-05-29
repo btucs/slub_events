@@ -44,7 +44,7 @@ class EventsOfDisciplineViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('discipline', Discipline::class, 'Discipline', true);

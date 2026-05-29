@@ -24,7 +24,9 @@ namespace Slub\SlubEvents\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Psr\Http\Message\ResponseInterface;
+use Slub\SlubEvents\Domain\Validator\SubscriberValidator;
+use Slub\SlubEvents\Domain\Validator\EventSubscriptionAllowedValidator;
 use Slub\SlubEvents\Domain\Model\Category;
 use Slub\SlubEvents\Domain\Model\Event;
 use Slub\SlubEvents\Domain\Model\Subscriber;
@@ -43,12 +45,15 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 class SubscriberController extends AbstractController
 {
 
+    public function __construct(private readonly CacheManager $cacheManager)
+    {
+    }
     /**
      * action list
      *
      * @return void
      */
-    public function listAction(): \Psr\Http\Message\ResponseInterface
+    public function listAction(): ResponseInterface
     {
         $subscribers = $this->subscriberRepository->findAll();
         $this->view->assign('subscribers', $subscribers);
@@ -62,7 +67,7 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    public function showAction(Subscriber $subscriber): \Psr\Http\Message\ResponseInterface
+    public function showAction(Subscriber $subscriber): ResponseInterface
     {
         $this->view->assign('subscriber', $subscriber);
         return $this->htmlResponse();
@@ -73,7 +78,7 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    public function eventNotFoundAction(): \Psr\Http\Message\ResponseInterface
+    public function eventNotFoundAction(): ResponseInterface
     {
         return $this->htmlResponse();
     }
@@ -83,7 +88,7 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    public function subscriberNotFoundAction(): \Psr\Http\Message\ResponseInterface
+    public function subscriberNotFoundAction(): ResponseInterface
     {
         return $this->htmlResponse();
     }
@@ -95,7 +100,7 @@ class SubscriberController extends AbstractController
      * @param Event      $event
      * @param Category   $category
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'newSubscriber'])]
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
@@ -108,7 +113,7 @@ class SubscriberController extends AbstractController
     {
 
         // somebody is calling the action without giving an event --> useless
-        if (!$event instanceof \Slub\SlubEvents\Domain\Model\Event) {
+        if (!$event instanceof Event) {
             return $this->redirect('eventNotFound');
         }
 
@@ -116,25 +121,25 @@ class SubscriberController extends AbstractController
         // extbase 1.4, because the object is never NULL!
         // anyway we can set default values here which are overwritten if
         // already POST values exists. extbase voodoo ;-)
-        if (!$newSubscriber instanceof \Slub\SlubEvents\Domain\Model\Subscriber) {
+        if (!$newSubscriber instanceof Subscriber) {
 
-            /** @var \Slub\SlubEvents\Domain\Model\Subscriber $newSubscriber */
+            /** @var Subscriber $newSubscriber */
             $newSubscriber = GeneralUtility::makeInstance(Subscriber::class);
             $newSubscriber->setNumber(1);
 
-            if (!empty($GLOBALS['TSFE']->fe_user->user['username'])) {
-                $newSubscriber->setCustomerid($GLOBALS['TSFE']->fe_user->user['username']);
+            if (!empty($this->request->getAttribute('frontend.user')->user['username'])) {
+                $newSubscriber->setCustomerid($this->request->getAttribute('frontend.user')->user['username']);
                 $loggedIn = 'readonly'; // css class for form
             } else {
                 $loggedIn = '';
             } // css class for form
 
-            if (!empty($GLOBALS['TSFE']->fe_user->user['name'])) {
-                $newSubscriber->setName($GLOBALS['TSFE']->fe_user->user['name']);
+            if (!empty($this->request->getAttribute('frontend.user')->user['name'])) {
+                $newSubscriber->setName($this->request->getAttribute('frontend.user')->user['name']);
             }
 
-            if (!empty($GLOBALS['TSFE']->fe_user->user['email'])) {
-                $newSubscriber->setEmail($GLOBALS['TSFE']->fe_user->user['email']);
+            if (!empty($this->request->getAttribute('frontend.user')->user['email'])) {
+                $newSubscriber->setEmail($this->request->getAttribute('frontend.user')->user['email']);
             }
         }
 
@@ -158,14 +163,14 @@ class SubscriberController extends AbstractController
      *
      * @return void
      */
-    #[Extbase\Validate(['validator' => \Slub\SlubEvents\Domain\Validator\SubscriberValidator::class, 'param' => 'newSubscriber'])]
-    #[Extbase\Validate(['validator' => \Slub\SlubEvents\Domain\Validator\EventSubscriptionAllowedValidator::class, 'param' => 'event'])]
+    #[Extbase\Validate(['validator' => SubscriberValidator::class, 'param' => 'newSubscriber'])]
+    #[Extbase\Validate(['validator' => EventSubscriptionAllowedValidator::class, 'param' => 'event'])]
     #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
     public function createAction(
         Subscriber $newSubscriber,
         Event $event,
         ?Category $category = null
-    ): \Psr\Http\Message\ResponseInterface
+    ): ResponseInterface
     {
 
         // add subscriber to event
@@ -232,7 +237,7 @@ class SubscriberController extends AbstractController
                     $this->settings['senderEmailAddress'] =>
                         LocalizationUtility::translate(
                             'tx_slubevents.be.eventmanagement',
-                            'slub_events'
+                            'SlubEvents'
                         )
                         . ' - noreply',
                 ],
@@ -259,7 +264,7 @@ class SubscriberController extends AbstractController
                     $this->settings['senderEmailAddress'] =>
                         LocalizationUtility::translate(
                             'tx_slubevents.be.eventmanagement',
-                            'slub_events'
+                            'SlubEvents'
                         )
                         . ' - noreply',
                 ],
@@ -320,13 +325,13 @@ class SubscriberController extends AbstractController
      * @param Event  $event
      * @param string $editcode
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
     public function deleteAction(?Event $event = null, $editcode = null)
     {
         // somebody is calling the action without giving an event --> useless
-        if (!$event instanceof \Slub\SlubEvents\Domain\Model\Event || $editcode === null) {
+        if (!$event instanceof Event || $editcode === null) {
             return $this->redirect('eventNotFound');
         }
 
@@ -385,7 +390,7 @@ class SubscriberController extends AbstractController
                 [
                     $this->settings['senderEmailAddress'] => LocalizationUtility::translate(
                         'tx_slubevents.be.eventmanagement',
-                        'slub_events'
+                        'SlubEvents'
                     ),
                 ],
                 'Veranstaltung wegen Abmeldung nicht mehr gesichert: ' . $event->getTitle(),
@@ -442,6 +447,6 @@ class SubscriberController extends AbstractController
      */
     protected function getCacheManager(): CacheManager
     {
-        return GeneralUtility::makeInstance(CacheManager::class);
+        return $this->cacheManager;
     }
 }

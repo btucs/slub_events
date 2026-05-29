@@ -23,7 +23,7 @@ namespace Slub\SlubEvents\Helper\Form\Element;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Slub\SlubEvents\Domain\Model\Event;
 use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -34,6 +34,9 @@ use Slub\SlubEvents\Helper\IconsHelper;
 
 class RecurringEventsElement extends AbstractFormElement
 {
+    public function __construct(private readonly ConfigurationManager $configurationManager)
+    {
+    }
     #[\Override]
     public function render()
     {
@@ -41,7 +44,7 @@ class RecurringEventsElement extends AbstractFormElement
         // parameters are available in $this->data['parameterArray']['fieldConf']['config']['parameters']
         $result = $this->initializeResultArray();
 
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager = $this->configurationManager;
 
         $configurationArray = [
             'persistence' => [
@@ -54,7 +57,7 @@ class RecurringEventsElement extends AbstractFormElement
 
         $childEvents = $eventRepository->findFutureByParent($this->data['databaseRow']['uid']);
 
-        /** @var \Slub\SlubEvents\Domain\Model\Event|null $parentEvent */
+        /** @var Event|null $parentEvent */
         $parentEvent = $eventRepository->findOneByUidIncludeHidden($this->data['databaseRow']['uid']);
         if (!$parentEvent) {
             $result['html'] = '<div class="alert alert-danger">Parent event not found.</div>';
@@ -63,18 +66,18 @@ class RecurringEventsElement extends AbstractFormElement
 
         $output = '<h4>'. LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring',
-            'slub_events').'</h4>';
+            'SlubEvents').'</h4>';
 
         $locale = DateFormattingUtility::getDefaultLocale();
 
         if ($this->data['databaseRow']['hidden'] == 1) {
             $output .= '<div class="alert alert-warning">'.LocalizationUtility::translate(
                 'tx_slubevents_domain_model_event.recurring.event_hidden',
-                'slub_events');
+                'SlubEvents');
         } else {
             $output .= '<div class="alert alert-success">'.LocalizationUtility::translate(
                 'tx_slubevents_domain_model_event.recurring_parent',
-                'slub_events');
+                'SlubEvents');
         }
         $output .= ' <br /><strong>' . DateFormattingUtility::formatPattern(
             $parentEvent->getStartDateTime(),
@@ -87,7 +90,7 @@ class RecurringEventsElement extends AbstractFormElement
 
             $output .= '<p class="alert alert-info">'.LocalizationUtility::translate(
                 'tx_slubevents_domain_model_event.only_future_events',
-                'slub_events').'</p>';
+                'SlubEvents').'</p>';
             $output .= '<div class="table-fit">';
             $table = 'tx_slubevents_domain_model_event';
             $output .= '<table data-table="'.$table.'" class="table table-striped table-hover">';
@@ -110,7 +113,7 @@ class RecurringEventsElement extends AbstractFormElement
         } else {
             $output .= '<div class="alert alert-warning">'.LocalizationUtility::translate(
                 'tx_slubevents_domain_model_event.recurring.no_future_children',
-                'slub_events').'</div>'
+                'SlubEvents').'</div>'
                 ;
         }
 

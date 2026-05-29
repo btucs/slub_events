@@ -63,25 +63,33 @@ class CleanUpTask extends AbstractTask
     protected $cleanupDays;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var PersistenceManager
      */
     protected $persistenceManager;
+    /**
+     * Constructor
+     */
+    public function __construct(private readonly ConfigurationManagerInterface $configurationManagerInterface, PersistenceManager $persistenceManager)
+    {
+        parent::__construct();
+        $this->persistenceManager = $persistenceManager;
+    }
 
     /**
      * injectConfigurationManager
      *
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     * @param ConfigurationManagerInterface $configurationManager
      *
      * @return void
      */
     public function injectConfigurationManager(
         ConfigurationManagerInterface $configurationManager
-    ) {
+    ): void {
         $this->configurationManager = $configurationManager;
 
         $this->settings = $this->configurationManager->getConfiguration(
@@ -96,7 +104,7 @@ class CleanUpTask extends AbstractTask
      *
      * @return void
      */
-    public function setStoragePid($storagePid)
+    public function setStoragePid($storagePid): void
     {
         $this->storagePid = $storagePid;
     }
@@ -118,7 +126,7 @@ class CleanUpTask extends AbstractTask
      *
      * @return void
      */
-    public function setCleanupDays($cleanupDays)
+    public function setCleanupDays($cleanupDays): void
     {
         $this->cleanupDays = $cleanupDays;
     }
@@ -140,7 +148,7 @@ class CleanUpTask extends AbstractTask
      *
      * @return void
      */
-    public function setCleanupDaysEvents($cleanupDaysEvents)
+    public function setCleanupDaysEvents($cleanupDaysEvents): void
     {
         $this->cleanupDaysEvents = $cleanupDaysEvents;
     }
@@ -170,13 +178,9 @@ class CleanUpTask extends AbstractTask
             EventRepository::class
         );
 
-        $this->configurationManager = GeneralUtility::makeInstance(
-            ConfigurationManagerInterface::class
-        );
+        $this->configurationManager = $this->configurationManagerInterface;
 
-        $this->persistenceManager = GeneralUtility::makeInstance(
-            PersistenceManager::class
-        );
+        $this->persistenceManager = $this->persistenceManager;
     }
 
     /**

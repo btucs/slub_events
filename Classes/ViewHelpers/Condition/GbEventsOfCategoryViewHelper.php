@@ -24,7 +24,7 @@ namespace Slub\SlubEvents\ViewHelpers\Condition;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Slub\SlubEvents\Domain\Model\Event;
 use \Slub\SlubEvents\Domain\Model\Category;
 use \Slub\SlubEvents\Domain\Repository\CategoryRepository;
 
@@ -47,7 +47,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('category', Category::class, 'Category', true);
@@ -87,7 +87,7 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
         $categories = $this->getCategoryRepository()->findCurrentBranch($category);
         $showLink = false;
         if (empty($categories) || empty($events)) {
-            /** @var \Slub\SlubEvents\Domain\Model\Event $event */
+            /** @var Event $event */
             foreach ($events as $event) {
                 $showLink = true;
                 if ($this->getSubscriberRepository()->countAllByEvent($event) >= $event->getMaxSubscriber()) {

@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Slub\SlubEvents\ViewHelpers\Pagination;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
@@ -19,12 +18,19 @@ class UriViewHelper extends AbstractTagBasedViewHelper
      * @var bool
      */
     protected $escapeOutput = false;
+    /**
+     * Constructor
+     */
+    public function __construct(private readonly UriBuilder $uriBuilder, private readonly ExtensionService $extensionService)
+    {
+        parent::__construct();
+    }
 
     /**
      * Initialize arguments
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('name', 'string', 'identifier important if more widgets on same page', false, 'widget');
@@ -43,7 +49,7 @@ class UriViewHelper extends AbstractTagBasedViewHelper
         $renderingContext = $this->renderingContext;
         $request = $renderingContext->getRequest();
 
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder = $this->uriBuilder;
         $uriBuilder->setRequest($request);
 
         $extbaseRequestParameters = $request->getAttribute('extbase');
@@ -54,7 +60,7 @@ class UriViewHelper extends AbstractTagBasedViewHelper
             // Fallback if extbase parameters are not available
             return '';
         }
-        $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
+        $extensionService = $this->extensionService;
         $pluginNamespace = $extensionService->getPluginNamespace($extensionName, $pluginName);
         $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($this->hasArgument('action')) {

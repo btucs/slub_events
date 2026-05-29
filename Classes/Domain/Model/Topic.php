@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\Domain\Model;
 
 /***************************************************************
@@ -47,7 +50,7 @@ class Topic extends AbstractEntity
     /**
      * parent
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Topic>
+     * @var ObjectStorage<Topic>
      */
     protected $parent;
 
@@ -68,7 +71,7 @@ class Topic extends AbstractEntity
      *
      * @return void
      */
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -76,11 +79,11 @@ class Topic extends AbstractEntity
     /**
      * Adds a Topic
      *
-     * @param \Slub\SlubEvents\Domain\Model\Topic $parent
+     * @param Topic $parent
      *
      * @return void
      */
-    public function addParent(\Slub\SlubEvents\Domain\Model\Topic $parent)
+    public function addParent(Topic $parent): void
     {
         $this->parent->attach($parent);
     }
@@ -88,11 +91,11 @@ class Topic extends AbstractEntity
     /**
      * Removes a Topic
      *
-     * @param \Slub\SlubEvents\Domain\Model\Topic $parentToRemove The Location to be removed
+     * @param Topic $parentToRemove The Location to be removed
      *
      * @return void
      */
-    public function removeParent(\Slub\SlubEvents\Domain\Model\Topic $parentToRemove)
+    public function removeParent(Topic $parentToRemove): void
     {
         $this->parent->detach($parentToRemove);
     }
@@ -100,7 +103,7 @@ class Topic extends AbstractEntity
     /**
      * Returns the parent
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Topic> $parent
+     * @return ObjectStorage<Topic> $parent
      */
     public function getParent()
     {
@@ -110,11 +113,11 @@ class Topic extends AbstractEntity
     /**
      * Sets the parent
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Topic> $parent
+     * @param ObjectStorage<Topic> $parent
      *
      * @return void
      */
-    public function setParent(ObjectStorage $parent)
+    public function setParent(ObjectStorage $parent): void
     {
         $this->parent = $parent;
     }

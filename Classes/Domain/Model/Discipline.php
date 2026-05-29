@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\Domain\Model;
 
 /***************************************************************
@@ -47,7 +50,7 @@ class Discipline extends AbstractEntity
     /**
      * parent
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Discipline>
+     * @var ObjectStorage<Discipline>
      */
     protected $parent;
 
@@ -68,7 +71,7 @@ class Discipline extends AbstractEntity
      *
      * @return void
      */
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -76,11 +79,11 @@ class Discipline extends AbstractEntity
     /**
      * Adds a Discipline
      *
-     * @param \Slub\SlubEvents\Domain\Model\Discipline $parent
+     * @param Discipline $parent
      *
      * @return void
      */
-    public function addParent(\Slub\SlubEvents\Domain\Model\Discipline $parent)
+    public function addParent(Discipline $parent): void
     {
         $this->parent->attach($parent);
     }
@@ -88,11 +91,11 @@ class Discipline extends AbstractEntity
     /**
      * Removes a Discipline
      *
-     * @param \Slub\SlubEvents\Domain\Model\Discipline $parentToRemove The Location to be removed
+     * @param Discipline $parentToRemove The Location to be removed
      *
      * @return void
      */
-    public function removeParent(\Slub\SlubEvents\Domain\Model\Discipline $parentToRemove)
+    public function removeParent(Discipline $parentToRemove): void
     {
         $this->parent->detach($parentToRemove);
     }
@@ -100,7 +103,7 @@ class Discipline extends AbstractEntity
     /**
      * Returns the parent
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Discipline> $parent
+     * @return ObjectStorage<Discipline> $parent
      */
     public function getParent()
     {
@@ -110,11 +113,11 @@ class Discipline extends AbstractEntity
     /**
      * Sets the parent
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Discipline> $parent
+     * @param ObjectStorage<Discipline> $parent
      *
      * @return void
      */
-    public function setParent(ObjectStorage $parent)
+    public function setParent(ObjectStorage $parent): void
     {
         $this->parent = $parent;
     }

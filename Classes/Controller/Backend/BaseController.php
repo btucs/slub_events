@@ -13,14 +13,13 @@ namespace Slub\SlubEvents\Controller\Backend;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use Psr\Http\Message\ResponseInterface;
 use Slub\SlubEvents\Controller\AbstractController;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -44,7 +43,7 @@ class BaseController extends AbstractController
      * @var array
      */
     protected $pageInformation;
-    public function __construct(private readonly \TYPO3\CMS\Backend\Template\ModuleTemplateFactory $moduleTemplateFactory)
+    public function __construct(private readonly ModuleTemplateFactory $moduleTemplateFactory, private readonly UriBuilder $uriBuilder)
     {
     }
 
@@ -81,7 +80,7 @@ class BaseController extends AbstractController
     protected function createMenu(): void
     {
         $moduleTemplate = $this->getModuleTemplate();
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder = $this->uriBuilder;
         $uriBuilder->setRequest($this->request);
 
         $menu = $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
@@ -96,7 +95,7 @@ class BaseController extends AbstractController
             $item = $menu->makeMenuItem()
                 ->setTitle(
                     // TODO: make this more flexible and changeable by TypoScript or an alternative language file
-                    LocalizationUtility::translate($action['label'], 'slub_events')
+                    LocalizationUtility::translate($action['label'], 'SlubEvents')
                 )
                 ->setHref($uriBuilder->reset()->uriFor($action['action'], [], $action['controller']))
                 ->setActive(
@@ -147,7 +146,7 @@ class BaseController extends AbstractController
 
     protected function getModuleTemplate(): ModuleTemplate
     {
-        if ($this->moduleTemplate === null) {
+        if (!$this->moduleTemplate instanceof ModuleTemplate) {
             $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         }
         return $this->moduleTemplate;

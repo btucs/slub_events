@@ -51,7 +51,7 @@ class TextUtility
         $firstline = substr($text, 0, (75 - 12));
         $restofline = implode("\n ", str_split(trim(substr($text, (75 - 12), strlen($text))), 73));
 
-        $foldedline = strlen($restofline) > 0 ? $firstline . "\n " . $restofline : $firstline;
+        $foldedline = $restofline !== '' ? $firstline . "\n " . $restofline : $firstline;
 
         return $foldedline;
     }

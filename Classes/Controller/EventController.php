@@ -24,7 +24,8 @@ namespace Slub\SlubEvents\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
@@ -48,6 +49,9 @@ use Slub\SlubEvents\Utility\TextUtility;
 class EventController extends AbstractController
 {
 
+    public function __construct(private readonly ConnectionPool $connectionPool, private readonly PersistenceManager $persistenceManager)
+    {
+    }
     /**
      * Initializes the current action
      *
@@ -64,7 +68,7 @@ class EventController extends AbstractController
             // We only want to set the tag once in one request, so we have to cache that statically if it has been done
             static $cacheTagsSet = false;
 
-            /** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $typoScriptFrontendController */
+            /** @var TypoScriptFrontendController $typoScriptFrontendController */
             $typoScriptFrontendController = $GLOBALS['TSFE'];
             if (!$cacheTagsSet) {
                 $typoScriptFrontendController->addCacheTags(
@@ -80,7 +84,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listAction(): \Psr\Http\Message\ResponseInterface
+    public function listAction(): ResponseInterface
     {
         if (!empty($this->settings['categorySelection'])) {
             $this->settings['categoryList'] = $this->getCategoryIdsFromSettings();
@@ -101,7 +105,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listUpcomingAction(): \Psr\Http\Message\ResponseInterface
+    public function listUpcomingAction(): ResponseInterface
     {
         if (!empty($this->settings['categorySelection'])) {
             $this->settings['categoryList'] = $this->getCategoryIdsFromSettings();
@@ -125,9 +129,9 @@ class EventController extends AbstractController
      * @return void
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
-    public function showAction(?Event $event = null): \Psr\Http\Message\ResponseInterface
+    public function showAction(?Event $event = null): ResponseInterface
     {
-        if ($event instanceof \Slub\SlubEvents\Domain\Model\Event) {
+        if ($event instanceof Event) {
             $shortDescription = $event->getTeaser() ?: $event->getDescription();
             // get description and cut to 200 chars, strip tags its an rte field
             $shortDescription = substr( strip_tags( $shortDescription ) , 0, 200);
@@ -141,7 +145,7 @@ class EventController extends AbstractController
                     'eventPageTitle' =>
                         LocalizationUtility::translate(
                             'tx_slubevents_domain_model_event',
-                            'slub_events'
+                            'SlubEvents'
                         )
                         . ': "' . $event->getTitle() . '" - ' . DateFormattingUtility::formatPattern(
                             $event->getStartDateTime(),
@@ -163,7 +167,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function showNotFoundAction(): \Psr\Http\Message\ResponseInterface
+    public function showNotFoundAction(): ResponseInterface
     {
         return $this->htmlResponse();
     }
@@ -176,7 +180,7 @@ class EventController extends AbstractController
      * @return void
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'newEvent'])]
-    public function newAction(?Event $newEvent = null): \Psr\Http\Message\ResponseInterface
+    public function newAction(?Event $newEvent = null): ResponseInterface
     {
         $this->view->assign('newEvent', $newEvent);
         return $this->htmlResponse();
@@ -187,7 +191,7 @@ class EventController extends AbstractController
      *
      * @param Event $newEvent
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function createAction(Event $newEvent)
     {
@@ -204,7 +208,7 @@ class EventController extends AbstractController
      * @return void
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
-    public function editAction(Event $event): \Psr\Http\Message\ResponseInterface
+    public function editAction(Event $event): ResponseInterface
     {
         $this->view->assign('event', $event);
         return $this->htmlResponse();
@@ -215,7 +219,7 @@ class EventController extends AbstractController
      *
      * @param Event $event
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function updateAction(Event $event)
     {
@@ -229,7 +233,7 @@ class EventController extends AbstractController
      *
      * @param Event $event
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function deleteAction(Event $event)
     {
@@ -243,7 +247,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listOwnAction(): \Psr\Http\Message\ResponseInterface
+    public function listOwnAction(): ResponseInterface
     {
 
         // + the user is logged in
@@ -262,7 +266,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function listMonthAction(): \Psr\Http\Message\ResponseInterface
+    public function listMonthAction(): ResponseInterface
     {
         if (!empty($this->settings['categorySelection'])) {
             $categoriesIds = $this->getCategoryIdsFromSettings();
@@ -294,7 +298,7 @@ class EventController extends AbstractController
         // this does not work reliable in this context (--> has to be verified again!)
         // as the childs must be on the same storage pid as the parent, we take
         // the pid and set is as storagePid
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = $this->connectionPool
         ->getQueryBuilderForTable('tx_slubevents_domain_model_event');
 
         $result = $queryBuilder
@@ -332,7 +336,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function createChildsAction($id): \Psr\Http\Message\ResponseInterface
+    public function createChildsAction($id): ResponseInterface
     {
         $this->createChilds($id);
         return $this->htmlResponse();
@@ -346,7 +350,7 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function deleteChildsAction($id): \Psr\Http\Message\ResponseInterface
+    public function deleteChildsAction($id): ResponseInterface
     {
         $this->deleteChilds($id);
         return $this->htmlResponse();
@@ -438,7 +442,7 @@ class EventController extends AbstractController
             }
         }
 
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persistenceManager = $this->persistenceManager;
         $persistenceManager->persistAll();
     }
 
@@ -453,7 +457,7 @@ class EventController extends AbstractController
 
         $this->eventRepository->deleteAllNotAllowedChildren([], $parentEvent);
 
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $persistenceManager = $this->persistenceManager;
         $persistenceManager->persistAll();
     }
 
@@ -463,7 +467,7 @@ class EventController extends AbstractController
      * @return void
      */
     #[\Override]
-    public function errorAction(): \Psr\Http\Message\ResponseInterface
+    public function errorAction(): ResponseInterface
     {
         return $this->htmlResponse();
     }
@@ -476,7 +480,7 @@ class EventController extends AbstractController
      *
      * @return string
      */
-    public function ajaxAction(): \Psr\Http\Message\ResponseInterface
+    public function ajaxAction(): ResponseInterface
     {
         $jsonevent = [];
 
@@ -539,7 +543,7 @@ class EventController extends AbstractController
             } elseif ($freePlaces == 1) {
                 $foundevent['freePlaces'] = LocalizationUtility::translate(
                     'tx_slubevents_domain_model_event.oneFreePlace',
-                    'slub_events'
+                    'SlubEvents'
                 );
             } else {
                 $foundevent['freePlaces'] =
@@ -548,7 +552,7 @@ class EventController extends AbstractController
                 $foundevent['freePlaces'] .= ' ' .
                     LocalizationUtility::translate(
                         'tx_slubevents_domain_model_event.freeplaces',
-                        'slub_events'
+                        'SlubEvents'
                     );
             }
 
@@ -589,12 +593,12 @@ class EventController extends AbstractController
      *
      * @param Event $event
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
-    public function printCalAction(?Event $event = null): \Psr\Http\Message\ResponseInterface
+    public function printCalAction(?Event $event = null): ResponseInterface
     {
-		if (!$event instanceof \Slub\SlubEvents\Domain\Model\Event) {
+		if (!$event instanceof Event) {
       return $this->redirect('showNotFound');
   } else {
       $helper['now'] = time();

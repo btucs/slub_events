@@ -24,7 +24,7 @@ namespace Slub\SlubEvents\Domain\Validator;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Slub\SlubEvents\Domain\Model\Subscriber;
 use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,7 +40,7 @@ class SubscriberValidator extends AbstractValidator
     /**
      * subscriberRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\SubscriberRepository
+     * @var SubscriberRepository
      */
     protected $subscriberRepository;
 
@@ -64,13 +64,13 @@ class SubscriberValidator extends AbstractValidator
      */
     protected static function getSessionData($key)
     {
-        return $GLOBALS['TSFE']->fe_user->getKey('ses', $key);
+        return $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user')->getKey('ses', $key);
     }
 
     /**
      * Validation of given Params
      *
-     * @param \Slub\SlubEvents\Domain\Model\Subscriber $newSubscriber
+     * @param Subscriber $newSubscriber
      *
      * @return bool
      */
@@ -87,7 +87,7 @@ class SubscriberValidator extends AbstractValidator
             $this->addErrorForProperty("email", "val_email", 1100);
             $this->isValid = false;
         }
-        if (strlen($newSubscriber->getNumber()) == 0 ||
+        if ((string) $newSubscriber->getNumber() === '' ||
             filter_var($newSubscriber->getNumber(), FILTER_VALIDATE_INT) === false ||
             $newSubscriber->getNumber() < 1 ||
             $newSubscriber->getNumber() > $newSubscriber->getEvent()->getMaxNumber() ||

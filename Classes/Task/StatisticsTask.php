@@ -72,14 +72,14 @@ class StatisticsTask extends AbstractTask
     protected $senderEmailAddress;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
     /**
      * eventRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\EventRepository
+     * @var EventRepository
      */
     protected $eventRepository;
 
@@ -87,11 +87,18 @@ class StatisticsTask extends AbstractTask
      * @var ServerRequestInterface
      */
     protected $request;
+    /**
+     * Constructor
+     */
+    public function __construct(private readonly ConfigurationManagerInterface $configurationManagerInterface, private readonly SiteFinder $siteFinder)
+    {
+        parent::__construct();
+    }
 
 	/**
-     * @param \Slub\SlubEvents\Domain\Repository\EventRepository $eventRepository
+     * @param EventRepository $eventRepository
      */
-    public function injectEventRepository(EventRepository $eventRepository)
+    public function injectEventRepository(EventRepository $eventRepository): void
     {
         $this->eventRepository = $eventRepository;
     }
@@ -99,13 +106,13 @@ class StatisticsTask extends AbstractTask
     /**
      * injectConfigurationManager
      *
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     * @param ConfigurationManagerInterface $configurationManager
      *
      * @return void
      */
     public function injectConfigurationManager(
         ConfigurationManagerInterface $configurationManager
-    ) {
+    ): void {
         $this->configurationManager = $configurationManager;
 
         $this->settings = $this->configurationManager->getConfiguration(
@@ -120,7 +127,7 @@ class StatisticsTask extends AbstractTask
      *
      * @return void
      */
-    public function setStoragePid($storagePid)
+    public function setStoragePid($storagePid): void
     {
         $this->storagePid = $storagePid;
     }
@@ -142,7 +149,7 @@ class StatisticsTask extends AbstractTask
      *
      * @return void
      */
-    public function setReceiverEmailAddress($receiverEmailAddress)
+    public function setReceiverEmailAddress($receiverEmailAddress): void
     {
         $this->receiverEmailAddress = $receiverEmailAddress;
     }
@@ -164,7 +171,7 @@ class StatisticsTask extends AbstractTask
      *
      * @return void
      */
-    public function setSenderEmailAddress($senderEmailAddress)
+    public function setSenderEmailAddress($senderEmailAddress): void
     {
         $this->senderEmailAddress = $senderEmailAddress;
     }
@@ -195,14 +202,12 @@ class StatisticsTask extends AbstractTask
             EventRepository::class
         );
 
-        $this->configurationManager = GeneralUtility::makeInstance(
-            ConfigurationManagerInterface::class
-        );
+        $this->configurationManager = $this->configurationManagerInterface;
 
-        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $siteFinder = $this->siteFinder;
         try {
             if (!MathUtility::canBeInterpretedAsInteger($this->storagePid)) {
-                throw new \UnexpectedValueException('Invalid storagePid for request context');
+                throw new \UnexpectedValueException('Invalid storagePid for request context', 2917213806);
             }
             $site = $siteFinder->getSiteByPageId((int)$this->storagePid);
             $language = $site->getDefaultLanguage();
@@ -210,7 +215,7 @@ class StatisticsTask extends AbstractTask
             $this->request = (new ServerRequest(new Uri((string)$site->getBase())))
                 ->withAttribute('site', $site)
                 ->withAttribute('language', $language);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $this->request = new ServerRequest(new Uri('http://localhost/'));
         }
     }

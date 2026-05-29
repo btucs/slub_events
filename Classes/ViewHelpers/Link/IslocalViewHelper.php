@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\ViewHelpers\Link;
 
 /***************************************************************
@@ -51,7 +54,7 @@ class IslocalViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('link', 'string', 'Link', true);

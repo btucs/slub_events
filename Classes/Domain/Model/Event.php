@@ -25,7 +25,8 @@ namespace Slub\SlubEvents\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -54,7 +55,7 @@ class Event extends AbstractEntity {
     /**
      * Parent Event (in case of recurring event)
      *
-     * @var \Slub\SlubEvents\Domain\Model\Event
+     * @var Event
      */
     protected $parent;
 
@@ -107,15 +108,15 @@ class Event extends AbstractEntity {
     protected $description;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\TtContent>
+     * @var ObjectStorage<TtContent>
      */
-    #[\TYPO3\CMS\Extbase\Annotation\ORM\Lazy]
+    #[Lazy]
     protected $contentElements;
 
     /**
      * Fal media items
      *
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @var FileReference
      */
     protected $image;
 
@@ -180,14 +181,14 @@ class Event extends AbstractEntity {
     /**
      * Category Id
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Category>
+     * @var ObjectStorage<Category>
      */
     protected $categories;
 
     /**
      * Subscriber Ids
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Subscriber>
+     * @var ObjectStorage<Subscriber>
      */
     #[Extbase\ORM\Lazy]
     #[Extbase\ORM\Cascade(['value' => 'remove'])]
@@ -196,28 +197,28 @@ class Event extends AbstractEntity {
     /**
      * Location Ids
      *
-     * @var \Slub\SlubEvents\Domain\Model\Location
+     * @var Location
      */
     protected $location = null;
 
     /**
      * Discipline IDs
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Discipline>
+     * @var ObjectStorage<Discipline>
      */
     protected $discipline;
 
     /**
      * Topic for stats ID
      *
-     * @var \Slub\SlubEvents\Domain\Model\Topic
+     * @var Topic
      */
     protected $topic;
 
     /**
      * Contact ID
      *
-     * @var \Slub\SlubEvents\Domain\Model\Contact
+     * @var Contact
      */
     protected $contact = null;
 
@@ -305,7 +306,7 @@ class Event extends AbstractEntity {
      *
      * @param boolean $hidden
      */
-    public function setHidden( $hidden ) {
+    public function setHidden( $hidden ): void {
         $this->hidden = $hidden;
     }
 
@@ -323,7 +324,7 @@ class Event extends AbstractEntity {
      *
      * @param string $title
      */
-    public function setTitle( $title ) {
+    public function setTitle( $title ): void {
         $this->title = $title;
     }
 
@@ -341,7 +342,7 @@ class Event extends AbstractEntity {
      *
      * @param string $teaser
      */
-    public function setTeaser( $teaser ) {
+    public function setTeaser( $teaser ): void {
         $this->teaser = $teaser;
     }
 
@@ -359,14 +360,14 @@ class Event extends AbstractEntity {
      *
      * @param string $description
      */
-    public function setDescription( $description ) {
+    public function setDescription( $description ): void {
         $this->description = $description;
     }
 
     /**
      * Get content elements
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getContentElements() {
         return $this->contentElements;
@@ -375,9 +376,9 @@ class Event extends AbstractEntity {
     /**
      * Set content element list
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $contentElements content elements
+     * @param ObjectStorage $contentElements content elements
      */
-    public function setContentElements( $contentElements ) {
+    public function setContentElements( $contentElements ): void {
         $this->contentElements = $contentElements;
     }
 
@@ -423,7 +424,7 @@ class Event extends AbstractEntity {
     /**
      * Returns the image
      *
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
+     * @return FileReference $image
      */
     public function getImage() {
         return $this->image;
@@ -432,16 +433,16 @@ class Event extends AbstractEntity {
     /**
      * Sets the image
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
+     * @param FileReference $image
      */
-    public function setImage( $image ) {
+    public function setImage( $image ): void {
         $this->image = $image;
     }
 
     /**
      * Returns the parent
      *
-     * @return \Slub\SlubEvents\Domain\Model\Event $parent
+     * @return Event $parent
      */
     public function getParent() {
         return $this->parent;
@@ -450,11 +451,11 @@ class Event extends AbstractEntity {
     /**
      * Sets the parent
      *
-     * @param \Slub\SlubEvents\Domain\Model\Event $parent
+     * @param Event $parent
      *
      * @return void
      */
-    public function setParent( \Slub\SlubEvents\Domain\Model\Event $parent ) {
+    public function setParent( Event $parent ): void {
         $this->parent = $parent;
     }
 
@@ -490,7 +491,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setMinSubscriber( $minSubscriber ) {
+    public function setMinSubscriber( $minSubscriber ): void {
         $this->minSubscriber = $minSubscriber;
     }
 
@@ -510,7 +511,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setMaxSubscriber( $maxSubscriber ) {
+    public function setMaxSubscriber( $maxSubscriber ): void {
         $this->maxSubscriber = $maxSubscriber;
     }
 
@@ -530,36 +531,36 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setMaxNumber( $maxNumber ) {
+    public function setMaxNumber( $maxNumber ): void {
         $this->maxNumber = $maxNumber;
     }
 
     /**
      * Adds a Subscriber
      *
-     * @param \Slub\SlubEvents\Domain\Model\Subscriber $subscriber
+     * @param Subscriber $subscriber
      *
      * @return void
      */
-    public function addSubscriber( Subscriber $subscriber ) {
+    public function addSubscriber( Subscriber $subscriber ): void {
         $this->subscribers->attach( $subscriber );
     }
 
     /**
      * Removes a Subscriber
      *
-     * @param \Slub\SlubEvents\Domain\Model\Subscriber $subscriberToRemove The Subscriber to be removed
+     * @param Subscriber $subscriberToRemove The Subscriber to be removed
      *
      * @return void
      */
-    public function removeSubscriber( Subscriber $subscriberToRemove ) {
+    public function removeSubscriber( Subscriber $subscriberToRemove ): void {
         $this->subscribers->detach( $subscriberToRemove );
     }
 
     /**
      * Returns the subscribers
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Subscriber> $subscribers
+     * @return ObjectStorage<Subscriber> $subscribers
      */
     public function getSubscribers() {
         return $this->subscribers;
@@ -568,11 +569,11 @@ class Event extends AbstractEntity {
     /**
      * Sets the subscribers
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Subscriber> $subscribers
+     * @param ObjectStorage<Subscriber> $subscribers
      *
      * @return void
      */
-    public function setSubscribers( ObjectStorage $subscribers ) {
+    public function setSubscribers( ObjectStorage $subscribers ): void {
         $this->subscribers = $subscribers;
     }
 
@@ -592,25 +593,25 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setAudience( $audience ) {
+    public function setAudience( $audience ): void {
         $this->audience = $audience;
     }
 
     /**
      * Sets the discipline
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Discipline> $discipline
+     * @param ObjectStorage<Discipline> $discipline
      *
      * @return void
      */
-    public function setDiscipline( ObjectStorage $discipline ) {
+    public function setDiscipline( ObjectStorage $discipline ): void {
         $this->discipline = $discipline;
     }
 
     /**
      * Returns the discipline
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Discipline> $discipline
+     * @return ObjectStorage<Discipline> $discipline
      */
     public function getDiscipline() {
         return $this->discipline;
@@ -619,29 +620,29 @@ class Event extends AbstractEntity {
     /**
      * Adds a discipline
      *
-     * @param \Slub\SlubEvents\Domain\Model\Discipline $discipline
+     * @param Discipline $discipline
      *
      * @return void
      */
-    public function addDiscipline( Discipline $discipline ) {
+    public function addDiscipline( Discipline $discipline ): void {
         $this->discipline->attach( $discipline );
     }
 
     /**
      * Removes a Discipline
      *
-     * @param \Slub\SlubEvents\Domain\Model\Discipline $disciplineToRemove The Discipline to be removed
+     * @param Discipline $disciplineToRemove The Discipline to be removed
      *
      * @return void
      */
-    public function removeDiscipline( Discipline $disciplineToRemove ) {
+    public function removeDiscipline( Discipline $disciplineToRemove ): void {
         $this->discipline->detach( $disciplineToRemove );
     }
 
     /**
      * Returns the location
      *
-     * @return \Slub\SlubEvents\Domain\Model\Location $location
+     * @return Location $location
      */
     public function getLocation() {
         return $this->location;
@@ -650,18 +651,18 @@ class Event extends AbstractEntity {
     /**
      * Sets the location
      *
-     * @param \Slub\SlubEvents\Domain\Model\Location $location
+     * @param Location $location
      *
      * @return void
      */
-    public function setLocation( Location $location ) {
+    public function setLocation( Location $location ): void {
         $this->location = $location;
     }
 
     /**
      * Returns the Event
      *
-     * @return \Slub\SlubEvents\Domain\Model\Event $event
+     * @return Event $event
      */
     public function getEvent() {
         return $this->event;
@@ -670,7 +671,7 @@ class Event extends AbstractEntity {
     /**
      * Returns the contact
      *
-     * @return \Slub\SlubEvents\Domain\Model\Contact $contact
+     * @return Contact $contact
      */
     public function getContact() {
         return $this->contact;
@@ -679,11 +680,11 @@ class Event extends AbstractEntity {
     /**
      * Sets the contact
      *
-     * @param \Slub\SlubEvents\Domain\Model\Contact $contact
+     * @param Contact $contact
      *
      * @return void
      */
-    public function setContact( Contact $contact ) {
+    public function setContact( Contact $contact ): void {
         $this->contact = $contact;
     }
 
@@ -703,7 +704,7 @@ class Event extends AbstractEntity {
      *
      * @return boolean allDay
      */
-    public function setAllDay( $allDay ) {
+    public function setAllDay( $allDay ): void {
         $this->allDay = $allDay;
     }
 
@@ -730,7 +731,7 @@ class Event extends AbstractEntity {
      *
      * @param \DateTime $startDateTime
      */
-    public function setStartDateTime( $startDateTime ) {
+    public function setStartDateTime( $startDateTime ): void {
         $this->startDateTime = $startDateTime;
     }
 
@@ -748,7 +749,7 @@ class Event extends AbstractEntity {
      *
      * @param \DateTime $endDateTime
      */
-    public function setEndDateTime( $endDateTime ) {
+    public function setEndDateTime( $endDateTime ): void {
         $this->endDateTime = $endDateTime;
     }
 
@@ -766,7 +767,7 @@ class Event extends AbstractEntity {
      *
      * @param \DateTime $subEndDateTime
      */
-    public function setSubEndDateTime( $subEndDateTime ) {
+    public function setSubEndDateTime( $subEndDateTime ): void {
         $this->subEndDateTime = $subEndDateTime;
     }
 
@@ -784,7 +785,7 @@ class Event extends AbstractEntity {
      *
      * @param \DateTime $subEndDateInfoSent
      */
-    public function setSubEndDateInfoSent( $subEndDateInfoSent ) {
+    public function setSubEndDateInfoSent( $subEndDateInfoSent ): void {
         $this->subEndDateInfoSent = $subEndDateInfoSent;
     }
 
@@ -802,7 +803,7 @@ class Event extends AbstractEntity {
      *
      * @param boolean $noSearch
      */
-    public function setNoSearch( $noSearch ) {
+    public function setNoSearch( $noSearch ): void {
         $this->noSearch = $noSearch;
     }
 
@@ -822,36 +823,36 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setGeniusBar( $geniusBar ) {
+    public function setGeniusBar( $geniusBar ): void {
         $this->geniusBar = $geniusBar;
     }
 
     /**
      * Adds a category
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $category
+     * @param Category $category
      *
      * @return void
      */
-    public function addCategory( Category $category ) {
+    public function addCategory( Category $category ): void {
         $this->categories->attach( $category );
     }
 
     /**
      * Removes a category
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $category
+     * @param Category $category
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Category> categories
+     * @return ObjectStorage<Category> categories
      */
-    public function removeCategory( Category $categoryToBeRemoved ) {
+    public function removeCategory( Category $categoryToBeRemoved ): void {
         $this->categories->detach( $categoryToBeRemoved );
     }
 
     /**
      * Returns the categories
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Category> $categories
+     * @return ObjectStorage<Category> $categories
      */
     public function getCategories() {
         return $this->categories;
@@ -860,11 +861,11 @@ class Event extends AbstractEntity {
     /**
      * Sets the categories
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Category> $categories
+     * @param ObjectStorage<Category> $categories
      *
      * @return void
      */
-    public function setCategories( ObjectStorage $categories ) {
+    public function setCategories( ObjectStorage $categories ): void {
         $this->categories = $categories;
     }
 
@@ -885,7 +886,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setCancelled( $cancelled ) {
+    public function setCancelled( $cancelled ): void {
         $this->cancelled = $cancelled;
     }
 
@@ -914,7 +915,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setOnlinesurvey( $onlinesurvey ) {
+    public function setOnlinesurvey( $onlinesurvey ): void {
         $this->onlinesurvey = $onlinesurvey;
     }
 
@@ -934,7 +935,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setExternalRegistration( $externalRegistration ) {
+    public function setExternalRegistration( $externalRegistration ): void {
         $this->externalRegistration = $externalRegistration;
     }
 
@@ -955,7 +956,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setRecurring( $recurring ) {
+    public function setRecurring( $recurring ): void {
         $this->recurring = $recurring;
     }
 
@@ -984,7 +985,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setRecurringOptions( $recurringOptions ) {
+    public function setRecurringOptions( $recurringOptions ): void {
         $this->recurringOptions = serialize( $recurringOptions );
     }
 
@@ -1002,7 +1003,7 @@ class Event extends AbstractEntity {
      *
      * @param \DateTime $recurringEndDateTime
      */
-    public function setRecurringEndDateTime( $recurringEndDateTime ) {
+    public function setRecurringEndDateTime( $recurringEndDateTime ): void {
         $this->recurringEndDateTime = $recurringEndDateTime;
     }
 
@@ -1023,7 +1024,7 @@ class Event extends AbstractEntity {
      *
      * @return void
      */
-    public function setUnsubscribeUrl($unsubscribeUrl)
+    public function setUnsubscribeUrl($unsubscribeUrl): void
     {
         $this->unsubscribeUrl = $unsubscribeUrl;
     }
@@ -1031,7 +1032,7 @@ class Event extends AbstractEntity {
     /**
      * Get Topic
      *
-     * @return \Slub\SlubEvents\Domain\Model\Topic $topic
+     * @return Topic $topic
      */
     public function getTopic() {
         return $this->topic;
@@ -1040,9 +1041,9 @@ class Event extends AbstractEntity {
     /**
      * Set Topic
      *
-     * @return \Slub\SlubEvents\Domain\Model\Topic $topic
+     * @return Topic $topic
      */
-    public function setTopic( $topic ) {
+    public function setTopic( $topic ): void {
         $this->topic = $topic;
     }
 }

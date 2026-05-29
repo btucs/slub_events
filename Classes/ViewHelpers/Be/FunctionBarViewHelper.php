@@ -43,12 +43,16 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
      * @var bool
      */
     protected $escapeOutput = false;
+    public function __construct(ConfigurationManager $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
     /**
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('icon', 'string', 'Icon', true);
@@ -68,8 +72,8 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
      */
     protected static function getGeniusBarIcon(Event $event)
     {
-        if ($event instanceof \Slub\SlubEvents\Domain\Model\Event && $event->getGeniusBar()) {
-            $title = LocalizationUtility::translate('tx_slubevents_domain_model_event.genius_bar', 'slub_events', $arguments = null);
+        if ($event instanceof Event && $event->getGeniusBar()) {
+            $title = LocalizationUtility::translate('tx_slubevents_domain_model_event.genius_bar', 'SlubEvents', $arguments = null);
             return '<span title="' . $title . '" class="geniusbar">[W]&nbsp;</span>';
         }
         return null;
@@ -92,7 +96,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
             $row['title'] = $event->getTitle();
             $row['hidden'] = $event->getHidden();
         }
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager = $this->configurationManager;
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $storagePid = $frameworkConfiguration['persistence']['storagePid'];
         $iconHelper = GeneralUtility::makeInstance(IconsHelper::class);

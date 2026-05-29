@@ -1,120 +1,140 @@
 <?php
+declare(strict_types=1);
+
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+use Slub\SlubEvents\Controller\EventController;
+use Slub\SlubEvents\Controller\SubscriberController;
+use Slub\SlubEvents\Controller\CategoryController;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use Slub\SlubEvents\Slots\HookPreProcessing;
+use Slub\SlubEvents\Slots\HookPostProcessing;
+use Slub\SlubEvents\Task\CheckeventsTask;
+use Slub\SlubEvents\Task\CheckeventsTaskAdditionalFieldProvider;
+use Slub\SlubEvents\Task\StatisticsTask;
+use Slub\SlubEvents\Task\StatisticsTaskAdditionalFieldProvider;
+use Slub\SlubEvents\Task\CleanUpTask;
+use Slub\SlubEvents\Task\CleanUpTaskAdditionalFieldProvider;
+use Slub\SlubEvents\Helper\Form\Element\RecurringOptionsElement;
+use Slub\SlubEvents\Helper\Form\Element\RecurringEventsElement;
+use Slub\SlubEvents\Helper\Form\Element\RecurringParentElement;
+use Slub\SlubEvents\Updates\FileLocationUpdater;
+
 defined('TYPO3') || die();
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventlist',
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'list, new, update, create, delete, printCal, ajax',
+        EventController::class => 'list, new, update, create, delete, printCal, ajax',
     ],
     // non-cacheable actions
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'new, update, create, delete, ajax',
+        EventController::class => 'new, update, create, delete, ajax',
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventlistupcoming',
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'listUpcoming',
+        EventController::class => 'listUpcoming',
     ],
     // non-cacheable actions
     [
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventlistmonth',
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'listMonth',
+        EventController::class => 'listMonth',
     ],
     // non-cacheable actions
     [
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventshow',
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'show, showNotFound',
+        EventController::class => 'show, showNotFound',
     ],
     // non-cacheable actions
     [
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventsubscribecreate',
     [
-        \Slub\SlubEvents\Controller\SubscriberController::class => 'new, create, eventNotFound',
+        SubscriberController::class => 'new, create, eventNotFound',
     ],
     // non-cacheable actions
     [
-        \Slub\SlubEvents\Controller\SubscriberController::class => 'new, create',
+        SubscriberController::class => 'new, create',
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventsubscribedelete',
     [
-        \Slub\SlubEvents\Controller\SubscriberController::class => 'delete, eventNotFound, subscriberNotFound',
+        SubscriberController::class => 'delete, eventNotFound, subscriberNotFound',
     ],
     // non-cacheable actions
     [
-        \Slub\SlubEvents\Controller\SubscriberController::class => 'delete',
+        SubscriberController::class => 'delete',
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventuserpanel',
     [
-        \Slub\SlubEvents\Controller\EventController::class      => 'listOwn, show',
-        \Slub\SlubEvents\Controller\SubscriberController::class => 'list, show',
+        EventController::class      => 'listOwn, show',
+        SubscriberController::class => 'list, show',
     ],
     // non-cacheable actions
     [
-        \Slub\SlubEvents\Controller\EventController::class => 'listOwn',
+        EventController::class => 'listOwn',
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventgeniusbarcontactlist',
     [
-        \Slub\SlubEvents\Controller\CategoryController::class => 'contactList, list, gbList',
+        CategoryController::class => 'contactList, list, gbList',
     ],
     // non-cacheable actions
     [
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Eventgeniusbarcategorylist',
     [
-        \Slub\SlubEvents\Controller\CategoryController::class => 'list, gbList, contactList',
+        CategoryController::class => 'list, gbList, contactList',
     ],
     // non-cacheable actions
     [
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Apieventlist',
     [
@@ -124,10 +144,10 @@ defined('TYPO3') || die();
     [
         \Slub\SlubEvents\Controller\Api\EventController::class => 'list',
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+ExtensionUtility::configurePlugin(
     'SlubEvents',
     'Apieventlistuser',
     [
@@ -137,7 +157,7 @@ defined('TYPO3') || die();
     [
         \Slub\SlubEvents\Controller\Api\EventController::class => 'listUser',
     ],
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 // Custom cache for category
@@ -148,7 +168,7 @@ if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['
 /**
  * Set storagePid by default to detect not configured page tree sections
  */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup('
+ExtensionManagementUtility::addTypoScriptSetup('
     plugin.tx_slubevents.persistence.storagePid =
     module.tx_slubevents.persistence.storagePid < plugin.tx_slubevents.persistence.storagePid
 ');
@@ -160,50 +180,50 @@ if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['
  * Backend module
  */
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
-    Slub\SlubEvents\Slots\HookPreProcessing::class;
+    HookPreProcessing::class;
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
-    Slub\SlubEvents\Slots\HookPostProcessing::class;
+    HookPostProcessing::class;
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] =
-    Slub\SlubEvents\Slots\HookPostProcessing::class;
+    HookPostProcessing::class;
 
 $languageDir = 'slub_events/Resources/Private/Language/';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Slub\SlubEvents\Task\CheckeventsTask::class] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][CheckeventsTask::class] = [
     'extension'        => 'slub_events',
     'title'            => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.checkevents.name',
     'description'      => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.checkevents.description',
-    'additionalFields' => Slub\SlubEvents\Task\CheckeventsTaskAdditionalFieldProvider::class
+    'additionalFields' => CheckeventsTaskAdditionalFieldProvider::class
 ];
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Slub\SlubEvents\Task\StatisticsTask::class] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][StatisticsTask::class] = [
     'extension'        => 'slub_events',
     'title'            => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.statistics.name',
     'description'      => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.statistics.description',
-    'additionalFields' => Slub\SlubEvents\Task\StatisticsTaskAdditionalFieldProvider::class
+    'additionalFields' => StatisticsTaskAdditionalFieldProvider::class
 ];
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Slub\SlubEvents\Task\CleanUpTask::class] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][CleanUpTask::class] = [
     'extension'        => 'slub_events',
     'title'            => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.cleanup.name',
     'description'      => 'LLL:EXT:' . $languageDir . 'locallang.xlf:tasks.cleanup.description',
-    'additionalFields' => Slub\SlubEvents\Task\CleanUpTaskAdditionalFieldProvider::class
+    'additionalFields' => CleanUpTaskAdditionalFieldProvider::class
 ];
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1600698292] = [
     'nodeName' => 'recurringOptions',
     'priority' => 40,
-    'class' => Slub\SlubEvents\Helper\Form\Element\RecurringOptionsElement::class
+    'class' => RecurringOptionsElement::class
 ];
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1600701794] = [
     'nodeName' => 'recurringEvents',
     'priority' => 40,
-    'class' => Slub\SlubEvents\Helper\Form\Element\RecurringEventsElement::class
+    'class' => RecurringEventsElement::class
 ];
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1600702566] = [
     'nodeName' => 'recurringParent',
     'priority' => 40,
-    'class' => Slub\SlubEvents\Helper\Form\Element\RecurringParentElement::class
+    'class' => RecurringParentElement::class
 ];
 
 // register update wizard
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['slubEventsFileLocationUpdater']
-    = Slub\SlubEvents\Updates\FileLocationUpdater::class;
+    = FileLocationUpdater::class;

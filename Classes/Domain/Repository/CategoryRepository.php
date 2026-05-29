@@ -25,7 +25,8 @@ namespace Slub\SlubEvents\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use Slub\SlubEvents\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -44,7 +45,7 @@ class CategoryRepository extends Repository
      *
      * @param string $categories separated by comma
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
     public function findAllByUids($categories)
     {
@@ -124,7 +125,7 @@ class CategoryRepository extends Repository
     /**
      * Finds all datasets of current branch and return in tree order
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $startCategory
+     * @param Category $startCategory
      *
      * @return array The found Category Objects as Tree
      */
@@ -138,7 +139,7 @@ class CategoryRepository extends Repository
       $childCategorieIds = $this->findAllChildCategories($startCategory->getUid());
 
         // ups, no children found...
-        if (count($childCategorieIds) == 0) {
+        if (count($childCategorieIds) === 0) {
             return [];
         }
 
@@ -218,7 +219,7 @@ class CategoryRepository extends Repository
     /**
      * Finds all datasets of current branch and return in tree order
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $startCategory
+     * @param Category $startCategory
      *
      * @return array The found Category Objects
      */
@@ -252,7 +253,7 @@ class CategoryRepository extends Repository
 
         // if only one categorie exists the foreach-solution below
         // doesn't work as expected --> take the one and give it back as tree-array()
-        if (count($flatCategories) == 1) {
+        if (count($flatCategories) === 1) {
             $tree[0] = array_shift($flatCategories);
             return $tree;
         }
@@ -270,7 +271,7 @@ class CategoryRepository extends Repository
     /**
      * Get default WiBa Category, which has no parents
      *
-     * @return \Slub\SlubEvents\Domain\Model\Category The found Category
+     * @return Category The found Category
      */
     public function findDefaultGeniusbarCategory()
     {

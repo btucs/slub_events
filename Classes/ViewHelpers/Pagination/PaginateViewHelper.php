@@ -30,7 +30,7 @@ class PaginateViewHelper extends AbstractViewHelper
      * @return void
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('objects', 'mixed', 'array or queryresult', true);

@@ -23,7 +23,8 @@ namespace Slub\SlubEvents\Slots;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use DateTimeZone;
 use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -47,6 +48,9 @@ class HookPreProcessing
     protected $messages = [];
 
     protected ?string $locale = null;
+    public function __construct(private readonly FlashMessageService $flashMessageService)
+    {
+    }
 
     /**
      * initializeAction
@@ -77,7 +81,7 @@ class HookPreProcessing
      * @return    void
      * @access public
      */
-    public function processDatamap_preProcessFieldArray(&$fieldArray, $table, $id, &$pObj)
+    public function processDatamap_preProcessFieldArray(&$fieldArray, $table, $id, &$pObj): void
     {
         if ($table == 'tx_slubevents_domain_model_event') { // prevent moving of categories into their rootline
 
@@ -92,7 +96,7 @@ class HookPreProcessing
 
             if (empty($fieldArray['genius_bar'])) {
                 $this->messages[] = [
-                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK,
+                    ContextualFeedbackSeverity::OK,
                     'OK',
                     'Veranstaltung gespeichert: "' . $fieldArray['title'] . '" am ' . $this->gmstrftime(
                         $fieldArray['start_date_time']) . '.'
@@ -117,7 +121,7 @@ class HookPreProcessing
                 $message_text .= ($category_text !== '' ? $category_text . ' ' : '') . 'am ' . $this->gmstrftime(
                         $fieldArray['start_date_time']) . '.';
                 $this->messages[] = [
-                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK,
+                    ContextualFeedbackSeverity::OK,
                     'OK',
                     $message_text
                 ];
@@ -125,7 +129,7 @@ class HookPreProcessing
 
             if ($fieldArray['start_date_time'] > $fieldArray['end_date_time'] && $fieldArray['end_date_time'] > 0) {
                 $this->messages[] = [
-                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR,
+                    ContextualFeedbackSeverity::ERROR,
                     'Fehler: Ende der Veranstaltung',
                     'Ende (' . $this->gmstrftime(
                         $fieldArray['end_date_time']) . ') liegt vor dem Start (' . $this->gmstrftime(
@@ -138,7 +142,7 @@ class HookPreProcessing
                 $fieldArray['end_date_time'] = $this->calculateEndDateTime($fieldArray['start_date_time'], $fieldArray['end_date_time_select']);
                 unset($fieldArray['end_date_time_select']);
                 $this->messages[] = [
-                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
+                    ContextualFeedbackSeverity::INFO,
                     'Bitte prüfen:',
                     'Ende der Veranstaltung gesetzt auf ' . $this->gmstrftime($fieldArray['end_date_time'])
                 ];
@@ -160,7 +164,7 @@ class HookPreProcessing
                     $fieldArray['sub_end_date_time'] = $this->calculateEndDateTime($fieldArray['start_date_time'], $fieldArray['sub_end_date_time_select'], FALSE);
                     $subEndDateTimestamp = $this->resolveTimestamp($fieldArray['sub_end_date_time']);
                     $this->messages[] = [
-                        \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
+                        ContextualFeedbackSeverity::INFO,
                         'Bitte prüfen:',
                         'Ende der Anmeldungsfrist wurde gesetzt auf ' . $this->gmstrftime(
                             $fieldArray['sub_end_date_time'])
@@ -171,7 +175,7 @@ class HookPreProcessing
                 // warn if subscription deadline is more than 3 days before the event.
                 if ($subEndDateTimestamp !== null && $startDateTimestamp !== null && $startDateTimestamp > $subEndDateTimestamp + (3 * 86400)) {
                     $this->messages[] = [
-                        \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::WARNING,
+                        ContextualFeedbackSeverity::WARNING,
                         'Bitte prüfen:',
                         'Ende der Anmeldungsfrist ist aktuell gesetzt auf ' . $this->gmstrftime(
                             $fieldArray['sub_end_date_time']) . ' ==> ' . (int)(($startDateTimestamp - $subEndDateTimestamp) / 86400) . ' Tage vorher!'
@@ -189,18 +193,18 @@ class HookPreProcessing
 
             if ($fieldArray['genius_bar'] == false && count(explode(',', (string) $fieldArray['categories'])) > 1) {
                 $this->messages[] = [
-                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
+                    ContextualFeedbackSeverity::INFO,
                     'Bitte prüfen:',
                     'Sie haben ' . count(explode(',', (string) $fieldArray['categories'])) . ' Kategorien ausgewählt. '
                 ];
             }
 
             // force genius bar events with min_ and max_subscriber == 1
-            if ($fieldArray['genius_bar'] == true && ($minSubscriber != 1 || $maxSubscriber != 1)) {
+            if ($fieldArray['genius_bar'] == true && ($minSubscriber !== 1 || $maxSubscriber !== 1)) {
                 $fieldArray['min_subscriber'] = 1;
                 $fieldArray['max_subscriber'] = 1;
                 $this->messages[] = [
-                    \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO,
+                    ContextualFeedbackSeverity::INFO,
                     'Bitte prüfen:',
                     'Die Mindest- und Maximalteilnehmerzahl beträgt in der Wissensbar immer 1. Dies wurde automatisch korrigiert. '
                 ];
@@ -212,7 +216,7 @@ class HookPreProcessing
             }
 
             $maxNumber = (int)($fieldArray['max_number'] ?? 0);
-            if ($maxSubscriber > 0 && $maxNumber == 0) {
+            if ($maxSubscriber > 0 && $maxNumber === 0) {
                 $fieldArray['max_number'] = $maxSubscriber;
             }
 
@@ -291,7 +295,7 @@ class HookPreProcessing
 
         $dateTime = DateFormattingUtility::resolveDateTime($time);
 
-        if ($dateTime === null) {
+        if (!$dateTime instanceof \DateTimeImmutable) {
             return '';
         }
 
@@ -314,14 +318,14 @@ class HookPreProcessing
         $flashMessages = [];
 
         foreach ($this->messages as $messageItem) {
-            /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+            /** @var FlashMessage $flashMessage */
             $flashMessages[] = GeneralUtility::makeInstance(FlashMessage::class, $messageItem[2], $messageItem[1], $messageItem[0]);
         }
 
         // render flash messages as text on CLI commands like impexp:import
-        /** @var \TYPO3\CMS\Core\Messaging\FlashMessageService $flashMessageService */
-        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-        /** @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue $defaultFlashMessageQueue */
+        /** @var FlashMessageService $flashMessageService */
+        $flashMessageService = $this->flashMessageService;
+        /** @var FlashMessageQueue $defaultFlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
         foreach ($flashMessages as $flashMessage) {

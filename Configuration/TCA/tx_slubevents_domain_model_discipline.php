@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 $LL = 'LLL:EXT:slub_events/Resources/Private/Language/locallang_db.xlf:';
 
 return [

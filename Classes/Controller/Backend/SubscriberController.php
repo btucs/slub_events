@@ -13,12 +13,12 @@ namespace Slub\SlubEvents\Controller\Backend;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use Slub\SlubEvents\Domain\Model\Event;
 use Slub\SlubEvents\Helper\EmailHelper;
 use Slub\SlubEvents\Helper\EventHelper;
 use Slub\SlubEvents\Utility\TextUtility;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 
@@ -33,7 +33,7 @@ class SubscriberController extends BaseController
      *
      * @return void
      */
-    public function beListAction(): \Psr\Http\Message\ResponseInterface
+    public function beListAction(): ResponseInterface
     {
         // get data from BE session
         $searchParameter = $this->getSessionData('tx_slubevents');
@@ -86,7 +86,7 @@ class SubscriberController extends BaseController
             $subscribers = $this->subscriberRepository->findAllByEvents($events);
             $this->view->assign('subscribers', $subscribers);
         } else {
-            $this->addFlashMessage('No events found.', 'Error', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
+            $this->addFlashMessage('No events found.', 'Error', ContextualFeedbackSeverity::ERROR);
         }
 
         $this->view->assign('categories', $categories);
@@ -106,7 +106,7 @@ class SubscriberController extends BaseController
      * @return void
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
-    public function beOnlineSurveyAction(Event $event, $step = 0): \Psr\Http\Message\ResponseInterface
+    public function beOnlineSurveyAction(Event $event, $step = 0): ResponseInterface
     {
         // get the onlineSurveyLink and potential timestamp of last sent
         $onlineSurveyLink = GeneralUtility::trimExplode('|', $event->getOnlinesurvey(), true);
@@ -170,7 +170,7 @@ class SubscriberController extends BaseController
     }
 
     /** Shows the form to send an email notification to all subscribers of the given event. */
-    public function beWriteNotificationAction(Event $event): \Psr\Http\Message\ResponseInterface
+    public function beWriteNotificationAction(Event $event): ResponseInterface
     {
         $templateVariables = [
             'event' => $event,
@@ -189,11 +189,11 @@ class SubscriberController extends BaseController
     {
         $hasErrors = false;
         if ($emailSubject === '' || $emailSubject === '0') {
-            $this->addFlashMessage('Bitte einen Betreff eingeben.', 'Fehler', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
+            $this->addFlashMessage('Bitte einen Betreff eingeben.', 'Fehler', ContextualFeedbackSeverity::ERROR);
             $hasErrors = true;
         }
         if ($emailBody === '' || $emailBody === '0') {
-            $this->addFlashMessage('Bitte einen Text eingeben.', 'Fehler', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
+            $this->addFlashMessage('Bitte einen Text eingeben.', 'Fehler', ContextualFeedbackSeverity::ERROR);
             $hasErrors = true;
         }
         if ($hasErrors) {
@@ -223,7 +223,7 @@ class SubscriberController extends BaseController
             );
         }
 
-        $this->addFlashMessage("{$successCount} Rundmails wurde gesendet.", 'Mails gesendet.', \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK);
+        $this->addFlashMessage("{$successCount} Rundmails wurde gesendet.", 'Mails gesendet.', ContextualFeedbackSeverity::OK);
         return $this->redirect('beList');
     }
 }

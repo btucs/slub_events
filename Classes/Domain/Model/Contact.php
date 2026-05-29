@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\Domain\Model;
 
 /***************************************************************
@@ -69,7 +72,7 @@ class Contact extends AbstractEntity
     /**
      * Photo of Contact Person
      *
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @var FileReference
      */
     protected $photo;
 
@@ -90,7 +93,7 @@ class Contact extends AbstractEntity
      *
      * @return void
      */
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -112,7 +115,7 @@ class Contact extends AbstractEntity
      *
      * @return void
      */
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
@@ -134,7 +137,7 @@ class Contact extends AbstractEntity
      *
      * @return void
      */
-    public function setTelephone($telephone)
+    public function setTelephone($telephone): void
     {
         $this->telephone = $telephone;
     }
@@ -156,7 +159,7 @@ class Contact extends AbstractEntity
      *
      * @return void
      */
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         $this->description = $description;
     }
@@ -164,7 +167,7 @@ class Contact extends AbstractEntity
     /**
      * Returns the photo
      *
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $photo
+     * @return FileReference $photo
      */
     public function getPhoto()
     {
@@ -174,11 +177,11 @@ class Contact extends AbstractEntity
     /**
      * Sets the photo
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $photo
+     * @param FileReference $photo
      *
      * @return void
      */
-    public function setPhoto(FileReference $photo)
+    public function setPhoto(FileReference $photo): void
     {
         $this->photo = $photo;
     }

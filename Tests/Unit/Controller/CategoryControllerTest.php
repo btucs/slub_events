@@ -2,6 +2,10 @@
 
 namespace Slub\SlubEvents\Tests\Unit\Controller;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Slub\SlubEvents\Controller\CategoryController;
+use Slub\SlubEvents\Domain\Repository\CategoryRepository;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use Slub\SlubEvents\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
@@ -41,7 +45,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class CategoryControllerTest extends UnitTestCase
 {
     /**
      * @var Category
@@ -51,7 +55,7 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * categoryRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\CategoryRepository
+     * @var CategoryRepository
      */
     protected $categoryRepository;
 
@@ -60,11 +64,11 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
      */
     protected $view = null;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->subject = $this->getMock(\Slub\SlubEvents\Controller\CategoryController::class, ['redirect', 'forward', 'addFlashMessage'], [], '', FALSE);
+        $this->subject = $this->getMock(CategoryController::class, ['redirect', 'forward', 'addFlashMessage'], [], '', FALSE);
 
-        $this->categoryRepository = $this->getMock(\Slub\SlubEvents\Domain\Repository\CategoryRepository::class, [], [], '', FALSE);
+        $this->categoryRepository = $this->getMock(CategoryRepository::class, [], [], '', FALSE);
         $this->inject($this->subject, 'categoryRepository', $this->categoryRepository);
 
         $this->view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
@@ -72,7 +76,7 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -80,7 +84,7 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function showActionAssignsTheGivenCategoryToView() {
+    public function showActionAssignsTheGivenCategoryToView(): void {
         $category = new Category();
 
         $view = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface');
@@ -93,9 +97,9 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function listActionPassOneCategoryAsCategorytreeToView()
+    public function listActionPassOneCategoryAsCategorytreeToView(): void
     {
-        $mockedQueryResult = $this->getMock(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface::class);
+        $mockedQueryResult = $this->getMock(QueryResultInterface::class);
 
         $allCategories = [];
 
@@ -103,7 +107,7 @@ class CategoryControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
         $this->inject($this->subject, 'settings', $settings);
 
-        $categoryRepository = $this->getMock(\Slub\SlubEvents\Domain\Repository\CategoryRepository::class, ['findCurrentBranch', 'findAllByUids'], [], '', FALSE);
+        $categoryRepository = $this->getMock(CategoryRepository::class, ['findCurrentBranch', 'findAllByUids'], [], '', FALSE);
         $categoryRepository->expects($this->once())->method('findAllByUids')
             ->will($this->returnValue($mockedQueryResult));
         $categoryRepository->expects($this->once())->method('findCurrentBranch')

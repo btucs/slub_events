@@ -25,7 +25,12 @@ namespace Slub\SlubEvents\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use Slub\SlubEvents\Domain\Model\Event;
+use Slub\SlubEvents\Domain\Model\Contact;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use Slub\SlubEvents\Domain\Model\Subscriber;
 use Slub\SlubEvents\Domain\Model\Category;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -42,7 +47,7 @@ class EventRepository extends Repository
     /**
      * Finds all datasets by MM relation categories
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $category
+     * @param Category $category
      *
      * @return array The found Event Objects
      */
@@ -70,7 +75,7 @@ class EventRepository extends Repository
     /**
      * Finds all datasets by MM relation contact
      *
-     * @param \Slub\SlubEvents\Domain\Model\Contact $contact
+     * @param Contact $contact
      * @param integer $category
      * @param boolean $bExcludeCategory
      *
@@ -109,7 +114,7 @@ class EventRepository extends Repository
     /**
      * Finds all datasets by MM relation contact
      *
-     * @param \Slub\SlubEvents\Domain\Model\Contact $contact
+     * @param Contact $contact
      * @param string $category
      *
      * @return array The found Event Objects
@@ -145,7 +150,7 @@ class EventRepository extends Repository
      * @param array $categories separated by comma
      * @param bool  $fromNow    separated by comma
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface The found Event Objects
+     * @return array|QueryResultInterface The found Event Objects
      */
     public function findAllByCategories($categories, $fromNow = true)
     {
@@ -394,7 +399,7 @@ class EventRepository extends Repository
     /**
      * Finds all datasets by MM relation categories
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Subscriber> $subscribers
+     * @param ObjectStorage<Subscriber> $subscribers
      *
      * @return array The found Event Objects
      */
@@ -628,12 +633,12 @@ class EventRepository extends Repository
     protected static function getTableName()
     {
         /**
-         * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
+         * @var DataMapper $dataMapper
          */
-        $dataMapper = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
+        $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
 
         return $dataMapper
-            ->getDataMap(\Slub\SlubEvents\Domain\Model\Event::class)
+            ->getDataMap(Event::class)
             ->getTableName();
     }
 }

@@ -23,7 +23,7 @@ namespace Slub\SlubEvents\Updates;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
@@ -47,6 +47,9 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
 {
     public $table;
     public $fieldToMigrate;
+    public function __construct(private readonly ConnectionPool $connectionPool)
+    {
+    }
     use LoggerAwareTrait;
 
     /**
@@ -183,7 +186,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      */
     protected function falGetRecordsFromTable($countOnly = false)
     {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool = $this->connectionPool;
         $allResults = [];
         $numResults = 0;
         foreach(array_keys($this->fieldsToMigrate) as $table) {
@@ -197,7 +200,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                         $queryBuilder->expr()->isNotNull($this->fieldsToMigrate[$table]),
                         $queryBuilder->expr()->neq(
                             $this->fieldsToMigrate[$table],
-                            $queryBuilder->createNamedParameter('', \TYPO3\CMS\Core\Database\Connection::PARAM_STR)
+                            $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
                         ),
                         $queryBuilder->expr()->comparison(
                             'CAST(CAST(' . $queryBuilder->quoteIdentifier($this->fieldsToMigrate[$table]) . ' AS DECIMAL) AS CHAR)',
@@ -271,7 +274,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
         $i = 0;
 
         $storageUid = (int)$this->storage->getUid();
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool = $this->connectionPool;
 
         $fileUid = null;
         $sourcePath = Environment::getPublicPath() . '/'  . $this->sourcePath . $fieldItem;
@@ -293,15 +296,15 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             $existingFileRecord = $queryBuilder->select('uid')->from('sys_file')->where(
                 $queryBuilder->expr()->eq(
                     'missing',
-                    $queryBuilder->createNamedParameter(0, \TYPO3\CMS\Core\Database\Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sha1',
-                    $queryBuilder->createNamedParameter($fileSha1, \TYPO3\CMS\Core\Database\Connection::PARAM_STR)
+                    $queryBuilder->createNamedParameter($fileSha1, Connection::PARAM_STR)
                 ),
                 $queryBuilder->expr()->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($storageUid, \TYPO3\CMS\Core\Database\Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter($storageUid, Connection::PARAM_INT)
                 )
             )->executeQuery()->fetchAllAssociative();
 
@@ -374,7 +377,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             $queryBuilder->update($table)->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($row['uid'], \TYPO3\CMS\Core\Database\Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter($row['uid'], Connection::PARAM_INT)
                 )
             )->set($this->fieldsToMigrate[$table], $i)->executeStatement();
         }

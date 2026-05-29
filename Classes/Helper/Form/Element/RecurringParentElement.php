@@ -36,6 +36,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RecurringParentElement extends AbstractFormElement
 {
+    public function __construct(private readonly ConnectionPool $connectionPool, private readonly UriBuilder $uriBuilder)
+    {
+    }
     #[\Override]
     public function render()
     {
@@ -43,7 +46,7 @@ class RecurringParentElement extends AbstractFormElement
         // parameters are available in $this->data['parameterArray']['fieldConf']['config']['parameters']
         $result = $this->initializeResultArray();
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+        $queryBuilder = $this->connectionPool
             ->getQueryBuilderForTable('tx_slubevents_domain_model_event');
 
         $queryBuilder
@@ -82,12 +85,12 @@ class RecurringParentElement extends AbstractFormElement
      */
     protected function getEditLink($table, array $row)
     {
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder = $this->uriBuilder;
 
         $params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
-        $title = LocalizationUtility::translate('be.editEvent', 'slub_events',
+        $title = LocalizationUtility::translate('be.editEvent', 'SlubEvents',
               $arguments = null) . ' ' .
-              LocalizationUtility::translate('tx_slubevents_domain_model_event.recurring', 'slub_events',
+              LocalizationUtility::translate('tx_slubevents_domain_model_event.recurring', 'SlubEvents',
               $arguments = null) . ' `' . $row['title'] . '`';
         $clickUrl = $uriBuilder->buildUriFromRoute('record_edit') . $params
             . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));

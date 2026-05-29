@@ -24,7 +24,7 @@ namespace Slub\SlubEvents\Domain\Validator;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Slub\SlubEvents\Domain\Model\Event;
 use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,7 +39,7 @@ class EventSubscriptionAllowedValidator extends AbstractValidator
     /**
      * subscriberRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\SubscriberRepository
+     * @var SubscriberRepository
      */
     protected $subscriberRepository;
 
@@ -58,7 +58,7 @@ class EventSubscriptionAllowedValidator extends AbstractValidator
     /**
      * Validation of given Params
      *
-     * @param \Slub\SlubEvents\Domain\Model\Event $event
+     * @param Event $event
      *
      * @return bool
      */

@@ -54,7 +54,7 @@ class Category extends AbstractEntity
     /**
      * Parent Category
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Category>
+     * @var ObjectStorage<Category>
      */
     protected $parent;
 
@@ -80,7 +80,7 @@ class Category extends AbstractEntity
      *
      * @return void
      */
-    public function setTitle($title)
+    public function setTitle($title): void
     {
         $this->title = $title;
     }
@@ -102,7 +102,7 @@ class Category extends AbstractEntity
      *
      * @return void
      */
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         $this->description = $description;
     }
@@ -136,11 +136,11 @@ class Category extends AbstractEntity
     /**
      * Adds a Category
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $parent
+     * @param Category $parent
      *
      * @return void
      */
-    public function addParent(\Slub\SlubEvents\Domain\Model\Category $parent)
+    public function addParent(Category $parent): void
     {
         $this->parent->attach($parent);
     }
@@ -148,11 +148,11 @@ class Category extends AbstractEntity
     /**
      * Removes a Category
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $parentToRemove The Category to be removed
+     * @param Category $parentToRemove The Category to be removed
      *
      * @return void
      */
-    public function removeParent(\Slub\SlubEvents\Domain\Model\Category $parentToRemove)
+    public function removeParent(Category $parentToRemove): void
     {
         $this->parent->detach($parentToRemove);
     }
@@ -160,7 +160,7 @@ class Category extends AbstractEntity
     /**
      * Returns the parent
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Category> $parent
+     * @return ObjectStorage<Category> $parent
      */
     public function getParent()
     {
@@ -170,11 +170,11 @@ class Category extends AbstractEntity
     /**
      * Sets the parent
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Category> $parent
+     * @param ObjectStorage<Category> $parent
      *
      * @return void
      */
-    public function setParent(ObjectStorage $parent)
+    public function setParent(ObjectStorage $parent): void
     {
         $this->parent = $parent;
     }

@@ -2,6 +2,7 @@
 
 namespace Slub\SlubEvents\Tests\Unit\Domain\Model;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -41,19 +42,19 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class CategoryTest extends UnitTestCase
 {
     /**
      * @var Category
      */
     protected $subject = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Category();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -61,7 +62,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getTitleInitiallyReturnsNull()
+    public function getTitleInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -72,7 +73,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setTitleForStringSetsTitle()
+    public function setTitleForStringSetsTitle(): void
     {
         $this->subject->setTitle('Conceived at T3CON10');
 
@@ -85,7 +86,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getDescriptionInitiallyReturnsNull()
+    public function getDescriptionInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -96,7 +97,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setDescriptionForStringSetsDescription()
+    public function setDescriptionForStringSetsDescription(): void
     {
         $this->subject->setDescription('Conceived at T3CON10');
 
@@ -109,7 +110,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getParentReturnsInitialValueForObjectStorageContainingCategory()
+    public function getParentReturnsInitialValueForObjectStorageContainingCategory(): void
     {
         $newObjectStorage = new ObjectStorage();
         self::assertEquals(
@@ -121,7 +122,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setParentForObjectStorageContainingCategorySetsParent()
+    public function setParentForObjectStorageContainingCategorySetsParent(): void
     {
         $parent = new Category();
         $objectStorageHoldingExactlyOneParent = new ObjectStorage();
@@ -137,7 +138,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function addParentToObjectStorageHoldingParent()
+    public function addParentToObjectStorageHoldingParent(): void
     {
         $parent = new Category();
         $objectStorageHoldingExactlyOneParent = new ObjectStorage();
@@ -153,7 +154,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function removeParentFromObjectStorageHoldingParent()
+    public function removeParentFromObjectStorageHoldingParent(): void
     {
         $parent = new Category();
         $localObjectStorage = new ObjectStorage();

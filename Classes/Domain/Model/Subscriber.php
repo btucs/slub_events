@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\Domain\Model;
 
 /***************************************************************
@@ -111,7 +114,7 @@ class Subscriber extends AbstractEntity
     /**
      * event
      *
-     * @var \Slub\SlubEvents\Domain\Model\Event
+     * @var Event
      */
     protected $event;
 
@@ -130,7 +133,7 @@ class Subscriber extends AbstractEntity
      *
      * @param string $name
      */
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -148,7 +151,7 @@ class Subscriber extends AbstractEntity
     /**
      * Returns the event
      *
-     * @return \Slub\SlubEvents\Domain\Model\Event $event
+     * @return Event $event
      */
     public function getEvent()
     {
@@ -160,7 +163,7 @@ class Subscriber extends AbstractEntity
      *
      * @param string $email
      */
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
@@ -180,7 +183,7 @@ class Subscriber extends AbstractEntity
      *
      * @param string $telephone
      */
-    public function setTelephone($telephone)
+    public function setTelephone($telephone): void
     {
         $this->telephone = $telephone;
     }
@@ -200,7 +203,7 @@ class Subscriber extends AbstractEntity
      *
      * @param string $institution
      */
-    public function setInstitution($institution)
+    public function setInstitution($institution): void
     {
         $this->institution = $institution;
     }
@@ -220,7 +223,7 @@ class Subscriber extends AbstractEntity
      *
      * @param string $customerid
      */
-    public function setCustomerid($customerid)
+    public function setCustomerid($customerid): void
     {
         $this->customerid = $customerid;
     }
@@ -240,7 +243,7 @@ class Subscriber extends AbstractEntity
      *
      * @param integer $number
      */
-    public function setNumber($number)
+    public function setNumber($number): void
     {
         $this->number = $number;
     }
@@ -260,7 +263,7 @@ class Subscriber extends AbstractEntity
      *
      * @param string $editcode
      */
-    public function setEditcode($editcode)
+    public function setEditcode($editcode): void
     {
         $this->editcode = $editcode;
     }
@@ -280,7 +283,7 @@ class Subscriber extends AbstractEntity
      *
      * @param string $message
      */
-    public function setMessage($message)
+    public function setMessage($message): void
     {
         $this->message = $message;
     }
@@ -300,7 +303,7 @@ class Subscriber extends AbstractEntity
      *
      * @param bool $acceptpp
      */
-    public function setAcceptpp($acceptpp)
+    public function setAcceptpp($acceptpp): void
     {
         $this->acceptpp = $acceptpp;
     }
@@ -320,7 +323,7 @@ class Subscriber extends AbstractEntity
      *
      * @param \DateTime $crdate
      */
-    public function setCrdate($crdate)
+    public function setCrdate($crdate): void
     {
         $this->crdate = $crdate;
     }
@@ -328,11 +331,11 @@ class Subscriber extends AbstractEntity
     /**
      * Sets the event
      *
-     * @param \Slub\SlubEvents\Domain\Model\Event $event
+     * @param Event $event
      *
      * @return void
      */
-    public function setEvent(Event $event)
+    public function setEvent(Event $event): void
     {
         $this->event = $event;
     }

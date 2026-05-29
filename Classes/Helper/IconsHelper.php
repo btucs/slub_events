@@ -23,11 +23,10 @@ namespace Slub\SlubEvents\Helper;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -44,7 +43,7 @@ class IconsHelper
      *
      * Use dependency injection depending on TYPO3 version
      */
-    public function __construct()
+    public function __construct(private readonly UriBuilder $uriBuilder)
     {
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
     }
@@ -58,10 +57,10 @@ class IconsHelper
      */
     public function getEditIcon($table, array $row)
     {
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder = $this->uriBuilder;
 
         $params = '&edit[' . $table . '][' . $row['uid'] . ']=edit';
-        $title = LocalizationUtility::translate('be.editEvent', 'slub_events',
+        $title = LocalizationUtility::translate('be.editEvent', 'SlubEvents',
                 $arguments = null) . ' ' . $row['uid'] . ': ' . $row['title'];
         $clickUrl = $uriBuilder->buildUriFromRoute('record_edit') . $params
         . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
@@ -81,10 +80,10 @@ class IconsHelper
      */
     public function getNewIcon($table, $storagePid)
     {
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder = $this->uriBuilder;
 
         $params = '&edit[' . $table . '][' . $storagePid . ']=new';
-        $title = LocalizationUtility::translate('be.newEvent', 'slub_events', $arguments = null);
+        $title = LocalizationUtility::translate('be.newEvent', 'SlubEvents', $arguments = null);
         $clickUrl = $uriBuilder->buildUriFromRoute('record_edit') . $params
             . '&returnUrl=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
 
@@ -105,11 +104,11 @@ class IconsHelper
      */
     public function getHideIcon($table, $uid, $hidden)
     {
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder = $this->uriBuilder;
         $redirectUrl = (string)GeneralUtility::getIndpEnv('REQUEST_URI');
 
         if ($hidden) {
-            $title = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
+            $title = LocalizationUtility::translate('be.unhideEvent', 'SlubEvents', $arguments = null);
             $hideLink = (string)$uriBuilder->buildUriFromRoute('tce_db', [
                 'redirect' => $redirectUrl,
                 'data' => [
@@ -124,7 +123,7 @@ class IconsHelper
                 '</a>';
             // Hide
         } else {
-            $title = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
+            $title = LocalizationUtility::translate('be.hideEvent', 'SlubEvents', $arguments = null);
             $hideLink = (string)$uriBuilder->buildUriFromRoute('tce_db', [
                 'redirect' => $redirectUrl,
                 'data' => [
@@ -157,23 +156,23 @@ class IconsHelper
             $invert = false;
             $visible = 'hidden';
             $hiddenIcon = $this->renderIcon('actions-edit-unhide');
-            $title = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
-            $toggleTitle = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
+            $title = LocalizationUtility::translate('be.unhideEvent', 'SlubEvents', $arguments = null);
+            $toggleTitle = LocalizationUtility::translate('be.hideEvent', 'SlubEvents', $arguments = null);
         } else {
             $hidden = 0;
             $inline = true;
             $invert = true;
             $visible = 'visible';
             $hiddenIcon = $this->renderIcon('actions-edit-hide');
-            $title = LocalizationUtility::translate('be.hideEvent', 'slub_events', $arguments = null);
-            $toggleTitle = LocalizationUtility::translate('be.unhideEvent', 'slub_events', $arguments = null);
+            $title = LocalizationUtility::translate('be.hideEvent', 'SlubEvents', $arguments = null);
+            $toggleTitle = LocalizationUtility::translate('be.unhideEvent', 'SlubEvents', $arguments = null);
         }
 
         return '
             <td class="col-icon nowrap">
                 <div class="btn-group" role="group">
                     <a class="btn btn-default t3js-record-hide" data-state="'.$visible.'" href="#"
-                    data-params="data['.$table.']['.$uid.'][hidden]='.(($hidden == 1) ? 0 : 1).'"
+                    data-params="data['.$table.']['.$uid.'][hidden]='.(($hidden === 1) ? 0 : 1).'"
                     title="'.$title.'"
                     data-toggle-title="'.$toggleTitle.'"
                     >
@@ -210,11 +209,11 @@ class IconsHelper
 
     protected function renderIcon(string $identifier): string
     {
-        return $this->iconFactory->getIcon($identifier, Icon::SIZE_SMALL)?->render() ?? '';
+        return $this->iconFactory->getIcon($identifier, IconSize::SMALL)->render() ?? '';
     }
 
     protected function renderRecordIcon(string $table, array $row): string
     {
-        return $this->iconFactory->getIconForRecord($table, $row, Icon::SIZE_SMALL)?->render() ?? '';
+        return $this->iconFactory->getIconForRecord($table, $row, IconSize::SMALL)->render() ?? '';
     }
 }

@@ -41,7 +41,7 @@ class EditCodeViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('event', Event::class, 'Event', true);
@@ -55,7 +55,7 @@ class EditCodeViewHelper extends AbstractViewHelper
      */
     protected static function getSessionData($key)
     {
-        return $GLOBALS['TSFE']->fe_user->getKey('ses', $key);
+        return $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user')->getKey('ses', $key);
     }
 
     /**
@@ -66,7 +66,7 @@ class EditCodeViewHelper extends AbstractViewHelper
      */
     protected static function setSessionData($key, $data)
     {
-        $userGlobals = $GLOBALS['TSFE']->fe_user;
+        $userGlobals = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user');
         $userGlobals->setAndSaveSessionData($key, $data);
         return;
     }

@@ -2,6 +2,7 @@
 
 namespace Slub\SlubEvents\Tests\Unit\Domain\Model;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Discipline;
 
 /***************************************************************
@@ -40,19 +41,19 @@ use Slub\SlubEvents\Domain\Model\Discipline;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class DisciplineTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class DisciplineTest extends UnitTestCase
 {
     /**
      * @var Discipline
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Discipline();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -60,7 +61,7 @@ class DisciplineTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getNameReturnsInitialValueForString()
+    public function getNameReturnsInitialValueForString(): void
     {
         self::assertSame(
             null,
@@ -71,7 +72,7 @@ class DisciplineTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setNameForStringSetsName()
+    public function setNameForStringSetsName(): void
     {
         $this->subject->setName('Conceived at T3CON10');
 

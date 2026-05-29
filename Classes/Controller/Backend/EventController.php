@@ -14,7 +14,7 @@ namespace Slub\SlubEvents\Controller\Backend;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Page\PageRenderer;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -33,7 +33,7 @@ class EventController extends BaseController
     /**
      * action beList
      */
-    public function beListAction(): \Psr\Http\Message\ResponseInterface
+    public function beListAction(): ResponseInterface
     {
         // get current event of last beIcsInvitationAction
         $currentActiveEvent = $this->getParametersSafely('currentActiveEvent');
@@ -114,7 +114,7 @@ class EventController extends BaseController
      *
      * @param Event $event
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function beCopyAction(Event $event)
     {
@@ -181,7 +181,7 @@ class EventController extends BaseController
      *
      * @param Event $event
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
     public function beIcsInvitationAction(Event $event)
@@ -227,12 +227,12 @@ class EventController extends BaseController
             [
                 $this->settings['senderEmailAddress'] => LocalizationUtility::translate(
                     'tx_slubevents.be.eventmanagement',
-                    'slub_events'
+                    'SlubEvents'
                 ),
             ],
             LocalizationUtility::translate(
                 'be.icsInvitation',
-                'slub_events'
+                'SlubEvents'
             ) . ':' . $event->getTitle(),
             'Invitation',
             [
@@ -250,10 +250,10 @@ class EventController extends BaseController
 
         $this->addFlashMessage(LocalizationUtility::translate(
             'be.icsInvitation',
-            'slub_events'
+            'SlubEvents'
         ) . ' "'.$event->getTitle().'" '. LocalizationUtility::translate(
             'be.sentTo',
-            'slub_events'
+            'SlubEvents'
         ) .' ' . $event->getContact()->getEmail() . '.');
 
         $currentWidgetPage = $this->getParametersSafely('@widget_0');

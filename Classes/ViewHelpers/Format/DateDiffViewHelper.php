@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\ViewHelpers\Format;
 
 /***************************************************************
@@ -40,7 +43,7 @@ class DateDiffViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('dateEnd', \DateTime::class, 'End DateTimestamp', true);

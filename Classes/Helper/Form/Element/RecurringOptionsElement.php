@@ -50,7 +50,7 @@ class RecurringOptionsElement extends AbstractFormElement
         $startDateTime = DateFormattingUtility::resolveDateTime($this->data['databaseRow']['start_date_time']);
 
         $week = $this->buildWeekdayLabels();
-        $startWeekday = $startDateTime ? (int)$startDateTime->format('N') : 0;
+        $startWeekday = $startDateTime instanceof \DateTimeImmutable ? (int)$startDateTime->format('N') : 0;
         $fieldChangeAttributes = GeneralUtility::implodeAttributes(
           $this->getOnFieldChangeAttrs('click', $this->data['parameterArray']['fieldChangeFunc'] ?? []),
           true
@@ -65,7 +65,7 @@ class RecurringOptionsElement extends AbstractFormElement
         }
         $formField .= '<h4>'. LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.days',
-            'slub_events').'</h4>';
+            'SlubEvents').'</h4>';
         $formField .= '<div class="btn-group" data-toggle="buttons">';
 
         for ($i=1; $i<8; $i++) {
@@ -107,7 +107,7 @@ class RecurringOptionsElement extends AbstractFormElement
         }
         $formField .= '<h4>'. LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval',
-            'slub_events').'</h4>';
+            'SlubEvents').'</h4>';
         $formField .= '<div class="btn-group" data-toggle="buttons">';
 
         // ---weekly
@@ -127,7 +127,7 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.weekly',
-            'slub_events') . '</label>';
+            'SlubEvents') . '</label>';
 
         // --- 2weekly
         if ($recurring_options['interval'] == '2weekly') {
@@ -146,7 +146,7 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.2weekly',
-            'slub_events') . '</label>';
+            'SlubEvents') . '</label>';
 
         // --- 4weekly
         if ($recurring_options['interval'] == '4weekly') {
@@ -165,7 +165,7 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.4weekly',
-            'slub_events') . '</label>';
+            'SlubEvents') . '</label>';
 
         // --- monthly
         if ($recurring_options['interval'] == 'monthly') {
@@ -184,7 +184,7 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.monthly',
-            'slub_events') . '</label>';
+            'SlubEvents') . '</label>';
 
         // --- yearly
         if ($recurring_options['interval'] == 'yearly') {
@@ -203,7 +203,7 @@ class RecurringOptionsElement extends AbstractFormElement
         $formField .= ' />';
         $formField .= LocalizationUtility::translate(
             'tx_slubevents_domain_model_event.recurring_options.interval.yearly',
-            'slub_events') . '</label>';
+            'SlubEvents') . '</label>';
         $formField .= '</div>';
 
         $result['html'] = $formField;

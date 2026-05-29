@@ -2,7 +2,7 @@
 
 namespace Slub\SlubEvents\Tests\Unit\Domain\Model;
 
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Subscriber;
 
 /***************************************************************
@@ -41,19 +41,19 @@ use Slub\SlubEvents\Domain\Model\Subscriber;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class SubscriberTest extends UnitTestCase
 {
     /**
      * @var Subscriber
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Subscriber();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -68,7 +68,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setNameForStringSetsName()
+    public function setNameForStringSetsName(): void
     {
         $this->subject->setName('Conceived at T3CON10');
 
@@ -88,7 +88,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setEmailForStringSetsEmail()
+    public function setEmailForStringSetsEmail(): void
     {
         $this->subject->setEmail('Conceived at T3CON10');
 
@@ -108,7 +108,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setTelephoneForStringSetsTelephone()
+    public function setTelephoneForStringSetsTelephone(): void
     {
         $this->subject->setTelephone('Conceived at T3CON10');
 
@@ -128,7 +128,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setCustomeridForStringSetsCustomerid()
+    public function setCustomeridForStringSetsCustomerid(): void
     {
         $this->subject->setCustomerid('Conceived at T3CON10');
 
@@ -141,7 +141,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getNumberReturnsInitialValueForInteger()
+    public function getNumberReturnsInitialValueForInteger(): void
     {
         $this->assertSame(
             1,
@@ -152,7 +152,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setNumberForIntegerSetsNumber()
+    public function setNumberForIntegerSetsNumber(): void
     {
         $this->subject->setNumber(12);
 
@@ -172,7 +172,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setMessageForStringSetsMessage()
+    public function setMessageForStringSetsMessage(): void
     {
         $this->subject->setMessage('Conceived at T3CON10');
 
@@ -192,7 +192,7 @@ class SubscriberTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setEditcodeForStringSetsEditcode()
+    public function setEditcodeForStringSetsEditcode(): void
     {
         $this->subject->setEditcode('Conceived at T3CON10');
 

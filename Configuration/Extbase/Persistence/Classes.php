@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use Slub\SlubEvents\Domain\Model\TtContent;
+
 return [
-    \Slub\SlubEvents\Domain\Model\TtContent::class => [
+    TtContent::class => [
         'tableName' => 'tt_content',
         'properties' => [
             'altText' => [

@@ -24,9 +24,8 @@ namespace Slub\SlubEvents\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController as ExtbaseActionController;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
@@ -47,92 +46,46 @@ class AbstractController extends ExtbaseActionController
     /**
      * eventRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\EventRepository
+     * @var EventRepository
      */
     protected $eventRepository;
 
-	/**
-     * @param \Slub\SlubEvents\Domain\Repository\EventRepository $eventRepository
-     */
-    public function injectEventRepository(EventRepository $eventRepository): void
+	public function __construct(EventRepository $eventRepository, CategoryRepository $categoryRepository, SubscriberRepository $subscriberRepository, ContactRepository $contactRepository, DisciplineRepository $disciplineRepository, private readonly ConfigurationManagerInterface $configurationManager)
     {
         $this->eventRepository = $eventRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->subscriberRepository = $subscriberRepository;
+        $this->contactRepository = $contactRepository;
+        $this->disciplineRepository = $disciplineRepository;
     }
 
     /**
      * categoryRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\CategoryRepository
+     * @var CategoryRepository
      */
     protected $categoryRepository;
-
-	/**
-     * @param \Slub\SlubEvents\Domain\Repository\CategoryRepository $categoryRepository
-     */
-    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
 
     /**
      * subscriberRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\SubscriberRepository
+     * @var SubscriberRepository
      */
     protected $subscriberRepository;
-
-	/**
-     * @param \Slub\SlubEvents\Domain\Repository\SubscriberRepository $subscriberRepository
-     */
-    public function injectSubscriberRepository(SubscriberRepository $subscriberRepository): void
-    {
-        $this->subscriberRepository = $subscriberRepository;
-    }
 
     /**
      * contactRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\ContactRepository
+     * @var ContactRepository
      */
     protected $contactRepository;
-
-	/**
-     * @param \Slub\SlubEvents\Domain\Repository\ContactRepository $contactRepository
-     */
-    public function injectContactRepository(ContactRepository $contactRepository): void
-    {
-        $this->contactRepository = $contactRepository;
-    }
 
     /**
      * disciplineRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\DisciplineRepository
+     * @var DisciplineRepository
      */
     protected $disciplineRepository;
-
-	/**
-     * @param \Slub\SlubEvents\Domain\Repository\DisciplineRepository $disciplineRepository
-     */
-    public function injectDisciplineRepository(DisciplineRepository $disciplineRepository): void
-    {
-        $this->disciplineRepository = $disciplineRepository;
-    }
-
-    /**
-     * injectConfigurationManager
-     *
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
-     * @return void
-     */
-    #[\Override]
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
-    {
-        parent::injectConfigurationManager($configurationManager);
-        // merge the storagePid into settings for the cache tags
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        $this->settings['storagePid'] = $frameworkConfiguration['persistence']['storagePid'];
-    }
 
     /**
      * return the corresponding user GLOBALS for FE/BE
@@ -141,10 +94,10 @@ class AbstractController extends ExtbaseActionController
      */
     protected function getUserGlobals()
     {
-        if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $userGlobals = $GLOBALS['BE_USER'];
-        } elseif (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
-            $userGlobals = $GLOBALS['TSFE']->fe_user;
+        } elseif (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
+            $userGlobals = $this->request->getAttribute('frontend.user');
         }
 
         return $userGlobals;
@@ -161,7 +114,7 @@ class AbstractController extends ExtbaseActionController
         $userGlobals = $this->getUserGlobals();
 
         // write data to user configuration to persist over sessions
-        if ($persist === true && \TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if ($persist === true && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
 
             $ucData = $userGlobals->uc['moduleData']['slubevents'];
 
@@ -190,9 +143,9 @@ class AbstractController extends ExtbaseActionController
 
         $configurationData = [];
 
-        if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            $ucData = isset($userGlobals->uc['moduleData']['slubevents']) ? $userGlobals->uc['moduleData']['slubevents'] : [];
-            $configurationData = isset($ucData[$key]) ? $ucData[$key] : [];
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+            $ucData = $userGlobals->uc['moduleData']['slubevents'] ?? [];
+            $configurationData = $ucData[$key] ?? [];
 
             if (!empty($configurationData) && !(empty($sessionData))) {
                 // merge session and configuration data
@@ -215,7 +168,7 @@ class AbstractController extends ExtbaseActionController
     #[\Override]
     protected function initializeAction(): void
     {
-        if (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             global $BE_USER;
             // TYPO3 doesn't set locales for backend-users --> so do it manually like this...
             // is needed especially with strftime

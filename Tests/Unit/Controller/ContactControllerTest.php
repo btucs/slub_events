@@ -1,8 +1,8 @@
 <?php
 namespace Slub\SlubEvents\Tests\Unit\Controller;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Contact;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /***************************************************************
  *  Copyright notice
@@ -40,19 +40,19 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class ContactControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class ContactControllerTest extends UnitTestCase
 {
     /**
      * @var Contact
      */
     protected $subject = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Contact();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -60,7 +60,7 @@ class ContactControllerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function dummyMethod()
+    public function dummyMethod(): void
     {
         $this->markTestIncomplete();
     }

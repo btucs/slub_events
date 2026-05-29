@@ -2,6 +2,7 @@
 
 namespace Slub\SlubEvents\Tests\Unit\Domain\Model;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use Slub\SlubEvents\Domain\Model\Location;
 
@@ -41,19 +42,19 @@ use Slub\SlubEvents\Domain\Model\Location;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class LocationTest extends UnitTestCase
 {
     /**
      * @var Location
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Location();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -61,7 +62,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getNameInitiallyReturnsNull()
+    public function getNameInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -72,7 +73,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setNameForStringSetsName()
+    public function setNameForStringSetsName(): void
     {
         $this->subject->setName('Conceived at T3CON10');
 
@@ -85,7 +86,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getDescriptionInitiallyReturnsNull()
+    public function getDescriptionInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -96,7 +97,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setDescriptionForStringSetsDescription()
+    public function setDescriptionForStringSetsDescription(): void
     {
         $this->subject->setDescription('Conceived at T3CON10');
 
@@ -116,7 +117,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setLinkForStringSetsLink()
+    public function setLinkForStringSetsLink(): void
     {
         $this->subject->setLink('Conceived at T3CON10');
 
@@ -129,7 +130,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getParentReturnsInitialValueForObjectStorageContainingLocation()
+    public function getParentReturnsInitialValueForObjectStorageContainingLocation(): void
     {
         $newObjectStorage = new ObjectStorage();
         self::assertEquals(
@@ -141,7 +142,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setParentForObjectStorageContainingLocationSetsParent()
+    public function setParentForObjectStorageContainingLocationSetsParent(): void
     {
         $parent = new Location();
         $objectStorageHoldingExactlyOneParent = new ObjectStorage();
@@ -157,7 +158,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function addParentToObjectStorageHoldingParent()
+    public function addParentToObjectStorageHoldingParent(): void
     {
         $parent = new Location();
         $objectStorageHoldingExactlyOneParent = new ObjectStorage();
@@ -173,7 +174,7 @@ class LocationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function removeParentFromObjectStorageHoldingParent()
+    public function removeParentFromObjectStorageHoldingParent(): void
     {
         $parent = new Location();
         $localObjectStorage = new ObjectStorage();

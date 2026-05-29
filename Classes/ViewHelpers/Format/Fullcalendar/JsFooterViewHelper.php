@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\ViewHelpers\Format\Fullcalendar;
 
 /***************************************************************
@@ -28,7 +31,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format\Fullcalendar;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Add Fullcalendar specific JS code
@@ -41,11 +43,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class JsFooterViewHelper extends AbstractViewHelper
 {
+    public function __construct(private readonly PageRenderer $pageRenderer)
+    {
+    }
     /**
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('categories', 'array', 'Categories', true);
@@ -60,7 +65,7 @@ class JsFooterViewHelper extends AbstractViewHelper
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */
-    public function render()
+    public function render(): void
     {
         $categories = $this->arguments['categories'];
         $settings = $this->arguments['settings'];
@@ -115,7 +120,7 @@ class JsFooterViewHelper extends AbstractViewHelper
         // close $(document).ready()
         $js1 .= '});';
         /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer = $this->pageRenderer;
         $pageRenderer->addJsFooterInlineCode('js-slub-fullcalendar-config', $js1);
         if (empty($settings['fullCalendarJS'])) {
             $pageRenderer->addJsFooterLibrary('js-slub-fullcalendar-init', 'typo3conf/ext/slub_events/Resources/Public/Js/slub-events-fullcalendar-init.js');

@@ -24,7 +24,9 @@ namespace Slub\SlubEvents\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use Slub\SlubEvents\Domain\Model\Category;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -36,7 +38,7 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 class CategoryController extends AbstractController
 {
     /**
-     * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     * @var TypoScriptFrontendController
      */
     protected $typoScriptFrontendController;
 
@@ -56,7 +58,7 @@ class CategoryController extends AbstractController
             // We only want to set the tag once in one request, so we have to cache that statically if it has been done
             static $cacheTagsSet = false;
 
-            /** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $typoScriptFrontendController */
+            /** @var TypoScriptFrontendController $typoScriptFrontendController */
             $typoScriptFrontendController = $GLOBALS['TSFE'];
             if (!$cacheTagsSet) {
                 $typoScriptFrontendController->addCacheTags(
@@ -72,7 +74,7 @@ class CategoryController extends AbstractController
      *
      *
      */
-    public function listAction(): \Psr\Http\Message\ResponseInterface
+    public function listAction(): ResponseInterface
     {
         // take the root category of the flexform
         $category = $this->categoryRepository->findAllByUids(
@@ -80,8 +82,8 @@ class CategoryController extends AbstractController
         )->getFirst();
 
         $categories = $this->categoryRepository->findCurrentBranch($category);
-        if (count($categories) == 0) {
-            return (new \TYPO3\CMS\Extbase\Http\ForwardResponse('gbList'))->withArguments(['category' => $category]);
+        if (count($categories) === 0) {
+            return (new ForwardResponse('gbList'))->withArguments(['category' => $category]);
         } else {
             $this->view->assign('categories', $categories);
         }
@@ -93,12 +95,12 @@ class CategoryController extends AbstractController
      *
      * List of genius bar events with category description, contact photo and calendar link
      *
-     * @param \Slub\SlubEvents\Domain\Model\Category $category
+     * @param Category $category
      *
      * @return void
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
-    public function contactListAction(?\Slub\SlubEvents\Domain\Model\Category $category = null): \Psr\Http\Message\ResponseInterface
+    public function contactListAction(?Category $category = null): ResponseInterface
     {
         if ($this->settings['contactSelection'] <= 0) {
             $this->view->assign('contactSelectionWarning', 1);
@@ -141,7 +143,7 @@ class CategoryController extends AbstractController
      * @return void
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
-    public function gbListAction(?Category $category = null): \Psr\Http\Message\ResponseInterface
+    public function gbListAction(?Category $category = null): ResponseInterface
     {
         $events = [];
         $parentcategory = null;
@@ -164,7 +166,7 @@ class CategoryController extends AbstractController
      *
      * @return void
      */
-    public function showAction(Category $category): \Psr\Http\Message\ResponseInterface
+    public function showAction(Category $category): ResponseInterface
     {
         $this->view->assign('category', $category);
         return $this->htmlResponse();

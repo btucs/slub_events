@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /***************************************************************
  * Extension Manager/Repository config file for ext "slub_events".
  *
  ***************************************************************/
-
 $EM_CONF[$_EXTKEY] = [
     'title'            => 'SLUB: Event Registration',
     'description'      => 'Tool for event registration and experts booking.
@@ -18,7 +19,7 @@ This extension is developped and used in production at the Saxony State and Univ
     'version'          => '6.3.0',
     'constraints'      => [
         'depends'   => [
-            'typo3'   => '11.5.0-12.4.99',
+            'typo3'   => '12.4.0-0.0.0',
         ],
         'conflicts' => [
         ],

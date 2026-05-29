@@ -23,7 +23,7 @@ namespace Slub\SlubEvents\Task;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -44,7 +44,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
      *
      * @param array $taskInfo Array information of task to return
      * @param AbstractTask|null $task When editing, reference to the current task. NULL when adding.
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
+     * @param SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
      *
      * @return array Additional fields
      * @see \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface->getAdditionalFields($taskInfo, $task, $schedulerModule)
@@ -126,7 +126,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
      * If the task class is not relevant, the method is expected to return TRUE.
      *
      * @param array                                                     $submittedData   Reference to the array containing the data submitted by the user
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
+     * @param SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
      *
      * @return boolean TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
      */
@@ -141,14 +141,14 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
             $isValid = false;
             $this->addMessage(
                 $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.invalidStoragePid') . ': ' . $submittedData['slub_events']['storagePid'],
-                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         }
 
         if (!GeneralUtility::validEmail($submittedData['slub_events']['senderEmailAddress'])) {
             $isValid = false;
             $this->addMessage($GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.invalidEmail'),
-                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
+                ContextualFeedbackSeverity::ERROR);
         }
 
         if (!empty($submittedData['slub_events']['receiverEmailAddress'])) {
@@ -158,7 +158,7 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
                 if (!GeneralUtility::validEmail($emailAdd)) {
                     $isValid = false;
                     $this->addMessage($GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.statistics.invalidEmail') . ': ' . $emailAdd,
-                        \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR);
+                        ContextualFeedbackSeverity::ERROR);
                 }
             }
         }
@@ -171,12 +171,12 @@ class StatisticsTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvi
      * if the task class matches.
      *
      * @param array                                  $submittedData Array containing the data submitted by the user
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task          Reference to the current task object
+     * @param AbstractTask $task Reference to the current task object
      *
      * @return void
      */
     #[\Override]
-    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         /** @var StatisticsTask $task */
         $task->setStoragePid($submittedData['slub_events']['storagePid']);

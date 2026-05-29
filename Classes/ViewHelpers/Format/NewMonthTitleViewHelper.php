@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Slub\SlubEvents\ViewHelpers\Format;
 
 /***************************************************************
@@ -24,7 +27,7 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Slub\SlubEvents\Domain\Model\Event;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -41,7 +44,7 @@ class NewMonthTitleViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('events', QueryResult::class, 'Events', true);
@@ -62,7 +65,7 @@ class NewMonthTitleViewHelper extends AbstractViewHelper
         // the first is shown anyway...
         if ($index == 0) {
 
-            /** @var \Slub\SlubEvents\Domain\Model\Event $event */
+            /** @var Event $event */
             $event = $events[$index];
             $date = $event->getStartDateTime();
 
@@ -70,10 +73,10 @@ class NewMonthTitleViewHelper extends AbstractViewHelper
                 return $date;
             }
         } else {
-            /** @var \Slub\SlubEvents\Domain\Model\Event $event */
+            /** @var Event $event */
             $event = $events[$index];
             $date = $event->getStartDateTime();
-            /** @var \Slub\SlubEvents\Domain\Model\Event $preevent */
+            /** @var Event $preevent */
             $preevent = $events[$index - 1];
             $predate = $preevent->getStartDateTime();
 

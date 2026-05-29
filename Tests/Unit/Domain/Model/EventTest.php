@@ -2,6 +2,7 @@
 
 namespace Slub\SlubEvents\Tests\Unit\Domain\Model;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Contact;
 use Slub\SlubEvents\Domain\Model\Discipline;
 use Slub\SlubEvents\Domain\Model\Location;
@@ -47,19 +48,19 @@ use Slub\SlubEvents\Domain\Model\Subscriber;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class EventTest extends UnitTestCase
 {
     /**
      * @var Event
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Event();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -67,7 +68,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getTitleInitiallyReturnsNull()
+    public function getTitleInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -78,7 +79,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setTitleForStringSetsTitle()
+    public function setTitleForStringSetsTitle(): void
     {
         $this->subject->setTitle('Conceived at T3CON10');
 
@@ -91,7 +92,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getStartDateTimeInitiallyReturnsNull()
+    public function getStartDateTimeInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -102,7 +103,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setStartDateTimeForDateTimeSetsStartDateTime()
+    public function setStartDateTimeForDateTimeSetsStartDateTime(): void
     {
         $now = new \DateTime('2016-05-13');
         $this->subject->setStartDateTime($now);
@@ -116,7 +117,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getAllDayReturnsInitialValueForBoolean()
+    public function getAllDayReturnsInitialValueForBoolean(): void
     {
         self::assertSame(
             false,
@@ -127,7 +128,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setAllDayForBooleanSetsAllDay()
+    public function setAllDayForBooleanSetsAllDay(): void
     {
         $this->subject->setAllDay(true);
 
@@ -140,7 +141,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getEndDateTimeInitiallyReturnsNull()
+    public function getEndDateTimeInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -151,7 +152,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setEndDateTimeForDateTimeSetsEndDateTime()
+    public function setEndDateTimeForDateTimeSetsEndDateTime(): void
     {
         $now = new \DateTime('2016-05-13');
         $this->subject->setEndDateTime($now);
@@ -166,7 +167,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getSubEndDateTimeInitiallyReturnsNull()
+    public function getSubEndDateTimeInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -177,7 +178,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setSubEndDateTimeForDateTimeSetsSubEndDateTime()
+    public function setSubEndDateTimeForDateTimeSetsSubEndDateTime(): void
     {
         $now = new \DateTime('2016-05-13');
         $this->subject->setSubEndDateTime($now);
@@ -191,7 +192,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getTeaserInitiallyReturnsNull()
+    public function getTeaserInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -202,7 +203,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setTeaserForStringSetsTeaser()
+    public function setTeaserForStringSetsTeaser(): void
     {
         $this->subject->setTeaser('Conceived at T3CON10');
 
@@ -222,7 +223,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setDescriptionForStringSetsDescription()
+    public function setDescriptionForStringSetsDescription(): void
     {
         $this->subject->setDescription('Conceived at T3CON10');
 
@@ -235,7 +236,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getMinSubscriberReturnsInitialValueForInteger()
+    public function getMinSubscriberReturnsInitialValueForInteger(): void
     {
         self::assertSame(
             0,
@@ -246,7 +247,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setMinSubscriberForIntegerSetsMinSubscriber()
+    public function setMinSubscriberForIntegerSetsMinSubscriber(): void
     {
         self::assertSame(
             0,
@@ -257,7 +258,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getMaxSubscriberReturnsInitialValueForInteger()
+    public function getMaxSubscriberReturnsInitialValueForInteger(): void
     {
         self::assertSame(
             0,
@@ -268,7 +269,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setMaxSubscriberForIntegerSetsMaxSubscriber()
+    public function setMaxSubscriberForIntegerSetsMaxSubscriber(): void
     {
         $this->subject->setMaxSubscriber(12);
 
@@ -281,7 +282,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getAudienceReturnsInitialValueForInteger()
+    public function getAudienceReturnsInitialValueForInteger(): void
     {
         self::assertSame(
             0,
@@ -292,7 +293,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setAudienceForIntegerSetsAudience()
+    public function setAudienceForIntegerSetsAudience(): void
     {
         $this->subject->setAudience(12);
 
@@ -305,7 +306,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getSubEndDateInfoSentReturnsInitialValueForBoolean()
+    public function getSubEndDateInfoSentReturnsInitialValueForBoolean(): void
     {
         self::assertSame(
             false,
@@ -316,7 +317,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setSubEndDateInfoSentForBooleanSetsSubEndDateInfoSent()
+    public function setSubEndDateInfoSentForBooleanSetsSubEndDateInfoSent(): void
     {
         $this->subject->setSubEndDateInfoSent(true);
 
@@ -329,7 +330,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getGeniusBarReturnsInitialValueForBoolean()
+    public function getGeniusBarReturnsInitialValueForBoolean(): void
     {
         self::assertSame(
             false,
@@ -340,7 +341,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setGeniusBarForBooleanSetsGeniusBar()
+    public function setGeniusBarForBooleanSetsGeniusBar(): void
     {
         $this->subject->setGeniusBar(true);
 
@@ -353,7 +354,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getCancelledReturnsInitialValueForBoolean()
+    public function getCancelledReturnsInitialValueForBoolean(): void
     {
         self::assertSame(
             false,
@@ -364,7 +365,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setCancelledForBooleanSetsCancelled()
+    public function setCancelledForBooleanSetsCancelled(): void
     {
         $this->subject->setCancelled(true);
 
@@ -377,7 +378,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getCategoriesReturnsInitialValueForObjectStorageContainingCategory()
+    public function getCategoriesReturnsInitialValueForObjectStorageContainingCategory(): void
     {
         $newObjectStorage = new ObjectStorage();
         self::assertEquals(
@@ -389,7 +390,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setCategoriesForObjectStorageContainingCategorySetsCategories()
+    public function setCategoriesForObjectStorageContainingCategorySetsCategories(): void
     {
         $category = new Category();
         $objectStorageHoldingExactlyOneCategories = new ObjectStorage();
@@ -405,7 +406,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function addCategoryToObjectStorageHoldingCategories()
+    public function addCategoryToObjectStorageHoldingCategories(): void
     {
         $category = new Category();
         $objectStorageHoldingExactlyOneCategory = new ObjectStorage();
@@ -421,7 +422,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function removeCategoryFromObjectStorageHoldingCategories()
+    public function removeCategoryFromObjectStorageHoldingCategories(): void
     {
         $category = new Category();
         $localObjectStorage = new ObjectStorage();
@@ -439,7 +440,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getSubscribersReturnsInitialValueForObjectStorageContainingSubscriber()
+    public function getSubscribersReturnsInitialValueForObjectStorageContainingSubscriber(): void
     {
         $newObjectStorage = new ObjectStorage();
         self::assertEquals(
@@ -451,7 +452,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setSubscribersForObjectStorageContainingSubscriberSetsSubscribers()
+    public function setSubscribersForObjectStorageContainingSubscriberSetsSubscribers(): void
     {
         $subscriber = new Subscriber();
         $objectStorageHoldingExactlyOneSubscribers = new ObjectStorage();
@@ -467,7 +468,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function addSubscriberToObjectStorageHoldingSubscribers()
+    public function addSubscriberToObjectStorageHoldingSubscribers(): void
     {
         $subscriber = new Subscriber();
         $objectStorageHoldingExactlyOneSubscriber = new ObjectStorage();
@@ -483,7 +484,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function removeSubscriberFromObjectStorageHoldingSubscribers()
+    public function removeSubscriberFromObjectStorageHoldingSubscribers(): void
     {
         $subscriber = new Subscriber();
         $localObjectStorage = new ObjectStorage();
@@ -501,7 +502,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getLocationReturnsInitialValueForLocation()
+    public function getLocationReturnsInitialValueForLocation(): void
     {
         self::assertEquals(
             NULL,
@@ -512,7 +513,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setLocationForLocationSetsLocation()
+    public function setLocationForLocationSetsLocation(): void
     {
         $location = new Location();
         $this->subject->setLocation($location);
@@ -526,7 +527,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getDisciplineReturnsInitialValueForDiscipline()
+    public function getDisciplineReturnsInitialValueForDiscipline(): void
     {
         $newObjectStorage = new ObjectStorage();
         self::assertEquals(
@@ -538,7 +539,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setDisciplineForDisciplineSetsDiscipline()
+    public function setDisciplineForDisciplineSetsDiscipline(): void
     {
         $discipline = new Discipline();
         $objectStorageHoldingExactlyOneDiscipline = new ObjectStorage();
@@ -554,7 +555,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function addDisciplineToObjectStorageHoldingDiscipline()
+    public function addDisciplineToObjectStorageHoldingDiscipline(): void
     {
         $discipline = new Discipline();
         $objectStorageHoldingExactlyOneDiscipline = new ObjectStorage();
@@ -570,7 +571,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function removeDisciplineFromObjectStorageHoldingDiscipline()
+    public function removeDisciplineFromObjectStorageHoldingDiscipline(): void
     {
         $discipline = new Discipline();
         $localObjectStorage = new ObjectStorage();
@@ -588,7 +589,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getContactReturnsInitialValueForContact()
+    public function getContactReturnsInitialValueForContact(): void
     {
         self::assertEquals(
             NULL,
@@ -599,7 +600,7 @@ class EventTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setContactForContactSetsContact()
+    public function setContactForContactSetsContact(): void
     {
         $contact = new Contact();
         $this->subject->setContact($contact);

@@ -61,7 +61,7 @@ class Location extends AbstractEntity
     /**
      * parent
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Location>
+     * @var ObjectStorage<Location>
      */
     protected $parent;
 
@@ -82,7 +82,7 @@ class Location extends AbstractEntity
      *
      * @return void
      */
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -104,7 +104,7 @@ class Location extends AbstractEntity
      *
      * @return void
      */
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         $this->description = $description;
     }
@@ -126,7 +126,7 @@ class Location extends AbstractEntity
      *
      * @return void
      */
-    public function setLink($link)
+    public function setLink($link): void
     {
         $this->link = $link;
     }
@@ -158,11 +158,11 @@ class Location extends AbstractEntity
     /**
      * Adds a Location
      *
-     * @param \Slub\SlubEvents\Domain\Model\Location $parent
+     * @param Location $parent
      *
      * @return void
      */
-    public function addParent(\Slub\SlubEvents\Domain\Model\Location $parent)
+    public function addParent(Location $parent): void
     {
         $this->parent->attach($parent);
     }
@@ -170,11 +170,11 @@ class Location extends AbstractEntity
     /**
      * Removes a Location
      *
-     * @param \Slub\SlubEvents\Domain\Model\Location $parentToRemove The Location to be removed
+     * @param Location $parentToRemove The Location to be removed
      *
      * @return void
      */
-    public function removeParent(\Slub\SlubEvents\Domain\Model\Location $parentToRemove)
+    public function removeParent(Location $parentToRemove): void
     {
         $this->parent->detach($parentToRemove);
     }
@@ -182,7 +182,7 @@ class Location extends AbstractEntity
     /**
      * Returns the parent
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Location> $parent
+     * @return ObjectStorage<Location> $parent
      */
     public function getParent()
     {
@@ -192,11 +192,11 @@ class Location extends AbstractEntity
     /**
      * Sets the parent
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Slub\SlubEvents\Domain\Model\Location> $parent
+     * @param ObjectStorage<Location> $parent
      *
      * @return void
      */
-    public function setParent(ObjectStorage $parent)
+    public function setParent(ObjectStorage $parent): void
     {
         $this->parent = $parent;
     }

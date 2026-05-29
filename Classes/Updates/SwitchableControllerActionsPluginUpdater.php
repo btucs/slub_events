@@ -66,7 +66,7 @@ final class SwitchableControllerActionsPluginUpdater implements UpgradeWizardInt
 
   protected FlexFormService $flexFormService;
 
-  public function __construct()
+  public function __construct(private readonly ConnectionPool $connectionPool)
   {
       $this->flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
   }
@@ -150,7 +150,7 @@ final class SwitchableControllerActionsPluginUpdater implements UpgradeWizardInt
   {
       $checkListTypes = array_unique(array_column(self::MIGRATION_SETTINGS, 'sourceListType'));
 
-      $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+      $connectionPool = $this->connectionPool;
       $queryBuilder = $connectionPool->getQueryBuilderForTable('tt_content');
       $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
@@ -205,7 +205,7 @@ final class SwitchableControllerActionsPluginUpdater implements UpgradeWizardInt
      */
     protected function updateContentElement(int $uid, string $newListType, string $flexform): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tt_content');
         $queryBuilder->update('tt_content')
             ->set('list_type', $newListType)
             ->set('pi_flexform', $flexform)

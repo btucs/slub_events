@@ -2,6 +2,7 @@
 
 namespace Slub\SlubEvents\Tests\Unit\Domain\Model;
 
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 use Slub\SlubEvents\Domain\Model\Contact;
 
 
@@ -41,19 +42,19 @@ use Slub\SlubEvents\Domain\Model\Contact;
  *
  * @author     Alexander Bigga <typo3@slub-dresden.de>
  */
-class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class ContactTest extends UnitTestCase
 {
     /**
      * @var Contact
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Contact();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -61,7 +62,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getNameInitiallyReturnsNull()
+    public function getNameInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -72,7 +73,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setNameForStringSetsName()
+    public function setNameForStringSetsName(): void
     {
         $this->subject->setName('Conceived at T3CON10');
 
@@ -85,7 +86,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getEmailInitiallyReturnsNull()
+    public function getEmailInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -96,7 +97,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setEmailForStringSetsEmail()
+    public function setEmailForStringSetsEmail(): void
     {
         $this->subject->setEmail('slub@example.com');
 
@@ -109,7 +110,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getTelephoneInitiallyReturnsNull()
+    public function getTelephoneInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -120,7 +121,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setTelephoneForStringSetsTelephone()
+    public function setTelephoneForStringSetsTelephone(): void
     {
         $this->subject->setTelephone('Conceived at T3CON10');
 
@@ -133,7 +134,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getDescriptionInitiallyReturnsNull()
+    public function getDescriptionInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -144,7 +145,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setDescriptionForStringSetsDescription()
+    public function setDescriptionForStringSetsDescription(): void
     {
         $this->subject->setDescription('Conceived at T3CON10');
 
@@ -157,7 +158,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function getPhotoInitiallyReturnsNull()
+    public function getPhotoInitiallyReturnsNull(): void
     {
         self::assertSame(
             null,
@@ -168,7 +169,7 @@ class ContactTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     /**
      * @test
      */
-    public function setPhotoForStringSetsPhoto()
+    public function setPhotoForStringSetsPhoto(): void
     {
         $this->subject->setPhoto('Conceived at T3CON10');
 

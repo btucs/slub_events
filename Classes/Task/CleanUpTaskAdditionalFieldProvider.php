@@ -24,7 +24,7 @@ namespace Slub\SlubEvents\Task;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -43,7 +43,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      *
      * @param array $taskInfo Array information of task to return
      * @param AbstractTask|null $task When editing, reference to the current task. NULL when adding.
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
+     * @param SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
      *
      * @return array Additional fields
      * @see \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface->getAdditionalFields($taskInfo, $task, $schedulerModule)
@@ -114,7 +114,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * If the task class is not relevant, the method is expected to return TRUE.
      *
      * @param array                                                     $submittedData   Reference to the array containing the data submitted by the user
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
+     * @param SchedulerModuleController $schedulerModule Reference to the BE module of the Scheduler
      *
      * @return boolean TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
      */
@@ -129,7 +129,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             $isValid = false;
             $this->addMessage(
                 $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.cleanup.invalidStoragePid') . ': ' . $submittedData['slub_events']['cleanupDays'],
-                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         }
 
@@ -137,7 +137,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             $isValid = false;
             $this->addMessage(
                 $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.cleanup.invalidCleanupDays') . ': ' . $submittedData['slub_events']['cleanupDays'],
-                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         }
 
@@ -145,7 +145,7 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             $isValid = false;
             $this->addMessage(
                 $GLOBALS['LANG']->sL('LLL:EXT:slub_events/Resources/Private/Language/locallang.xlf:tasks.cleanup.invalidCleanupDaysEvents') . ': ' . $submittedData['slub_events']['cleanupDaysEvents'],
-                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         }
 
@@ -157,12 +157,12 @@ class CleanUpTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * if the task class matches.
      *
      * @param array                                  $submittedData Array containing the data submitted by the user
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task          Reference to the current task object
+     * @param AbstractTask $task Reference to the current task object
      *
      * @return void
      */
     #[\Override]
-    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         /** @var CleanUpTask $task */
         $task->setStoragePid($submittedData['slub_events']['storagePid']);

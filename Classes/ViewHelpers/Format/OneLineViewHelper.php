@@ -40,7 +40,7 @@ class OneLineViewHelper extends AbstractViewHelper
      * Initialize arguments.
      */
     #[\Override]
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('htmlString', 'string', 'Html String', true);

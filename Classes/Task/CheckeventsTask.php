@@ -52,14 +52,14 @@ class CheckeventsTask extends AbstractTask
     /**
      * eventRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\EventRepository
+     * @var EventRepository
      */
     protected $eventRepository;
 
     /**
      * subscriberRepository
      *
-     * @var \Slub\SlubEvents\Domain\Repository\SubscriberRepository
+     * @var SubscriberRepository
      */
     protected $subscriberRepository;
 
@@ -90,7 +90,7 @@ class CheckeventsTask extends AbstractTask
     protected $configurationManager;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var PersistenceManager
      */
     protected $persistenceManager;
 
@@ -98,6 +98,14 @@ class CheckeventsTask extends AbstractTask
      * @var ServerRequestInterface
      */
     protected $request;
+    /**
+     * Constructor
+     */
+    public function __construct(private readonly ConfigurationManagerInterface $configurationManagerInterface, PersistenceManager $persistenceManager, private readonly SiteFinder $siteFinder)
+    {
+        parent::__construct();
+        $this->persistenceManager = $persistenceManager;
+    }
 
     /**
      * initializeAction
@@ -114,13 +122,9 @@ class CheckeventsTask extends AbstractTask
             EventRepository::class
         );
 
-        $this->configurationManager = GeneralUtility::makeInstance(
-            \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::class
-        );
+        $this->configurationManager = $this->configurationManagerInterface;
 
-        $this->persistenceManager = GeneralUtility::makeInstance(
-            PersistenceManager::class
-        );
+        $this->persistenceManager = $this->persistenceManager;
 
         switch ($this->language) {
           case 'en':
@@ -135,7 +139,7 @@ class CheckeventsTask extends AbstractTask
         }
 
         // Create a request object for email template rendering with ViewHelpers
-        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $siteFinder = $this->siteFinder;
         try {
             $site = $siteFinder->getSiteByPageId($this->storagePid);
 
@@ -156,7 +160,7 @@ class CheckeventsTask extends AbstractTask
             $this->request = (new ServerRequest(new Uri($site->getBase())))
                 ->withAttribute('site', $site)
                 ->withAttribute('language', $language);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Fallback: create basic request without site context
             $this->request = new ServerRequest(new Uri('http://localhost/'));
         }

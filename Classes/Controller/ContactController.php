@@ -24,7 +24,7 @@ namespace Slub\SlubEvents\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Psr\Http\Message\ResponseInterface;
 use Slub\SlubEvents\Domain\Model\Contact;
 
 /**
@@ -38,7 +38,7 @@ class ContactController extends AbstractController
      *
      * @return void
      */
-    public function listAction(): \Psr\Http\Message\ResponseInterface
+    public function listAction(): ResponseInterface
     {
         $contacts = $this->contactRepository->findAll();
         $this->view->assign('contacts', $contacts);
@@ -48,11 +48,11 @@ class ContactController extends AbstractController
     /**
      * action show
      *
-     * @param \Slub\SlubEvents\Domain\Model\Contact $contact
+     * @param Contact $contact
      *
      * @return void
      */
-    public function showAction(Contact $contact): \Psr\Http\Message\ResponseInterface
+    public function showAction(Contact $contact): ResponseInterface
     {
         $this->view->assign('contact', $contact);
         return $this->htmlResponse();

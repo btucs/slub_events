@@ -64,7 +64,7 @@ class EmailHelper
         $unlinkFiles = [];
         $emailTextHTML = self::renderEmailTemplate($request, $templateName, $variables, $configurationManager);
 
-        /** @var \TYPO3\CMS\Core\Mail\MailMessage $message*/
+        /** @var MailMessage $message*/
         $message = GeneralUtility::makeInstance(MailMessage::class);
         $message->setTo($recipient)
             ->setFrom($sender)
@@ -203,7 +203,7 @@ class EmailHelper
      */
     public static function resolveTemplateRootPaths(?ConfigurationManagerInterface $configurationManager = null): array
     {
-        if ($configurationManager instanceof \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface) {
+        if ($configurationManager instanceof ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
             );
@@ -222,7 +222,7 @@ class EmailHelper
      */
     public static function resolvePartialRootPaths(?ConfigurationManagerInterface $configurationManager = null): array
     {
-        if ($configurationManager instanceof \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface) {
+        if ($configurationManager instanceof ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
             );
@@ -255,14 +255,14 @@ class EmailHelper
     ): string {
         /** @var StandaloneView $emailViewHTML */
         $emailViewHTML = GeneralUtility::makeInstance(StandaloneView::class);
-        $emailViewHTML->setRequest($request);
+        $emailViewHTML->getRenderingContext()->setAttribute(ServerRequestInterface::class, $request);
         $emailViewHTML->setFormat($format);
         $emailViewHTML->assignMultiple($variables);
 
-        $emailViewHTML->setTemplateRootPaths(self::resolveTemplateRootPaths($configurationManager));
-        $emailViewHTML->setPartialRootPaths(self::resolvePartialRootPaths($configurationManager));
+        $emailViewHTML->getRenderingContext()->getTemplatePaths()->setTemplateRootPaths(self::resolveTemplateRootPaths($configurationManager));
+        $emailViewHTML->getRenderingContext()->getTemplatePaths()->setPartialRootPaths(self::resolvePartialRootPaths($configurationManager));
 
-        $emailViewHTML->setTemplate('Email/' . $templateName . '.' . $format);
+        $emailViewHTML->getRenderingContext()->setControllerAction('Email/' . $templateName . '.' . $format);
 
         return $emailViewHTML->render();
     }
