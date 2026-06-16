@@ -94,9 +94,9 @@ class AbstractController extends ExtbaseActionController
      */
     protected function getUserGlobals()
     {
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if (ApplicationType::fromRequest($this->request)->isBackend()) {
             $userGlobals = $GLOBALS['BE_USER'];
-        } elseif (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
+        } elseif (ApplicationType::fromRequest($this->request)->isFrontend()) {
             $userGlobals = $this->request->getAttribute('frontend.user');
         }
 
@@ -114,7 +114,7 @@ class AbstractController extends ExtbaseActionController
         $userGlobals = $this->getUserGlobals();
 
         // write data to user configuration to persist over sessions
-        if ($persist === true && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if ($persist === true && ApplicationType::fromRequest($this->request)->isBackend()) {
 
             $ucData = $userGlobals->uc['moduleData']['slubevents'];
 
@@ -143,7 +143,7 @@ class AbstractController extends ExtbaseActionController
 
         $configurationData = [];
 
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if (ApplicationType::fromRequest($this->request)->isBackend()) {
             $ucData = $userGlobals->uc['moduleData']['slubevents'] ?? [];
             $configurationData = $ucData[$key] ?? [];
 
@@ -168,7 +168,7 @@ class AbstractController extends ExtbaseActionController
     #[\Override]
     protected function initializeAction(): void
     {
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if (ApplicationType::fromRequest($this->request)->isBackend()) {
             global $BE_USER;
             // TYPO3 doesn't set locales for backend-users --> so do it manually like this...
             // is needed especially with strftime

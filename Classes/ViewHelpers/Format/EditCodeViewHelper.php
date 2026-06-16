@@ -53,9 +53,9 @@ class EditCodeViewHelper extends AbstractViewHelper
      * @param string $key
      * @return string
      */
-    protected static function getSessionData($key)
+    protected function getSessionData($key)
     {
-        return $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user')->getKey('ses', $key);
+        return $this->renderingContext->getRequest()->getAttribute('frontend.user')->getKey('ses', $key);
     }
 
     /**
@@ -64,30 +64,26 @@ class EditCodeViewHelper extends AbstractViewHelper
      * @param string $key
      * @param string $data
      */
-    protected static function setSessionData($key, $data)
+    protected function setSessionData($key, $data)
     {
-        $userGlobals = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user');
+        $userGlobals = $this->renderingContext->getRequest()->getAttribute('frontend.user');
         $userGlobals->setAndSaveSessionData($key, $data);
         return;
     }
 
     /**
      * Render the supplied DateTime object as a formatted date.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
     public function render()
     {
         $event = $this->arguments['event'];
-        $editCodeDummy = self::getSessionData('editcode');
+        $editCodeDummy = $this->getSessionData('editcode');
         // create new editcode-dummy code
         if (empty($editCodeDummy)) {
             $editCodeDummy = hash('sha256', random_int(0, mt_getrandmax()) . $event->getTitle() . time() . 'dummy');
         }
         // set editcode-dummy for Spam/Form-double-sent protection
-        self::setSessionData('editcode', $editCodeDummy);
+        $this->setSessionData('editcode', $editCodeDummy);
         return $editCodeDummy;
     }
 }
