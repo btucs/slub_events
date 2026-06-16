@@ -54,7 +54,7 @@ class EditCodeViewHelper extends AbstractViewHelper
      */
     protected function getSessionData($key)
     {
-        return $this->renderingContext->getRequest()->getAttribute('frontend.user')->getKey('ses', $key);
+        return ($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('frontend.user')->getKey('ses', $key);
     }
 
     /**
@@ -65,7 +65,7 @@ class EditCodeViewHelper extends AbstractViewHelper
      */
     protected function setSessionData($key, $data)
     {
-        $userGlobals = $this->renderingContext->getRequest()->getAttribute('frontend.user');
+        $userGlobals = ($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('frontend.user');
         $userGlobals->setAndSaveSessionData($key, $data);
         return;
     }

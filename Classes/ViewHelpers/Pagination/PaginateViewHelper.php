@@ -81,7 +81,10 @@ class PaginateViewHelper extends AbstractViewHelper
 
     protected function getPageNumber(): int
     {
-        $request = $this->renderingContext->getRequest();
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        if ($request === null) {
+            return 1;
+        }
         $extbaseRequestParameters = $request->getAttribute('extbase');
         if ($extbaseRequestParameters instanceof ExtbaseRequestParameters) {
             $extensionName = $extbaseRequestParameters->getControllerExtensionName();

@@ -55,7 +55,7 @@ class MetaTagViewHelper extends AbstractViewHelper
     public function render(): void
     {
         // Skip if current record is part of tt_content CType shortcut
-        $typoScriptFrontendController = $this->renderingContext->getRequest()->getAttribute('frontend.controller');
+        $typoScriptFrontendController = ($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('frontend.controller');
         if ($typoScriptFrontendController instanceof TypoScriptFrontendController
             && $typoScriptFrontendController->recordRegister !== []
             && is_array($typoScriptFrontendController->recordRegister)
