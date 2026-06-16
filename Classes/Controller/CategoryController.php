@@ -38,11 +38,6 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 class CategoryController extends AbstractController
 {
     /**
-     * @var TypoScriptFrontendController
-     */
-    protected $typoScriptFrontendController;
-
-    /**
      * Initializes the current action
      *
      * idea from tx_news extension
@@ -54,12 +49,11 @@ class CategoryController extends AbstractController
     {
 
         // Only do this in Frontend Context
-        if (!empty($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE'])) {
+        $typoScriptFrontendController = $this->request->getAttribute('frontend.controller');
+        if ($typoScriptFrontendController instanceof TypoScriptFrontendController) {
             // We only want to set the tag once in one request, so we have to cache that statically if it has been done
             static $cacheTagsSet = false;
 
-            /** @var TypoScriptFrontendController $typoScriptFrontendController */
-            $typoScriptFrontendController = $GLOBALS['TSFE'];
             if (!$cacheTagsSet) {
                 $typoScriptFrontendController->addCacheTags(
                     [0 => 'tx_slubevents_cat_' . $this->settings['storagePid']]

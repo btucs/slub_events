@@ -10,6 +10,7 @@ namespace Slub\SlubEvents\ViewHelpers;
  */
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -53,11 +54,13 @@ class MetaTagViewHelper extends AbstractViewHelper
     public function render(): void
     {
         // Skip if current record is part of tt_content CType shortcut
-        if (!empty($GLOBALS['TSFE']->recordRegister)
-            && is_array($GLOBALS['TSFE']->recordRegister)
-            && str_contains((string) array_keys($GLOBALS['TSFE']->recordRegister)[0], 'tt_content:')
-            && !empty($GLOBALS['TSFE']->currentRecord)
-            && str_contains((string) $GLOBALS['TSFE']->currentRecord, 'tx_news_domain_model_news:')
+        $typoScriptFrontendController = $this->renderingContext->getRequest()->getAttribute('frontend.controller');
+        if ($typoScriptFrontendController instanceof TypoScriptFrontendController
+            && !empty($typoScriptFrontendController->recordRegister)
+            && is_array($typoScriptFrontendController->recordRegister)
+            && str_contains((string) array_keys($typoScriptFrontendController->recordRegister)[0], 'tt_content:')
+            && !empty($typoScriptFrontendController->currentRecord)
+            && str_contains((string) $typoScriptFrontendController->currentRecord, 'tx_news_domain_model_news:')
         ) {
             return;
         }

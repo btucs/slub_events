@@ -64,12 +64,11 @@ class EventController extends AbstractController
     {
 
         // Only do this in Frontend Context
-        if (!empty($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE'])) {
+        $typoScriptFrontendController = $this->request->getAttribute('frontend.controller');
+        if ($typoScriptFrontendController instanceof TypoScriptFrontendController) {
             // We only want to set the tag once in one request, so we have to cache that statically if it has been done
             static $cacheTagsSet = false;
 
-            /** @var TypoScriptFrontendController $typoScriptFrontendController */
-            $typoScriptFrontendController = $GLOBALS['TSFE'];
             if (!$cacheTagsSet) {
                 $typoScriptFrontendController->addCacheTags(
                     [1 => 'tx_slubevents_' . $this->settings['storagePid']]
