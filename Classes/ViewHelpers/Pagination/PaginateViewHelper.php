@@ -2,7 +2,6 @@
 declare(strict_types = 1);
 namespace Slub\SlubEvents\ViewHelpers\Pagination;
 
-use Closure;
 use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
@@ -12,8 +11,6 @@ use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -39,77 +36,49 @@ class PaginateViewHelper extends AbstractViewHelper
         $this->registerArgument('name', 'string', 'unique identification - will take "as" as fallback', false, '');
     }
 
-    /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     */
     #[\Override]
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        if ($arguments['objects'] === null) {
-            return $renderChildrenClosure();
+    public function render(): string
+    {
+        if ($this->arguments['objects'] === null) {
+            return $this->renderChildren();
         }
-        $templateVariableContainer = $renderingContext->getVariableProvider();
-        $templateVariableContainer->add($arguments['as'], [
-            'pagination' => self::getPagination($arguments, $renderingContext),
-            'paginator' => self::getPaginator($arguments, $renderingContext),
-            'name' => self::getName($arguments)
+        $templateVariableContainer = $this->renderingContext->getVariableProvider();
+        $templateVariableContainer->add($this->arguments['as'], [
+            'pagination' => $this->getPagination(),
+            'paginator' => $this->getPaginator(),
+            'name' => $this->getName()
         ]);
-        $output = $renderChildrenClosure();
-        $templateVariableContainer->remove($arguments['as']);
+        $output = $this->renderChildren();
+        $templateVariableContainer->remove($this->arguments['as']);
         return $output;
     }
 
-    /**
-     * @param array $arguments
-     * @param RenderingContextInterface $renderingContext
-     * @return PaginationInterface
-     */
-    protected static function getPagination(
-        array $arguments,
-        RenderingContextInterface $renderingContext
-    ): PaginationInterface {
-        $paginator = self::getPaginator($arguments, $renderingContext);
+    protected function getPagination(): PaginationInterface
+    {
+        $paginator = $this->getPaginator();
         return GeneralUtility::makeInstance(SimplePagination::class, $paginator);
     }
 
-    /**
-     * @param array $arguments
-     * @param RenderingContextInterface $renderingContext
-     * @return PaginatorInterface
-     */
-    protected static function getPaginator(
-        array $arguments,
-        RenderingContextInterface $renderingContext
-    ): PaginatorInterface {
-        if (is_array($arguments['objects'])) {
+    protected function getPaginator(): PaginatorInterface
+    {
+        if (is_array($this->arguments['objects'])) {
             $paginatorClass = ArrayPaginator::class;
-        } elseif (is_a($arguments['objects'], QueryResultInterface::class)) {
+        } elseif (is_a($this->arguments['objects'], QueryResultInterface::class)) {
             $paginatorClass = QueryResultPaginator::class;
         } else {
             throw new \RuntimeException('Given object is not supported for pagination', 1634132847);
         }
         return GeneralUtility::makeInstance(
             $paginatorClass,
-            $arguments['objects'],
-            self::getPageNumber($arguments, $renderingContext),
-            (int)$arguments['itemsPerPage']
+            $this->arguments['objects'],
+            $this->getPageNumber(),
+            (int)$this->arguments['itemsPerPage']
         );
     }
 
-    /**
-     * @param array $arguments
-     * @param RenderingContextInterface&RenderingContext $renderingContext
-     * @return int
-     */
-    protected static function getPageNumber(array $arguments, RenderingContextInterface $renderingContext): int
+    protected function getPageNumber(): int
     {
-        $request = $renderingContext->getRequest();
+        $request = $this->renderingContext->getRequest();
         $extbaseRequestParameters = $request->getAttribute('extbase');
         if ($extbaseRequestParameters instanceof ExtbaseRequestParameters) {
             $extensionName = $extbaseRequestParameters->getControllerExtensionName();
@@ -121,18 +90,14 @@ class PaginateViewHelper extends AbstractViewHelper
         $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
         $pluginNamespace = $extensionService->getPluginNamespace($extensionName, $pluginName);
         $variables = $request->getParsedBody()[$pluginNamespace] ?? $request->getQueryParams()[$pluginNamespace] ?? null;
-        if ($variables !== null && !empty($variables[self::getName($arguments)]['currentPage'])) {
-            return (int)$variables[self::getName($arguments)]['currentPage'];
+        if ($variables !== null && !empty($variables[$this->getName()]['currentPage'])) {
+            return (int)$variables[$this->getName()]['currentPage'];
         }
         return 1;
     }
 
-    /**
-     * @param array $arguments
-     * @return string
-     */
-    protected static function getName(array $arguments): string
+    protected function getName(): string
     {
-        return $arguments['name'] ?: $arguments['as'];
+        return $this->arguments['name'] ?: $this->arguments['as'];
     }
 }
