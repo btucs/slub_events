@@ -19,7 +19,7 @@ This extension is developped and used in production at the Saxony State and Univ
     'version'          => '6.3.0',
     'constraints'      => [
         'depends'   => [
-            'typo3'   => '12.4.0-0.0.0',
+            'typo3'   => '12.4.0-13.4.99',
         ],
         'conflicts' => [
         ],
