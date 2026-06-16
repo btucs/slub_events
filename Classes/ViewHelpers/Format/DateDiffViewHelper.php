@@ -56,6 +56,7 @@ class DateDiffViewHelper extends AbstractViewHelper
     {
         $dateEnd = $this->arguments['dateEnd'];
         $dateStart = $this->arguments['dateStart'];
+        $interval = 0;
         if ($dateEnd instanceof \DateTime
             && $dateStart instanceof \DateTime
         ) {
