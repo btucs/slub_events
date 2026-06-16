@@ -29,7 +29,6 @@ namespace Slub\SlubEvents\ViewHelpers\Link;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -60,11 +59,7 @@ class IslocalViewHelper extends AbstractViewHelper
         $this->registerArgument('link', 'string', 'Link', true);
     }
 
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     */
+    #[\Override]
     public function render()
     {
         $link = $this->arguments['link'];

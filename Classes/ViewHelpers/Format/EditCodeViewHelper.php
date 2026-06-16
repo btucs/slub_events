@@ -26,7 +26,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
  ***************************************************************/
 
 use \Slub\SlubEvents\Domain\Model\Event;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -74,6 +73,7 @@ class EditCodeViewHelper extends AbstractViewHelper
     /**
      * Render the supplied DateTime object as a formatted date.
      */
+    #[\Override]
     public function render()
     {
         $event = $this->arguments['event'];

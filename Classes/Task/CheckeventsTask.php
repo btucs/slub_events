@@ -157,7 +157,8 @@ class CheckeventsTask extends AbstractTask
 
             $language = $site->getLanguageById($languageId);
 
-            $this->request = (new ServerRequest(new Uri($site->getBase())))
+            $request = new ServerRequest(new Uri($site->getBase()));
+            $this->request = $request
                 ->withAttribute('site', $site)
                 ->withAttribute('language', $language);
         } catch (\Exception) {

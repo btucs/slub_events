@@ -59,19 +59,16 @@ class EventsOfDisciplineViewHelper extends AbstractViewHelper
 
     /**
      * check if any events of discipline below are present and free for booking
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $discipline = $this->arguments['discipline'];
         $events = $this->getEventRepository()->findAllBySettings(['disciplineList' => [0 => $discipline]]);
         if ($events) {
-            return TRUE;
+            return true;
         } else {
-            return FALSE;
+            return false;
         }
     }
 

@@ -28,7 +28,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -51,16 +50,12 @@ class DateDiffViewHelper extends AbstractViewHelper
     }
     /**
      * Returns the difference of two DateTime objects in minutes
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $dateEnd = $this->arguments['dateEnd'];
         $dateStart = $this->arguments['dateStart'];
-        $diff = null;
         if ($dateEnd instanceof \DateTime
             && $dateStart instanceof \DateTime
         ) {

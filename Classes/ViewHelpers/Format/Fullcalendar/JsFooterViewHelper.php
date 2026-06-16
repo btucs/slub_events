@@ -58,13 +58,7 @@ class JsFooterViewHelper extends AbstractViewHelper
         $this->registerArgument('link', 'string', 'Link', true);
     }
 
-
-   /**
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     */
+    #[\Override]
     public function render(): void
     {
         $categories = $this->arguments['categories'];

@@ -60,11 +60,7 @@ class InArrayViewHelper extends AbstractViewHelper
         $this->registerArgument('value', 'mixed', 'value', true);
     }
 
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     */
+    #[\Override]
     public function render()
     {
         $array = $this->arguments['array'];
@@ -72,7 +68,7 @@ class InArrayViewHelper extends AbstractViewHelper
         if (is_array($array)) {
             return in_array($value, $array);
         } else {
-            return FALSE;
+            return false;
         }
     }
 }

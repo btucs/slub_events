@@ -59,11 +59,8 @@ class IsPastEventViewHelper extends AbstractViewHelper
 
     /**
      * Render the supplied DateTime object as a formatted date.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $event = $this->arguments['event'];

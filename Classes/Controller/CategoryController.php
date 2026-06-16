@@ -77,7 +77,8 @@ class CategoryController extends AbstractController
 
         $categories = $this->categoryRepository->findCurrentBranch($category);
         if (count($categories) === 0) {
-            return (new ForwardResponse('gbList'))->withArguments(['category' => $category]);
+            $response = new ForwardResponse('gbList');
+            return $response->withArguments(['category' => $category]);
         } else {
             $this->view->assign('categories', $categories);
         }
@@ -91,11 +92,15 @@ class CategoryController extends AbstractController
      *
      * @param Category $category
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
     public function contactListAction(?Category $category = null): ResponseInterface
     {
+        $wibas = [];
+        $events = [];
+        $consultation = [];
+
         if ($this->settings['contactSelection'] <= 0) {
             $this->view->assign('contactSelectionWarning', 1);
         } else {
@@ -134,7 +139,7 @@ class CategoryController extends AbstractController
      *
      * @param Category $category
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'category'])]
     public function gbListAction(?Category $category = null): ResponseInterface
@@ -158,7 +163,7 @@ class CategoryController extends AbstractController
      *
      * @param Category $category
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function showAction(Category $category): ResponseInterface
     {

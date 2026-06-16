@@ -16,7 +16,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 #[UpgradeWizard('slubEvents_switchableControllerActionsUpgradeWizard')]
 final class SwitchableControllerActionsPluginUpdater implements UpgradeWizardInterface
 {
-  private const MIGRATION_SETTINGS = [
+  private const array MIGRATION_SETTINGS = [
     [
       'sourceListType' => 'slubevents_eventlist',
       'switchableControllerActions' => 'Event->list;Event->show;Event->showNotFound',

@@ -68,11 +68,8 @@ class IsSubscriptionAllowedViewHelper extends AbstractViewHelper
 
     /**
      * Return true or false
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $event = $this->arguments['event'];

@@ -82,11 +82,8 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
     /**
      * Renders a record list as known from the TYPO3 list module
      * Note: This feature is experimental!
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $icon = $this->arguments['icon'];

@@ -123,7 +123,7 @@ class StatisticsTask extends AbstractTask
     /**
      * Set the value of the storage pid
      *
-     * @param integer $page UID of the start page for this task.
+     * @param integer $storagePid UID of the start page for this task.
      *
      * @return void
      */
@@ -212,7 +212,8 @@ class StatisticsTask extends AbstractTask
             $site = $siteFinder->getSiteByPageId((int)$this->storagePid);
             $language = $site->getDefaultLanguage();
 
-            $this->request = (new ServerRequest(new Uri((string)$site->getBase())))
+            $request = new ServerRequest(new Uri((string)$site->getBase()));
+            $this->request = $request
                 ->withAttribute('site', $site)
                 ->withAttribute('language', $language);
         } catch (\Throwable) {

@@ -60,11 +60,8 @@ class BookedPlacesViewHelper extends AbstractViewHelper
 
     /**
      * Return the number of subscribers for a given event
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $event = $this->arguments['event'];

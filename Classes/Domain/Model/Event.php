@@ -25,6 +25,7 @@ namespace Slub\SlubEvents\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -702,7 +703,7 @@ class Event extends AbstractEntity {
      *
      * @param boolean $allDay
      *
-     * @return boolean allDay
+     * @return void
      */
     public function setAllDay( $allDay ): void {
         $this->allDay = $allDay;
@@ -756,7 +757,7 @@ class Event extends AbstractEntity {
     /**
      * Returns the subEndDateTime
      *
-     * @return DateTime subEndDateTime
+     * @return \DateTime subEndDateTime
      */
     public function getSubEndDateTime() {
         return $this->subEndDateTime;
@@ -841,9 +842,9 @@ class Event extends AbstractEntity {
     /**
      * Removes a category
      *
-     * @param Category $category
+     * @param Category $categoryToBeRemoved
      *
-     * @return ObjectStorage<Category> categories
+     * @return void
      */
     public function removeCategory( Category $categoryToBeRemoved ): void {
         $this->categories->detach( $categoryToBeRemoved );
@@ -1028,7 +1029,7 @@ class Event extends AbstractEntity {
     {
         $this->unsubscribeUrl = $unsubscribeUrl;
     }
-  
+
     /**
      * Get Topic
      *
@@ -1041,7 +1042,7 @@ class Event extends AbstractEntity {
     /**
      * Set Topic
      *
-     * @return Topic $topic
+     * @param Topic $topic
      */
     public function setTopic( $topic ): void {
         $this->topic = $topic;

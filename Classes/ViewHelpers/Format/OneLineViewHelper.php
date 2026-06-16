@@ -25,7 +25,6 @@ namespace Slub\SlubEvents\ViewHelpers\Format;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -46,13 +45,7 @@ class OneLineViewHelper extends AbstractViewHelper
         $this->registerArgument('htmlString', 'string', 'Html String', true);
     }
 
-    /**
-     * Render
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     */
+    #[\Override]
     public function render()
     {
         $text = str_replace("\t", ' ', $this->arguments['htmlString']);

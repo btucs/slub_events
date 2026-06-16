@@ -29,7 +29,6 @@ use \Slub\SlubEvents\Domain\Model\Category;
 use \Slub\SlubEvents\Domain\Repository\CategoryRepository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -59,11 +58,8 @@ class HasSubcategoriesViewHelper extends AbstractViewHelper
 
     /**
      * check if any events of categories below are present and free for booking
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $category = $this->arguments['category'];

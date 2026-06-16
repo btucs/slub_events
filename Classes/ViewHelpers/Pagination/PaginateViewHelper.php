@@ -22,6 +22,9 @@ class PaginateViewHelper extends AbstractViewHelper
      * @var bool
      */
     protected $escapeOutput = false;
+    public function __construct(private readonly ExtensionService $extensionService)
+    {
+    }
 
     /**
      * @return void
@@ -87,7 +90,7 @@ class PaginateViewHelper extends AbstractViewHelper
             // Fallback if extbase parameters are not available
             return 1;
         }
-        $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
+        $extensionService = $this->extensionService;
         $pluginNamespace = $extensionService->getPluginNamespace($extensionName, $pluginName);
         $variables = $request->getParsedBody()[$pluginNamespace] ?? $request->getQueryParams()[$pluginNamespace] ?? null;
         if ($variables !== null && !empty($variables[$this->getName()]['currentPage'])) {

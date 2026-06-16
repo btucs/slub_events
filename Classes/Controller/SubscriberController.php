@@ -24,6 +24,7 @@ namespace Slub\SlubEvents\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slub\SlubEvents\Domain\Validator\SubscriberValidator;
 use Slub\SlubEvents\Domain\Validator\EventSubscriptionAllowedValidator;
@@ -45,13 +46,14 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 class SubscriberController extends AbstractController
 {
 
+    public ConfigurationManagerInterface $configurationManager;
     public function __construct(private readonly CacheManager $cacheManager)
     {
     }
     /**
      * action list
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function listAction(): ResponseInterface
     {
@@ -65,7 +67,7 @@ class SubscriberController extends AbstractController
      *
      * @param Subscriber $subscriber
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function showAction(Subscriber $subscriber): ResponseInterface
     {
@@ -76,7 +78,7 @@ class SubscriberController extends AbstractController
     /**
      * action EventNotfound
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function eventNotFoundAction(): ResponseInterface
     {
@@ -86,7 +88,7 @@ class SubscriberController extends AbstractController
     /**
      * action SubscriberNotfound
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function subscriberNotFoundAction(): ResponseInterface
     {
@@ -111,11 +113,12 @@ class SubscriberController extends AbstractController
         ?Category $category = null
     )
     {
-
         // somebody is calling the action without giving an event --> useless
         if (!$event instanceof Event) {
             return $this->redirect('eventNotFound');
         }
+
+        $loggedIn = '';
 
         // this is a little stupid with the rewritten property mapper from
         // extbase 1.4, because the object is never NULL!
@@ -127,11 +130,10 @@ class SubscriberController extends AbstractController
             $newSubscriber = GeneralUtility::makeInstance(Subscriber::class);
             $newSubscriber->setNumber(1);
 
+
             if (!empty($this->request->getAttribute('frontend.user')->user['username'])) {
                 $newSubscriber->setCustomerid($this->request->getAttribute('frontend.user')->user['username']);
                 $loggedIn = 'readonly'; // css class for form
-            } else {
-                $loggedIn = '';
             } // css class for form
 
             if (!empty($this->request->getAttribute('frontend.user')->user['name'])) {
@@ -161,7 +163,7 @@ class SubscriberController extends AbstractController
      * @param Event      $event
      * @param Category   $category
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[Extbase\Validate(['validator' => SubscriberValidator::class, 'param' => 'newSubscriber'])]
     #[Extbase\Validate(['validator' => EventSubscriptionAllowedValidator::class, 'param' => 'event'])]

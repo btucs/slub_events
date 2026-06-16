@@ -51,15 +51,16 @@ class MetaTagViewHelper extends AbstractViewHelper
         $this->registerArgument('forceAbsoluteUrl', 'boolean', 'Force absolut domain', false, false);
     }
 
+    #[\Override]
     public function render(): void
     {
         // Skip if current record is part of tt_content CType shortcut
         $typoScriptFrontendController = $this->renderingContext->getRequest()->getAttribute('frontend.controller');
         if ($typoScriptFrontendController instanceof TypoScriptFrontendController
-            && !empty($typoScriptFrontendController->recordRegister)
+            && $typoScriptFrontendController->recordRegister !== []
             && is_array($typoScriptFrontendController->recordRegister)
             && str_contains((string) array_keys($typoScriptFrontendController->recordRegister)[0], 'tt_content:')
-            && !empty($typoScriptFrontendController->currentRecord)
+            && ($typoScriptFrontendController->currentRecord !== '' && $typoScriptFrontendController->currentRecord !== '0')
             && str_contains((string) $typoScriptFrontendController->currentRecord, 'tx_news_domain_model_news:')
         ) {
             return;

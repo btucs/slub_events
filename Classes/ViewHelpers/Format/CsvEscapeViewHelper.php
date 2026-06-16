@@ -42,6 +42,7 @@ class CsvEscapeViewHelper extends AbstractViewHelper
      * @author Alexander Bigga <typo3@slub-dresden.de>
      * @api
      */
+    #[\Override]
     public function render()
     {
         $value = $this->renderChildren();

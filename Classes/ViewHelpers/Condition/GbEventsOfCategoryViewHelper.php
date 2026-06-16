@@ -75,11 +75,8 @@ class GbEventsOfCategoryViewHelper extends AbstractViewHelper
 
     /**
      * check if any events of categories below are present and free for booking
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $category = $this->arguments['category'];

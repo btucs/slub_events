@@ -59,19 +59,16 @@ class EventsOfCategoryViewHelper extends AbstractViewHelper
 
     /**
      * check if any events of categories below are present and free for booking
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $category = $this->arguments['category'];
         $events = $this->getEventRepository()->findAllBySettings(['categoryList' => [0 => $category]]);
         if ($events) {
-            return TRUE;
+            return true;
         } else {
-            return FALSE;
+            return false;
         }
     }
 

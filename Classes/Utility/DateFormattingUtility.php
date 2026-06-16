@@ -40,8 +40,9 @@ final class DateFormattingUtility
 
     public static function createFromTimestamp(int $timestamp): DateTimeImmutable
     {
-        return (new DateTimeImmutable('@' . $timestamp))
-            ->setTimezone(new DateTimeZone(date_default_timezone_get()));
+        $dateTime = new DateTimeImmutable('@' . $timestamp);
+        $dateTime = $dateTime->setTimezone(new DateTimeZone(date_default_timezone_get()));
+        return $dateTime;
     }
 
     public static function formatPattern(

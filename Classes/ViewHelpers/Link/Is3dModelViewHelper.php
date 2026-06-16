@@ -61,11 +61,8 @@ class Is3dModelViewHelper extends AbstractViewHelper
 
     /**
      * check if string "3d.slub-dresden.de" is part of the link
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $link = $this->arguments['link'];

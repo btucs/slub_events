@@ -13,7 +13,7 @@ namespace Slub\SlubEvents\Controller\Backend;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,6 +30,7 @@ use Slub\SlubEvents\Utility\TextUtility;
  */
 class EventController extends BaseController
 {
+    public ConfigurationManagerInterface $configurationManager;
     /**
      * action beList
      */
@@ -187,6 +188,7 @@ class EventController extends BaseController
     public function beIcsInvitationAction(Event $event)
     {
         $allEvents = [];
+        $icsHelpers = [];
 
         // add all child events if this is a parent recurring event
         if ($event->isRecurring()) {
@@ -207,7 +209,7 @@ class EventController extends BaseController
                 $helper['end'] = $helper['start'];
             }
 
-            if ($event->isAllDay) {
+            if ($event->isAllDay()) {
                 $helper['allDay'] = 1;
             }
 

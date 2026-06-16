@@ -13,6 +13,7 @@ namespace Slub\SlubEvents\Controller\Backend;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use Slub\SlubEvents\Domain\Model\Event;
@@ -28,10 +29,11 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
  */
 class SubscriberController extends BaseController
 {
+    public ConfigurationManagerInterface $configurationManager;
     /**
      * action beList
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function beListAction(): ResponseInterface
     {
@@ -103,7 +105,7 @@ class SubscriberController extends BaseController
      * @param Event   $event
      * @param integer $step
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
     public function beOnlineSurveyAction(Event $event, $step = 0): ResponseInterface
@@ -114,6 +116,7 @@ class SubscriberController extends BaseController
         // set the link to the current object to get access inside the email
         $event->setOnlinesurvey($onlineSurveyLink[0]);
 
+        $emailTextHTML = '';
         if ($step == 0) {
             $variables = [
                 'onlineSurveyLink' => $onlineSurveyLink[0],

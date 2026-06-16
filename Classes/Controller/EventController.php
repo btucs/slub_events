@@ -24,6 +24,8 @@ namespace Slub\SlubEvents\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use Slub\SlubEvents\Utility\DateFormattingUtility;
@@ -49,7 +51,8 @@ use Slub\SlubEvents\Utility\TextUtility;
 class EventController extends AbstractController
 {
 
-    public function __construct(private readonly ConnectionPool $connectionPool, private readonly PersistenceManager $persistenceManager)
+    public ConfigurationManagerInterface $configurationManager;
+    public function __construct(private readonly ConnectionPool $connectionPool, private readonly PersistenceManager $persistenceManager, private readonly LoggerInterface $logger)
     {
     }
     /**
@@ -81,7 +84,7 @@ class EventController extends AbstractController
     /**
      * action list
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function listAction(): ResponseInterface
     {
@@ -102,7 +105,7 @@ class EventController extends AbstractController
     /**
      * action listUpcomming
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function listUpcomingAction(): ResponseInterface
     {
@@ -125,7 +128,7 @@ class EventController extends AbstractController
      *
      * @param Event $event
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
     public function showAction(?Event $event = null): ResponseInterface
@@ -164,7 +167,7 @@ class EventController extends AbstractController
     /**
      * action showNotfound
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function showNotFoundAction(): ResponseInterface
     {
@@ -176,7 +179,7 @@ class EventController extends AbstractController
      *
      * @param Event $newEvent
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'newEvent'])]
     public function newAction(?Event $newEvent = null): ResponseInterface
@@ -204,7 +207,7 @@ class EventController extends AbstractController
      *
      * @param Event $event
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[Extbase\IgnoreValidation(['argumentName' => 'event'])]
     public function editAction(Event $event): ResponseInterface
@@ -244,7 +247,7 @@ class EventController extends AbstractController
     /**
      * action listOwn
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function listOwnAction(): ResponseInterface
     {
@@ -263,10 +266,12 @@ class EventController extends AbstractController
     /**
      * action listMonth
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function listMonthAction(): ResponseInterface
     {
+        $categories = [];
+        $disciplines = [];
         if (!empty($this->settings['categorySelection'])) {
             $categoriesIds = $this->getCategoryIdsFromSettings();
             $this->settings['categoryList'] = $categoriesIds;
@@ -333,7 +338,7 @@ class EventController extends AbstractController
      *
      * @param integer $id
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function createChildsAction($id): ResponseInterface
     {
@@ -347,7 +352,7 @@ class EventController extends AbstractController
      *
      * @param integer $id
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function deleteChildsAction($id): ResponseInterface
     {
@@ -463,7 +468,7 @@ class EventController extends AbstractController
     /**
      * action errorAction
      *
-     * @return void
+     * @return ResponseInterface
      */
     #[\Override]
     public function errorAction(): ResponseInterface
@@ -477,7 +482,7 @@ class EventController extends AbstractController
      *
      * EXPERIMENTAL!!
      *
-     * @return string
+     * @return ResponseInterface
      */
     public function ajaxAction(): ResponseInterface
     {
@@ -671,6 +676,7 @@ class EventController extends AbstractController
         $eventSubEndDateTime = $parentSubEndDateTime instanceof \DateTime
             ? clone $parentSubEndDateTime
             : null;
+        $dateTimeInterval = new \DateInterval("P1W");
         switch ($recurring_options['interval']) {
             case 'weekly':
                   $dateTimeInterval = new \DateInterval("P1W");
@@ -687,6 +693,11 @@ class EventController extends AbstractController
             case 'yearly':
                   $dateTimeInterval = new \DateInterval("P1Y");
                   break;
+            default:
+                  $this->logger->warning(
+                      'Unsupported recurring interval "{interval}", falling back to weekly.',
+                      ['interval' => $recurring_options['interval']]
+                  );
         }
         $adjustDlstRun = 1;
 

@@ -58,11 +58,8 @@ class FreePlacesLeftViewHelper extends AbstractViewHelper
 
     /**
      * Calculate the free places for a given event.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      */
+    #[\Override]
     public function render()
     {
         $event = $this->arguments['event'];
