@@ -23,6 +23,8 @@ final class ListTypeToCTypeUpdater extends AbstractListTypeToCTypeUpdate
             'slubevents_eventsubscribecreate' => 'slubevents_eventsubscribecreate',
             'slubevents_eventgeniusbarcontactlist' => 'slubevents_eventgeniusbarcontactlist',
             'slubevents_eventgeniusbarcategorylist' => 'slubevents_eventgeniusbarcategorylist',
+            'slubevents_apieventlist' => 'slubevents_apieventlist',
+            'slubevents_apieventlistuser' => 'slubevents_apieventlistuser',
         ];
     }
 
