@@ -30,7 +30,7 @@ class JsonView extends ExtbaseJsonView
     /**
      * @var array
      */
-    protected $configuration = [
+    protected array $configuration = [
         'error' => [
         ],
         'events' => [
@@ -116,7 +116,7 @@ class JsonView extends ExtbaseJsonView
      * @return mixed
      */
     #[\Override]
-    protected function transformValue($value, array $configuration, $firstLevel = false)
+    protected function transformValue($value, array $configuration, $firstLevel = false): mixed
     {
         if ($value instanceof ObjectStorage) {
             $value = $value->toArray();

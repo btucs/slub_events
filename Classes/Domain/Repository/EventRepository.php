@@ -503,7 +503,7 @@ class EventRepository extends Repository
      * @param \DateTime $startDateStamp
      * @param Event $parent
      *
-     * @return array The found Event Objects
+     * @return Event|null The found Event Objects
      */
     public function findOneByStartDateTimeAndParent($startDateStamp, $parent)
     {
@@ -515,7 +515,7 @@ class EventRepository extends Repository
      *
      * @param int $uid
      *
-     * @return array The found Event Objects
+     * @return Event|null The found Event Objects
      */
     public function findOneByUidIncludeHidden($uid)
     {

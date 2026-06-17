@@ -25,7 +25,6 @@ namespace Slub\SlubEvents\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController as ExtbaseActionController;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use Slub\SlubEvents\Domain\Repository\EventRepository;
@@ -50,7 +49,7 @@ class AbstractController extends ExtbaseActionController
      */
     protected $eventRepository;
 
-	public function __construct(EventRepository $eventRepository, CategoryRepository $categoryRepository, SubscriberRepository $subscriberRepository, ContactRepository $contactRepository, DisciplineRepository $disciplineRepository, private readonly ConfigurationManagerInterface $configurationManager)
+	public function __construct(EventRepository $eventRepository, CategoryRepository $categoryRepository, SubscriberRepository $subscriberRepository, ContactRepository $contactRepository, DisciplineRepository $disciplineRepository)
     {
         $this->eventRepository = $eventRepository;
         $this->categoryRepository = $categoryRepository;

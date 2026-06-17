@@ -43,7 +43,7 @@ class BaseController extends AbstractController
      * @var array
      */
     protected $pageInformation;
-    public function __construct(private readonly ModuleTemplateFactory $moduleTemplateFactory, private readonly UriBuilder $uriBuilder)
+    public function __construct(private readonly ModuleTemplateFactory $moduleTemplateFactory, protected UriBuilder $uriBuilder)
     {
     }
 
