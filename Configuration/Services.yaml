@@ -6,3 +6,52 @@ services:
 
     Slub\SlubEvents\:
         resource: '../Classes/*'
+
+    Slub\SlubEvents\Slots\HookPreProcessing:
+        public: true
+
+    Slub\SlubEvents\Slots\HookPostProcessing:
+        public: true
+        autowire: false
+        arguments:
+            $cacheManager: '@TYPO3\CMS\Core\Cache\CacheManager'
+        calls:
+            - method: injectEventRepository
+              arguments:
+                  - '@Slub\SlubEvents\Domain\Repository\EventRepository'
+            - method: injectPersistenceManager
+              arguments:
+                  - '@TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager'
+
+    Slub\SlubEvents\Controller\EventController:
+        public: true
+
+    Slub\SlubEvents\Controller\SubscriberController:
+        public: true
+
+    Slub\SlubEvents\Controller\Api\EventController:
+        public: true
+
+    Slub\SlubEvents\Controller\Backend\BaseController:
+        public: true
+
+    Slub\SlubEvents\Helper\Form\Element\RecurringEventsElement:
+        public: true
+
+    Slub\SlubEvents\Helper\Form\Element\RecurringParentElement:
+        public: true
+
+    Slub\SlubEvents\Task\CheckeventsTask:
+        public: true
+
+    Slub\SlubEvents\Task\StatisticsTask:
+        public: true
+
+    Slub\SlubEvents\Task\CleanUpTask:
+        public: true
+
+    Slub\SlubEvents\Updates\FileLocationUpdater:
+        public: true
+
+    Slub\SlubEvents\Updates\SwitchableControllerActionsPluginUpdater:
+        public: true
