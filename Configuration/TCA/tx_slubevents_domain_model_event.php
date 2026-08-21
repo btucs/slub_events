@@ -531,7 +531,7 @@ return [
                         'maxLevels'  => 10,
                     ],
                 ],
-                'size'                => 10,
+                'size'                => 30,
                 'minitems'            => 1,
                 'maxitems'            => 30,
             ],
