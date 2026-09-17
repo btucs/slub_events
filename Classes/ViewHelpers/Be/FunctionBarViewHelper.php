@@ -26,6 +26,7 @@ namespace Slub\SlubEvents\ViewHelpers\Be;
  ***************************************************************/
 
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use Slub\SlubEvents\Helper\IconsHelper;
 use \Slub\SlubEvents\Domain\Model\Event;
 
@@ -43,7 +44,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
      * @var bool
      */
     protected $escapeOutput = false;
-    public function __construct(ConfigurationManager $configurationManager)
+    public function __construct(ConfigurationManager $configurationManager, private readonly UriBuilder $uriBuilder)
     {
         $this->configurationManager = $configurationManager;
     }
@@ -96,7 +97,7 @@ class FunctionBarViewHelper extends AbstractBackendViewHelper
         $configurationManager = $this->configurationManager;
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $storagePid = $frameworkConfiguration['persistence']['storagePid'];
-        $iconHelper = GeneralUtility::makeInstance(IconsHelper::class);
+        $iconHelper = GeneralUtility::makeInstance(IconsHelper::class, $this->uriBuilder);
         $content = match ($icon) {
             'new' => $iconHelper->getNewIcon('tx_slubevents_domain_model_event', $storagePid),
             'edit' => $iconHelper->getEditIcon('tx_slubevents_domain_model_event', $row),

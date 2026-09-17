@@ -20,6 +20,8 @@ use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -76,6 +78,16 @@ class BaseController extends AbstractController
     {
         $this->pageUid = (int)($this->request->getQueryParams()['id'] ?? null);
         $this->pageInformation = BackendUtility::readPageAccess($this->pageUid, '');
+
+        if ($this->pageUid > 0) {
+            $this->settings['storagePid'] = $this->pageUid;
+            GeneralUtility::makeInstance(ConfigurationManagerInterface::class)->setConfiguration([
+                'persistence' => [
+                    'storagePid' => $this->pageUid,
+                ],
+            ]);
+        }
+
         parent::initializeAction();
     }
 
