@@ -23,6 +23,11 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use Slub\SlubEvents\Domain\Repository\CategoryRepository;
+use Slub\SlubEvents\Domain\Repository\ContactRepository;
+use Slub\SlubEvents\Domain\Repository\DisciplineRepository;
+use Slub\SlubEvents\Domain\Repository\EventRepository;
+use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 
 /**
  * Base class for backend modules
@@ -43,8 +48,23 @@ class BaseController extends AbstractController
      * @var array
      */
     protected $pageInformation;
-    public function __construct(private readonly ModuleTemplateFactory $moduleTemplateFactory, protected UriBuilder $uriBuilder)
+    public function __construct(
+        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        protected UriBuilder $uriBuilder,
+        EventRepository $eventRepository,
+        CategoryRepository $categoryRepository,
+        SubscriberRepository $subscriberRepository,
+        ContactRepository $contactRepository,
+        DisciplineRepository $disciplineRepository
+    )
     {
+        parent::__construct(
+            $eventRepository,
+            $categoryRepository,
+            $subscriberRepository,
+            $contactRepository,
+            $disciplineRepository
+        );
     }
 
     /**
@@ -158,6 +178,6 @@ class BaseController extends AbstractController
         $moduleTemplate = $this->getModuleTemplate();
         $moduleTemplate->assign('content', $html ?? $this->view->render());
 
-        return $moduleTemplate->renderResponse('ModuleTemplate/Module');
+        return $moduleTemplate->renderResponse('Default/ModuleTemplate/Module');
     }
 }
