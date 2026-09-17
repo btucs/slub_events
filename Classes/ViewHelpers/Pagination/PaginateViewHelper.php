@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace Slub\SlubEvents\ViewHelpers\Pagination;
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
@@ -11,6 +12,7 @@ use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -81,8 +83,13 @@ class PaginateViewHelper extends AbstractViewHelper
 
     protected function getPageNumber(): int
     {
-        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
-        if ($request === null) {
+        /** @var RenderingContext $renderingContext */
+        $renderingContext = $this->renderingContext;
+        if (!$renderingContext->hasAttribute(ServerRequestInterface::class)) {
+            return 1;
+        }
+        $request = $renderingContext->getAttribute(ServerRequestInterface::class);
+        if (!$request instanceof ServerRequestInterface) {
             return 1;
         }
         $extbaseRequestParameters = $request->getAttribute('extbase');

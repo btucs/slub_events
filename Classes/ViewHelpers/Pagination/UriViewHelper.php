@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Slub\SlubEvents\ViewHelpers\Pagination;
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
@@ -47,7 +48,13 @@ class UriViewHelper extends AbstractTagBasedViewHelper
     {
         /** @var RenderingContext $renderingContext */
         $renderingContext = $this->renderingContext;
-        $request = $renderingContext->getRequest();
+        if (!$renderingContext->hasAttribute(ServerRequestInterface::class)) {
+            return '';
+        }
+        $request = $renderingContext->getAttribute(ServerRequestInterface::class);
+        if (!$request instanceof ServerRequestInterface) {
+            return '';
+        }
 
         $uriBuilder = $this->uriBuilder;
         $uriBuilder->setRequest($request);
