@@ -203,13 +203,14 @@ class EmailHelper
      */
     public static function resolveTemplateRootPaths(?ConfigurationManagerInterface $configurationManager = null): array
     {
+        $defaultTemplateRootPaths = [Environment::getPublicPath() . '/typo3conf/ext/slub_events/Resources/Private/Templates/'];
         if ($configurationManager instanceof ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
             );
-            $templateRootPaths = $extbaseFrameworkConfiguration['view']['templateRootPaths'];
+            $templateRootPaths = $extbaseFrameworkConfiguration['view']['templateRootPaths'] ?? $defaultTemplateRootPaths;
         } else {
-            $templateRootPaths = [Environment::getPublicPath() . '/typo3conf/ext/slub_events/Resources/Private/Templates/'];
+            $templateRootPaths = $defaultTemplateRootPaths;
         }
 
         return $templateRootPaths;
@@ -222,13 +223,14 @@ class EmailHelper
      */
     public static function resolvePartialRootPaths(?ConfigurationManagerInterface $configurationManager = null): array
     {
+        $defaultPartialRootPaths = [Environment::getPublicPath() . '/typo3conf/ext/slub_events/Resources/Private/Partials/'];
         if ($configurationManager instanceof ConfigurationManagerInterface) {
             $extbaseFrameworkConfiguration = $configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
             );
-            $partialRootPaths = $extbaseFrameworkConfiguration['view']['partialRootPaths'];
+            $partialRootPaths = $extbaseFrameworkConfiguration['view']['partialRootPaths'] ?? $defaultPartialRootPaths;
         } else {
-            $partialRootPaths = [Environment::getPublicPath() . '/typo3conf/ext/slub_events/Resources/Private/Partials/'];
+            $partialRootPaths = $defaultPartialRootPaths;
         }
 
         return $partialRootPaths;
