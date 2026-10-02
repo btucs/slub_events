@@ -26,7 +26,7 @@ namespace Slub\SlubEvents\Controller;
  ***************************************************************/
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use Slub\SlubEvents\Domain\Model\Category;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -49,17 +49,11 @@ class CategoryController extends AbstractController
     {
 
         // Only do this in Frontend Context
-        $typoScriptFrontendController = $this->request->getAttribute('frontend.controller');
-        if ($typoScriptFrontendController instanceof TypoScriptFrontendController) {
-            // We only want to set the tag once in one request, so we have to cache that statically if it has been done
-            static $cacheTagsSet = false;
-
-            if (!$cacheTagsSet) {
-                $typoScriptFrontendController->addCacheTags(
-                    [0 => 'tx_slubevents_cat_' . $this->settings['storagePid']]
-                );
-                $cacheTagsSet = true;
-            }
+        $cacheDataCollector = $this->request->getAttribute('frontend.cache.collector');
+        if ($cacheDataCollector !== null) {
+            $cacheDataCollector->addCacheTags(
+                new CacheTag('tx_slubevents_cat_' . ($this->settings['storagePid'] ?? ''))
+            );
         }
     }
 

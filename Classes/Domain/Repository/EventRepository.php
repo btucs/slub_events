@@ -182,6 +182,23 @@ class EventRepository extends Repository
      */
     public function findAllBySettings($settings, $geniusBar = 0)
     {
+        $settings = array_merge([
+            'user' => 0,
+            'categoryList' => [],
+            'disciplineList' => [],
+            'contactsSelection' => '',
+            'exactlyToTheMinute' => false,
+            'showPastEvents' => false,
+            'showEventsFromNow' => false,
+            'limitByNextWeeks' => 0,
+            'startTimestamp' => 0,
+            'stopTimestamp' => 0,
+            'hideCancelledEvents' => false,
+            'eventOrdering' => 'ASC',
+            'hideFullyBookedEvents' => false,
+            'limit' => 0,
+        ], $settings);
+
         $query = $this->createQuery();
         $constraints = [];
 

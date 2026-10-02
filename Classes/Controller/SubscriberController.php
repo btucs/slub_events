@@ -31,6 +31,11 @@ use Slub\SlubEvents\Domain\Validator\EventSubscriptionAllowedValidator;
 use Slub\SlubEvents\Domain\Model\Category;
 use Slub\SlubEvents\Domain\Model\Event;
 use Slub\SlubEvents\Domain\Model\Subscriber;
+use Slub\SlubEvents\Domain\Repository\CategoryRepository;
+use Slub\SlubEvents\Domain\Repository\ContactRepository;
+use Slub\SlubEvents\Domain\Repository\DisciplineRepository;
+use Slub\SlubEvents\Domain\Repository\EventRepository;
+use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 use Slub\SlubEvents\Helper\EmailHelper;
 use Slub\SlubEvents\Helper\EventHelper;
 use Slub\SlubEvents\Utility\TextUtility;
@@ -47,8 +52,15 @@ class SubscriberController extends AbstractController
 {
 
     public ConfigurationManagerInterface $configurationManager;
-    public function __construct(private readonly CacheManager $cacheManager)
-    {
+    public function __construct(
+        EventRepository $eventRepository,
+        CategoryRepository $categoryRepository,
+        SubscriberRepository $subscriberRepository,
+        ContactRepository $contactRepository,
+        DisciplineRepository $disciplineRepository,
+        private readonly CacheManager $cacheManager
+    ) {
+        parent::__construct($eventRepository, $categoryRepository, $subscriberRepository, $contactRepository, $disciplineRepository);
     }
     /**
      * action list
@@ -314,9 +326,9 @@ class SubscriberController extends AbstractController
     public function clearAllEventListCache($isGeniusBar = false): void
     {
         if ($isGeniusBar) {
-            $cacheTag = 'tx_slubevents_cat_' . $this->settings['storagePid'];
+            $cacheTag = 'tx_slubevents_cat_' . ($this->settings['storagePid'] ?? '');
         } else {
-            $cacheTag = 'tx_slubevents_' . $this->settings['storagePid'];
+            $cacheTag = 'tx_slubevents_' . ($this->settings['storagePid'] ?? '');
         }
         $this->getCacheManager()->flushCachesInGroupByTags('pages', [$cacheTag]);
     }

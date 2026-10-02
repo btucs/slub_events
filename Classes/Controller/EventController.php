@@ -27,7 +27,7 @@ namespace Slub\SlubEvents\Controller;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use Slub\SlubEvents\Utility\DateFormattingUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
@@ -40,6 +40,11 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use Slub\SlubEvents\Domain\Model\Event;
+use Slub\SlubEvents\Domain\Repository\CategoryRepository;
+use Slub\SlubEvents\Domain\Repository\ContactRepository;
+use Slub\SlubEvents\Domain\Repository\DisciplineRepository;
+use Slub\SlubEvents\Domain\Repository\EventRepository;
+use Slub\SlubEvents\Domain\Repository\SubscriberRepository;
 use Slub\SlubEvents\Helper\EmailHelper;
 use Slub\SlubEvents\Helper\EventHelper;
 use Slub\SlubEvents\Utility\TextUtility;
@@ -52,8 +57,17 @@ class EventController extends AbstractController
 {
 
     public ConfigurationManagerInterface $configurationManager;
-    public function __construct(private readonly ConnectionPool $connectionPool, private readonly PersistenceManager $persistenceManager, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        EventRepository $eventRepository,
+        CategoryRepository $categoryRepository,
+        SubscriberRepository $subscriberRepository,
+        ContactRepository $contactRepository,
+        DisciplineRepository $disciplineRepository,
+        private readonly ConnectionPool $connectionPool,
+        private readonly PersistenceManager $persistenceManager,
+        private readonly LoggerInterface $logger
+    ) {
+        parent::__construct($eventRepository, $categoryRepository, $subscriberRepository, $contactRepository, $disciplineRepository);
     }
     /**
      * Initializes the current action
@@ -67,17 +81,11 @@ class EventController extends AbstractController
     {
 
         // Only do this in Frontend Context
-        $typoScriptFrontendController = $this->request->getAttribute('frontend.controller');
-        if ($typoScriptFrontendController instanceof TypoScriptFrontendController) {
-            // We only want to set the tag once in one request, so we have to cache that statically if it has been done
-            static $cacheTagsSet = false;
-
-            if (!$cacheTagsSet) {
-                $typoScriptFrontendController->addCacheTags(
-                    [1 => 'tx_slubevents_' . $this->settings['storagePid']]
-                );
-                $cacheTagsSet = true;
-            }
+        $cacheDataCollector = $this->request->getAttribute('frontend.cache.collector');
+        if ($cacheDataCollector !== null) {
+            $cacheDataCollector->addCacheTags(
+                new CacheTag('tx_slubevents_' . ($this->settings['storagePid'] ?? ''))
+            );
         }
     }
 
